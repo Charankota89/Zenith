@@ -7,7 +7,7 @@
         <item name="colorPrimaryVariant">@color/zenith_purple_dark</item>
         <item name="colorSecondary">@color/zenith_blue</item>
         <item name="colorSurface">@color/card_dark</item>
-        <item name="colorBackground">@color/bg_dark</item>
+        <item name="android:colorBackground">@color/bg_dark</item>
         <item name="android:windowBackground">@color/bg_dark</item>
         <item name="android:statusBarColor">@color/bg_dark</item>
         <item name="android:navigationBarColor">@color/bg_dark</item>
