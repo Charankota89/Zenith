@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/ic_nav_home"
+        android:title="@string/nav_home" />
+
+    <item
+        android:id="@+id/usageFragment"
+        android:icon="@drawable/ic_nav_screen"
+        android:title="@string/nav_screen" />
+
+    <item
+        android:id="@+id/focusFragment"
+        android:icon="@drawable/ic_nav_focus"
+        android:title="@string/nav_focus" />
+
+    <item
+        android:id="@+id/careerFragment"
+        android:icon="@drawable/ic_nav_career"
+        android:title="@string/nav_career" />
+
+    <item
+        android:id="@+id/wellbeingFragment"
+        android:icon="@drawable/ic_nav_wellbeing"
+        android:title="@string/nav_wellbeing" />
+
+</menu>

@@ -1,0 +1,34 @@
+# Built outputs
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Build folders
+build/
+app/build/
+.gradle/
+.idea/
+*.iml
+
+# Local properties (never commit SDK path)
+local.properties
+
+# Android Studio / IntelliJ
+*.iws
+*.ipr
+out/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Keystore (never commit signing keys)
+*.jks
+*.keystore
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

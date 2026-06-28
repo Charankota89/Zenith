@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zenith — App Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --purple: #7C4DFF;
+    --purple-dark: #5722CC;
+    --blue: #448AFF;
+    --cyan: #18FFFF;
+    --green: #69F0AE;
+    --amber: #FFD740;
+    --red: #FF5252;
+    --orange: #FF6D00;
+    --bg-dark: #0D0F1A;
+    --bg-surface: #12152A;
+    --card: #1A1D2E;
+    --card-elevated: #22263A;
+    --text-primary: #FFFFFF;
+    --text-secondary: #B0BEC5;
+    --text-hint: #7C83A0;
+    --text-disabled: #4A4F6A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #080A14;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 30px 20px 60px;
+    overflow-x: hidden;
+  }
+
+  /* ── Page header ── */
+  .page-header {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: fadeDown 0.6s ease;
+  }
+  .page-header h1 {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .page-header p {
+    color: var(--text-hint);
+    font-size: 14px;
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Tab switcher ── */
+  .screen-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    background: var(--card);
+    border-radius: 14px;
+    padding: 6px;
+  }
+  .screen-tab {
+    padding: 8px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-hint);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    transition: all 0.25s;
+    letter-spacing: 0.3px;
+  }
+  .screen-tab.active {
+    background: var(--purple);
+    color: white;
+    box-shadow: 0 4px 16px rgba(124,77,255,0.4);
+  }
+
+  /* ── Phone frame ── */
+  .phone-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  .phone-frame {
+    width: 360px;
+    height: 720px;
+    background: var(--bg-dark);
+    border-radius: 44px;
+    border: 2px solid #2A2D3E;
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 0 0 6px #0D0F1A,
+      0 0 0 8px #2A2D3E,
+      0 40px 80px rgba(0,0,0,0.8),
+      inset 0 0 60px rgba(124,77,255,0.03);
+  }
+
+  /* ── Status bar ── */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px 4px;
+    background: var(--bg-dark);
+  }
+  .status-time {
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+  }
+  .status-icons {
+    font-size: 11px;
+    color: white;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  /* ── Screens ── */
+  .screen {
+    display: none;
+    height: calc(100% - 32px);
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .screen::-webkit-scrollbar { display: none; }
+  .screen.active { display: block; }
+
+  /* ── SPLASH SCREEN ── */
+  .splash {
+    background: var(--bg-dark);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    animation: splashIn 1s ease;
+  }
+  @keyframes splashIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .splash-logo {
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, #2A1A5E, #1A0D3E);
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--purple);
+    box-shadow: 0 0 40px rgba(124,77,255,0.4), 0 0 80px rgba(124,77,255,0.15);
+    border: 1px solid rgba(124,77,255,0.3);
+    margin-bottom: 28px;
+    position: relative;
+  }
+  .splash-logo::after {
+    content: '';
+    width: 10px; height: 10px;
+    background: var(--cyan);
+    border-radius: 50%;
+    position: absolute;
+    top: 8px; right: 8px;
+    box-shadow: 0 0 12px var(--cyan);
+  }
+  .splash-name {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: 8px;
+    color: white;
+    text-align: center;
+  }
+  .splash-tagline {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+  .splash-dots {
+    display: flex;
+    gap: 6px;
+    margin-top: 48px;
+  }
+  .splash-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text-disabled);
+  }
+  .splash-dot.active {
+    background: var(--purple);
+    width: 18px;
+    border-radius: 3px;
+    animation: dotPulse 1.5s ease infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ── HOME SCREEN ── */
+  .home-screen {
+    background: var(--bg-dark);
+    padding: 16px 16px 80px;
+  }
+  .home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+  .home-header-left {}
+  .home-greeting { font-size: 13px; color: var(--text-secondary); }
+  .home-date { font-size: 20px; font-weight: 800; color: white; margin-top: 2px; }
+  .zenith-badge {
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: white;
+    box-shadow: 0 4px 16px rgba(124,77,255,0.35);
+  }
+
+  /* XP Bar */
+  .xp-card {
+    background: linear-gradient(135deg, rgba(124,77,255,0.15), rgba(68,138,255,0.1));
+    border: 1px solid rgba(124,77,255,0.2);
+    border-radius: 18px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .xp-level-badge {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .xp-info { flex: 1; }
+  .xp-label { font-size: 10px; color: var(--text-hint); letter-spacing: 0.8px; font-weight: 600; }
+  .xp-level { font-size: 15px; font-weight: 800; color: white; margin: 2px 0; }
+  .xp-bar-track {
+    height: 5px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .xp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--blue));
+    border-radius: 3px;
+    width: 35%;
+    animation: barGrow 1s ease;
+  }
+  .xp-pts { font-size: 11px; color: var(--text-hint); margin-top: 2px; }
+
+  /* Summary cards row */
+  .stat-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .stat-mini {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 14px;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .stat-mini-icon { font-size: 20px; margin-bottom: 8px; }
+  .stat-mini-label { font-size: 10px; color: var(--text-hint); letter-spacing: 0.6px; font-weight: 600; }
+  .stat-mini-value { font-size: 22px; font-weight: 800; color: white; margin-top: 2px; }
+  .stat-mini-sub { font-size: 10px; color: var(--text-hint); margin-top: 2px; }
+
+  /* Big cards */
+  .home-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.04);
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .home-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+  .home-card.purple::before { background: var(--purple); }
+  .home-card.blue::before { background: var(--blue); }
+  .home-card.green::before { background: var(--green); }
+  .home-card.amber::before { background: var(--amber); }
+  .home-card:active { transform: scale(0.98); }
+  .home-card-icon {
+    width: 46px; height: 46px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .bg-purple { background: rgba(124,77,255,0.15); }
+  .bg-blue { background: rgba(68,138,255,0.15); }
+  .bg-green { background: rgba(105,240,174,0.12); }
+  .bg-amber { background: rgba(255,215,64,0.12); }
+  .home-card-info { flex: 1; }
+  .home-card-label { font-size: 10px; color: var(--text-hint); letter-spacing: 0.8px; font-weight: 600; }
+  .home-card-value { font-size: 26px; font-weight: 800; color: white; margin-top: 2px; }
+  .home-card-sub { font-size: 11px; color: var(--text-hint); margin-top: 2px; }
+  .card-arrow { font-size: 18px; color: var(--text-disabled); }
+
+  /* ── SCREEN / USAGE ── */
+  .usage-screen {
+    background: var(--bg-dark);
+    padding: 16px 16px 80px;
+  }
+  .screen-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .screen-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: white;
+  }
+  .sync-chip {
+    background: rgba(124,77,255,0.15);
+    border: 1px solid rgba(124,77,255,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--purple);
+    font-weight: 600;
+  }
+
+  /* Today total card */
+  .today-card {
+    background: linear-gradient(135deg, rgba(124,77,255,0.12), rgba(68,138,255,0.08));
+    border: 1px solid rgba(124,77,255,0.2);
+    border-radius: 22px;
+    padding: 22px;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .today-label { font-size: 10px; color: var(--text-hint); letter-spacing: 1.2px; font-weight: 700; }
+  .today-time { font-size: 52px; font-weight: 900; color: white; line-height: 1.1; margin-top: 6px; }
+  .today-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* Chart card */
+  .chart-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .chart-label { font-size: 10px; color: var(--text-hint); letter-spacing: 1px; font-weight: 700; margin-bottom: 14px; }
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 100px;
+  }
+  .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .bar {
+    width: 100%;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, var(--purple), rgba(124,77,255,0.4));
+    animation: barUp 0.8s ease;
+    transform-origin: bottom;
+    min-height: 4px;
+  }
+  .bar.today {
+    background: linear-gradient(180deg, var(--blue), rgba(68,138,255,0.4));
+    box-shadow: 0 0 12px rgba(68,138,255,0.3);
+  }
+  @keyframes barUp {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+  .bar-day { font-size: 9px; color: var(--text-hint); font-weight: 600; }
+  .bar-time { font-size: 8px; color: var(--text-disabled); }
+
+  /* App list */
+  .section-label {
+    font-size: 10px;
+    color: var(--text-hint);
+    letter-spacing: 1.2px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .app-item {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgba(255,255,255,0.03);
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .app-rank {
+    font-size: 11px;
+    color: var(--text-disabled);
+    font-weight: 700;
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .app-icon-circle {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .app-info { flex: 1; min-width: 0; }
+  .app-name { font-size: 13px; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .app-progress-track {
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    margin-top: 5px;
+    overflow: hidden;
+  }
+  .app-progress-bar {
+    height: 100%;
+    border-radius: 2px;
+  }
+  .bar-red { background: var(--red); }
+  .bar-amber { background: var(--amber); }
+  .bar-green { background: var(--green); }
+  .bar-purple { background: var(--purple); }
+  .app-time {
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    white-space: nowrap;
+  }
+
+  /* ── FOCUS SCREEN ── */
+  .focus-screen {
+    background: var(--bg-dark);
+    padding: 16px 16px 80px;
+  }
+  .pomodoro-card {
+    background: linear-gradient(135deg, rgba(68,138,255,0.12), rgba(24,255,255,0.05));
+    border: 1px solid rgba(68,138,255,0.2);
+    border-radius: 24px;
+    padding: 28px;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .pomo-ring {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: conic-gradient(var(--blue) 0% 62%, rgba(255,255,255,0.06) 62%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    position: relative;
+  }
+  .pomo-ring::before {
+    content: '';
+    width: 104px; height: 104px;
+    background: #12152A;
+    border-radius: 50%;
+    position: absolute;
+  }
+  .pomo-time {
+    font-size: 28px;
+    font-weight: 900;
+    color: white;
+    position: relative;
+    z-index: 1;
+  }
+  .pomo-label {
+    font-size: 11px;
+    position: relative;
+    z-index: 1;
+    color: var(--text-hint);
+    letter-spacing: 0.5px;
+  }
+  .pomo-session { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+  .pomo-subject { font-size: 18px; font-weight: 800; color: white; margin-bottom: 20px; }
+  .pomo-buttons { display: flex; gap: 10px; justify-content: center; }
+  .pomo-btn {
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .pomo-btn:active { transform: scale(0.95); }
+  .pomo-btn.primary { background: var(--blue); color: white; box-shadow: 0 4px 16px rgba(68,138,255,0.35); }
+  .pomo-btn.secondary { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
+
+  /* Focus mode toggle */
+  .focus-mode-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .focus-toggle {
+    width: 48px; height: 28px;
+    background: var(--purple);
+    border-radius: 14px;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(124,77,255,0.4);
+    transition: background 0.3s;
+    flex-shrink: 0;
+  }
+  .focus-toggle::after {
+    content: '';
+    width: 22px; height: 22px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px; right: 3px;
+    transition: right 0.3s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  .focus-toggle.off { background: rgba(255,255,255,0.1); }
+  .focus-toggle.off::after { right: 23px; }
+
+  /* Study log */
+  .study-log-item {
+    background: var(--card-elevated);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .study-subject-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--blue);
+    flex-shrink: 0;
+  }
+  .study-subject { font-size: 13px; font-weight: 600; color: white; }
+  .study-duration { font-size: 11px; color: var(--text-hint); margin-top: 2px; }
+  .study-time-badge {
+    margin-left: auto;
+    background: rgba(68,138,255,0.15);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: var(--bg-surface);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    padding: 8px 0 12px;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .nav-item:active { opacity: 0.7; }
+  .nav-icon { font-size: 20px; }
+  .nav-label { font-size: 9px; font-weight: 600; color: var(--text-hint); letter-spacing: 0.3px; }
+  .nav-item.active .nav-label { color: var(--purple); }
+  .nav-item.active .nav-icon { filter: drop-shadow(0 0 6px var(--purple)); }
+  .nav-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--purple);
+    margin-top: -2px;
+    display: none;
+  }
+  .nav-item.active .nav-dot { display: block; }
+
+  /* ── WELLBEING ── */
+  .wellbeing-screen {
+    background: var(--bg-dark);
+    padding: 16px 16px 80px;
+  }
+  .mood-card {
+    background: linear-gradient(135deg, rgba(105,240,174,0.08), rgba(24,255,255,0.05));
+    border: 1px solid rgba(105,240,174,0.15);
+    border-radius: 22px;
+    padding: 20px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .mood-title { font-size: 15px; font-weight: 700; color: white; margin-bottom: 4px; }
+  .mood-sub { font-size: 12px; color: var(--text-hint); margin-bottom: 16px; }
+  .mood-emojis { display: flex; justify-content: space-around; }
+  .mood-emoji {
+    width: 44px; height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform 0.15s, background 0.15s;
+    background: rgba(255,255,255,0.04);
+  }
+  .mood-emoji:hover { transform: scale(1.2); background: rgba(255,255,255,0.1); }
+  .mood-emoji.selected { background: rgba(105,240,174,0.2); transform: scale(1.15); }
+
+  .streak-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .streak-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .streak-title { font-size: 14px; font-weight: 700; color: white; }
+  .streak-best { font-size: 11px; color: var(--text-hint); }
+  .habit-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .habit-row:last-child { border-bottom: none; }
+  .habit-emoji { font-size: 18px; }
+  .habit-name { flex: 1; font-size: 13px; font-weight: 600; color: white; }
+  .habit-streak { font-size: 12px; color: var(--amber); font-weight: 700; }
+  .habit-check {
+    width: 24px; height: 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    background: rgba(105,240,174,0.2);
+    color: var(--green);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .habit-check.unchecked { background: rgba(255,255,255,0.06); color: var(--text-disabled); }
+
+  .wellness-bar-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 12px;
+  }
+  .w-bar-label { font-size: 10px; color: var(--text-hint); letter-spacing: 1px; font-weight: 700; margin-bottom: 10px; }
+  .w-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .w-bar-day { font-size: 10px; color: var(--text-hint); width: 24px; }
+  .w-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+  .w-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--green), var(--cyan)); }
+  .w-bar-val { font-size: 10px; color: var(--text-secondary); font-weight: 600; width: 28px; text-align: right; }
+
+  /* ── Animations ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes barGrow {
+    from { width: 0; }
+    to {}
+  }
+
+  /* ── Floating label ── */
+  .floating-chip {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--purple);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 20px;
+    white-space: nowrap;
+    animation: chipPop 0.4s ease;
+    box-shadow: 0 4px 20px rgba(124,77,255,0.5);
+  }
+  @keyframes chipPop {
+    from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>ZENITH</h1>
+  <p>Interactive App Preview — Rise Above. Stay Focused.</p>
+</div>
+
+<!-- Screen switcher tabs -->
+<div class="screen-tabs">
+  <button class="screen-tab active" onclick="switchTab('splash', this)">Splash</button>
+  <button class="screen-tab" onclick="switchTab('home', this)">Home</button>
+  <button class="screen-tab" onclick="switchTab('usage', this)">Screen</button>
+  <button class="screen-tab" onclick="switchTab('focus', this)">Focus</button>
+  <button class="screen-tab" onclick="switchTab('wellbeing', this)">Wellbeing</button>
+</div>
+
+<div class="phone-wrap">
+  <div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <span>●●●</span>
+        <span>WiFi</span>
+        <span>🔋</span>
+      </div>
+    </div>
+
+    <!-- ══ SPLASH SCREEN ══ -->
+    <div class="screen active" id="screen-splash">
+      <div class="splash">
+        <div class="splash-logo">Z</div>
+        <div class="splash-name">ZENITH</div>
+        <div class="splash-tagline">Rise Above. Stay Focused.</div>
+        <div class="splash-dots">
+          <div class="splash-dot"></div>
+          <div class="splash-dot active"></div>
+          <div class="splash-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HOME SCREEN ══ -->
+    <div class="screen" id="screen-home">
+      <div class="home-screen">
+        <div class="home-header">
+          <div class="home-header-left">
+            <div class="home-greeting">Good evening 👋</div>
+            <div class="home-date">Sat, Jun 28</div>
+          </div>
+          <div class="zenith-badge">ZENITH</div>
+        </div>
+
+        <!-- XP / Level card -->
+        <div class="xp-card">
+          <div class="xp-level-badge">⚡</div>
+          <div class="xp-info">
+            <div class="xp-label">YOUR LEVEL</div>
+            <div class="xp-level">Focused</div>
+            <div class="xp-bar-track"><div class="xp-bar-fill"></div></div>
+            <div class="xp-pts">350 / 600 XP → Disciplined</div>
+          </div>
+        </div>
+
+        <!-- Mini stats -->
+        <div class="stat-row">
+          <div class="stat-mini">
+            <div class="stat-mini-icon">📱</div>
+            <div class="stat-mini-label">SCREEN TODAY</div>
+            <div class="stat-mini-value">3h 24m</div>
+            <div class="stat-mini-sub">↓ 42m vs yesterday</div>
+          </div>
+          <div class="stat-mini">
+            <div class="stat-mini-icon">📚</div>
+            <div class="stat-mini-label">STUDY TODAY</div>
+            <div class="stat-mini-value">1h 15m</div>
+            <div class="stat-mini-sub">Goal: 3h • 42%</div>
+          </div>
+        </div>
+
+        <!-- Big cards -->
+        <div class="home-card purple" onclick="switchTab('usage', document.querySelectorAll('.screen-tab')[2])">
+          <div class="home-card-icon bg-purple">📱</div>
+          <div class="home-card-info">
+            <div class="home-card-label">SCREEN TIME</div>
+            <div class="home-card-value">3h 24m</div>
+            <div class="home-card-sub">12 apps • Instagram #1</div>
+          </div>
+          <div class="card-arrow">›</div>
+        </div>
+
+        <div class="home-card blue" onclick="switchTab('focus', document.querySelectorAll('.screen-tab')[3])">
+          <div class="home-card-icon bg-blue">🎯</div>
+          <div class="home-card-info">
+            <div class="home-card-label">FOCUS MODE</div>
+            <div class="home-card-value">OFF</div>
+            <div class="home-card-sub">Tap to activate · 3 sessions today</div>
+          </div>
+          <div class="card-arrow">›</div>
+        </div>
+
+        <div class="home-card green">
+          <div class="home-card-icon bg-green">🔥</div>
+          <div class="home-card-info">
+            <div class="home-card-label">HABIT STREAK</div>
+            <div class="home-card-value">7 days</div>
+            <div class="home-card-sub">LeetCode · Reading · Exercise</div>
+          </div>
+          <div class="card-arrow">›</div>
+        </div>
+
+        <div class="home-card amber" onclick="switchTab('wellbeing', document.querySelectorAll('.screen-tab')[4])">
+          <div class="home-card-icon bg-amber">💚</div>
+          <div class="home-card-info">
+            <div class="home-card-label">WELLBEING</div>
+            <div class="home-card-value">😊 Good</div>
+            <div class="home-card-sub">Mood logged · Eye break in 12m</div>
+          </div>
+          <div class="card-arrow">›</div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', document.querySelectorAll('.screen-tab')[1])">
+          <div class="nav-icon">🏠</div>
+          <div class="nav-label">Home</div>
+          <div class="nav-dot"></div>
+        </div>
+        <div class="nav-item" onclick="switchTab('usage', document.querySelectorAll('.screen-tab')[2])">
+          <div class="nav-icon">📱</div>
+          <div class="nav-label">Screen</div>
+          <div class="nav-dot"></div>
+        </div>
+        <div class="nav-item" onclick="switchTab('focus', document.querySelectorAll('.screen-tab')[3])">
+          <div class="nav-icon">🎯</div>
+          <div class="nav-label">Focus</div>
+          <div class="nav-dot"></div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">💼</div>
+          <div class="nav-label">Career</div>
+          <div class="nav-dot"></div>
+        </div>
+        <div class="nav-item" onclick="switchTab('wellbeing', document.querySelectorAll('.screen-tab')[4])">
+          <div class="nav-icon">💚</div>
+          <div class="nav-label">Wellbeing</div>
+          <div class="nav-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ USAGE / SCREEN SCREEN ══ -->
+    <div class="screen" id="screen-usage">
+      <div class="usage-screen">
+        <div class="screen-title-row">
+          <div class="screen-title">Screen Time</div>
+          <div class="sync-chip">↻ Synced</div>
+        </div>
+
+        <!-- Today total -->
+        <div class="today-card">
+          <div class="today-label">TODAY'S SCREEN TIME</div>
+          <div class="today-time">3h 24m</div>
+          <div class="today-sub">12 apps tracked · ↓ 42 min vs yesterday</div>
+        </div>
+
+        <!-- Weekly bar chart -->
+        <div class="chart-card">
+          <div class="chart-label">WEEKLY OVERVIEW</div>
+          <div class="bar-chart">
+            <div class="bar-col">
+              <div class="bar" style="height:52%;animation-delay:0.0s"></div>
+              <div class="bar-day">Mon</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height:75%;animation-delay:0.1s"></div>
+              <div class="bar-day">Tue</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height:60%;animation-delay:0.2s"></div>
+              <div class="bar-day">Wed</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height:90%;animation-delay:0.3s"></div>
+              <div class="bar-day">Thu</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height:45%;animation-delay:0.4s"></div>
+              <div class="bar-day">Fri</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar" style="height:68%;animation-delay:0.5s"></div>
+              <div class="bar-day">Sat</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar today" style="height:57%;animation-delay:0.6s"></div>
+              <div class="bar-day">Sun</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- App list -->
+        <div class="section-label">TODAY'S APPS</div>
+
+        <div class="app-item">
+          <div class="app-rank">1</div>
+          <div class="app-icon-circle" style="background:rgba(228,64,95,0.15);font-size:22px">📸</div>
+          <div class="app-info">
+            <div class="app-name">Instagram</div>
+            <div class="app-progress-track"><div class="app-progress-bar bar-red" style="width:85%"></div></div>
+          </div>
+          <div class="app-time">1h 42m</div>
+        </div>
+
+        <div class="app-item">
+          <div class="app-rank">2</div>
+          <div class="app-icon-circle" style="background:rgba(255,0,0,0.1);font-size:22px">▶️</div>
+          <div class="app-info">
+            <div class="app-name">YouTube</div>
+            <div class="app-progress-track"><div class="app-progress-bar bar-amber" style="width:55%"></div></div>
+          </div>
+          <div class="app-time">48m</div>
+        </div>
+
+        <div class="app-item">
+          <div class="app-rank">3</div>
+          <div class="app-icon-circle" style="background:rgba(29,161,242,0.1);font-size:22px">🐦</div>
+          <div class="app-info">
+            <div class="app-name">Twitter / X</div>
+            <div class="app-progress-track"><div class="app-progress-bar bar-purple" style="width:30%"></div></div>
+          </div>
+          <div class="app-time">27m</div>
+        </div>
+
+        <div class="app-item">
+          <div class="app-rank">4</div>
+          <div class="app-icon-circle" style="background:rgba(105,240,174,0.1);font-size:22px">💬</div>
+          <div class="app-info">
+            <div class="app-name">WhatsApp</div>
+            <div class="app-progress-track"><div class="app-progress-bar bar-green" style="width:20%"></div></div>
+          </div>
+          <div class="app-time">18m</div>
+        </div>
+
+        <div class="app-item">
+          <div class="app-rank">5</div>
+          <div class="app-icon-circle" style="background:rgba(68,138,255,0.1);font-size:22px">🧠</div>
+          <div class="app-info">
+            <div class="app-name">LeetCode</div>
+            <div class="app-progress-track"><div class="app-progress-bar bar-green" style="width:15%"></div></div>
+          </div>
+          <div class="app-time">9m</div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item" onclick="switchTab('home', document.querySelectorAll('.screen-tab')[1])">
+          <div class="nav-icon">🏠</div><div class="nav-label">Home</div><div class="nav-dot"></div>
+        </div>
+        <div class="nav-item active">
+          <div class="nav-icon">📱</div><div class="nav-label">Screen</div><div class="nav-dot"></div>
+        </div>
+        <div class="nav-item" onclick="switchTab('focus', document.querySelectorAll('.screen-tab')[3])">
+          <div class="nav-icon">🎯</div><div class="nav-label">Focus</div><div class="nav-dot"></div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">💼</div><div class="nav-label">Career</div><div class="nav-dot"></div>
+        </div>
+        <div class="nav-item" onclick="switchTab('wellbeing', document.querySelectorAll('.screen-tab')[4])">
+          <div class="nav-icon">💚</div><div class="nav-label">Wellbeing</div><div class="nav-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FOCUS SCREEN ══ -->
+    <div class="screen" id="screen-focus">
+      <div class="focus-screen">
+        <div class="screen-title-row">
+          <div class="screen-title">Focus</div>
+          <div class="sync-chip" style="color:var(--blue);border-color:rgba(68,138,255,0.3);background:rgba(68,138,255,0.1)">Session 3</div>
+        </div>
+
+        <!-- Pomodoro -->
+        <div class="pomodoro-card">
+          <div class="pomo-session">Pomodoro · Work Session</div>
+          <div class="pomo-subject">📖 Data Structures & Algorithms</div>
+          <div class="pomo-ring">
+            <div>
+              <div class="pomo-time">09:33</div>
+              <div class="pomo-label">remaining</div>
+            </div>
+          </div>
+          <div class="pomo-buttons">
+            <button class="pomo-btn secondary">⏸ Pause</button>
+            <button class="pomo-btn primary">✓ Done Early</button>
+          </div>
+        </div>
+
+        <!-- Focus Mode toggle -->
+        <div class="focus-mode-card">
+          <div style="flex:1">
+            <div class="home-card-label">FOCUS MODE</div>
+            <div style="font-size:15px;font-weight:700;color:white;margin-top:3px">🎯 Active</div>
+            <div style="font-size:11px;color:var(--text-hint);margin-top:2px">Blocking 9 distracting apps</div>
+          </div>
+          <div class="focus-toggle" id="focusToggle" onclick="toggleFocus()"></div>
+        </div>
+
+        <!-- Goal progress -->
+        <div class="chart-card" style="margin-bottom:12px">
+          <div class="chart-label">STUDY GOAL PROGRESS</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+            <div style="flex:1">
+              <div style="height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden">
+                <div style="height:100%;width:42%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:5px;animation:barGrow 1s ease"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:5px">
+                <span style="font-size:11px;color:var(--text-hint)">1h 15m studied</span>
+                <span style="font-size:11px;color:var(--text-hint)">Goal: 3h</span>
+              </div>
+            </div>
+            <div style="font-size:20px;font-weight:900;color:var(--blue)">42%</div>
+          </div>
+        </div>
+
+        <!-- Study log -->
+        <div class="section-label">TODAY'S STUDY LOG</div>
+
+        <div class="study-log-item">
+          <div class="study-subject-dot" style="background:var(--purple)"></div>
+          <div>
+            <div class="study-subject">DSA — Arrays & Hashing</div>
+            <div class="study-duration">10:00 AM → 10:47 AM</div>
+          </div>
+          <div class="study-time-badge" style="color:var(--purple);background:rgba(124,77,255,0.15)">47m</div>
+        </div>
+
+        <div class="study-log-item">
+          <div class="study-subject-dot" style="background:var(--green)"></div>
+          <div>
+            <div class="study-subject">Java — OOP Concepts</div>
+            <div class="study-duration">2:00 PM → 2:28 PM</div>
+          </div>
+          <div class="study-time-badge" style="color:var(--green);background:rgba(105,240,174,0.12)">28m</div>
+        </div>
+
+        <div class="study-log-item">
+          <div class="study-subject-dot" style="background:var(--blue)"></div>
+          <div>
+            <div class="study-subject">DSA — In Progress 🔴 LIVE</div>
+            <div class="study-duration">9:07 PM → now</div>
+          </div>
+          <div class="study-time-badge">•••</div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item" onclick="switchTab('home', document.querySelectorAll('.screen-tab')[1])">
+          <div class="nav-icon">🏠</div><div class="nav-label">Home</div><div class="nav-dot"></div>
+        </div>
+        <div class="nav-item" onclick="switchTab('usage', document.querySelectorAll('.screen-tab')[2])">
+          <div class="nav-icon">📱</div><div class="nav-label">Screen</div><div class="nav-dot"></div>
+        </div>
+        <div class="nav-item active">
+          <div class="nav-icon">🎯</div><div class="nav-label">Focus</div><div class="nav-dot"></div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">💼</div><div class="nav-label">Career</div><div class="nav-dot"></div>
+        </div>
+        <div class="nav-item" onclick="switchTab('wellbeing', document.querySelectorAll('.screen-tab')[4])">
+          <div class="nav-icon">💚</div><div class="nav-label">Wellbeing</div><div class="nav-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ WELLBEING SCREEN ══ -->
+    <div class="screen" id="screen-wellbeing">
+      <div class="wellbeing-screen">
+        <div class="screen-title-row">
+          <div class="screen-title">Wellbeing</div>
+          <div class="sync-chip" style="color:var(--green);border-color:rgba(105,240,174,0.3);background:rgba(105,240,174,0.08)">✓ Eye break done</div>
+        </div>
+
+        <!-- Mood check-in -->
+        <div class="mood-card">
+          <div class="mood-title">How are you feeling today?</div>
+          <div class="mood-sub">Tap to log your mood</div>
+          <div class="mood-emojis">
+            <div class="mood-emoji" onclick="selectMood(this)">😢</div>
+            <div class="mood-emoji" onclick="selectMood(this)">😔</div>
+            <div class="mood-emoji selected" onclick="selectMood(this)">😊</div>
+            <div class="mood-emoji" onclick="selectMood(this)">😄</div>
+            <div class="mood-emoji" onclick="selectMood(this)">🤩</div>
+          </div>
+        </div>
+
+        <!-- Mood chart -->
+        <div class="wellness-bar-card">
+          <div class="w-bar-label">MOOD THIS WEEK</div>
+          <div class="w-bar-row"><div class="w-bar-day">Mon</div><div class="w-bar-track"><div class="w-bar-fill" style="width:80%"></div></div><div class="w-bar-val">😄</div></div>
+          <div class="w-bar-row"><div class="w-bar-day">Tue</div><div class="w-bar-track"><div class="w-bar-fill" style="width:40%"></div></div><div class="w-bar-val">😔</div></div>
+          <div class="w-bar-row"><div class="w-bar-day">Wed</div><div class="w-bar-track"><div class="w-bar-fill" style="width:60%"></div></div><div class="w-bar-val">😊</div></div>
+          <div class="w-bar-row"><div class="w-bar-day">Thu</div><div class="w-bar-track"><div class="w-bar-fill" style="width:100%"></div></div><div class="w-bar-val">🤩</div></div>
+          <div class="w-bar-row"><div class="w-bar-day">Fri</div><div class="w-bar-track"><div class="w-bar-fill" style="width:75%"></div></div><div class="w-bar-val">😄</div></div>
+          <div class="w-bar-row"><div class="w-bar-day">Sat</div><div class="w-bar-track"><div class="w-bar-fill" style="width:65%"></div></div><div class="w-bar-val">😊</div></div>
+          <div class="w-bar-row"><div class="w-bar-day">Sun</div><div class="w-bar-track"><div class="w-bar-fill" style="width:65%;opacity:0.5"></div></div><div class="w-bar-val">•</div></div>
+        </div>
+
+        <!-- Habit streaks -->
+        <div class="streak-card">
+          <div class="streak-header">
+            <div class="streak-title">🔥 Habit Streaks</div>
+            <div class="streak-best">Longest: 14 days</div>
+          </div>
+          <div class="habit-row">
+            <div class="habit-emoji">💻</div>
+            <div class="habit-name">Solve 1 LeetCode</div>
+            <div class="habit-streak">🔥 7</div>
+            <div class="habit-check" onclick="toggleHabit(this)">✓</div>
+          </div>
+          <div class="habit-row">
+            <div class="habit-emoji">📖</div>
+            <div class="habit-name">Read 20 pages</div>
+            <div class="habit-streak">🔥 4</div>
+            <div class="habit-check" onclick="toggleHabit(this)">✓</div>
+          </div>
+          <div class="habit-row">
+            <div class="habit-emoji">🏃</div>
+            <div class="habit-name">Morning exercise</div>
+            <div class="habit-streak">🔥 7</div>
+            <div class="habit-check unchecked" onclick="toggleHabit(this)">○</div>
+          </div>
+          <div class="habit-row">
+            <div class="habit-emoji">🧘</div>
+            <div class="habit-name">10 min meditation</div>
+            <div class="habit-streak">🔥 3</div>
+            <div class="habit-check unchecked" onclick="toggleHabit(this)">○</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item" onclick="switchTab('home', document.querySelectorAll('.screen-tab')[1])">
+          <div class="nav-icon">🏠</div><div class="nav-label">Home</div><div class="nav-dot"></div>
+        </div>
+        <div class="nav-item" onclick="switchTab('usage', document.querySelectorAll('.screen-tab')[2])">
+          <div class="nav-icon">📱</div><div class="nav-label">Screen</div><div class="nav-dot"></div>
+        </div>
+        <div class="nav-item" onclick="switchTab('focus', document.querySelectorAll('.screen-tab')[3])">
+          <div class="nav-icon">🎯</div><div class="nav-label">Focus</div><div class="nav-dot"></div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">💼</div><div class="nav-label">Career</div><div class="nav-dot"></div>
+        </div>
+        <div class="nav-item active">
+          <div class="nav-icon">💚</div><div class="nav-label">Wellbeing</div><div class="nav-dot"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /phone-frame -->
+</div><!-- /phone-wrap -->
+
+<script>
+  function switchTab(screenId, tabEl) {
+    // Hide all screens
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    // Deactivate all tabs
+    document.querySelectorAll('.screen-tab').forEach(t => t.classList.remove('active'));
+    // Show target
+    document.getElementById('screen-' + screenId).classList.add('active');
+    if (tabEl) tabEl.classList.add('active');
+  }
+
+  function toggleFocus() {
+    const t = document.getElementById('focusToggle');
+    t.classList.toggle('off');
+  }
+
+  function selectMood(el) {
+    document.querySelectorAll('.mood-emoji').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function toggleHabit(el) {
+    const isChecked = !el.classList.contains('unchecked');
+    if (isChecked) {
+      el.classList.add('unchecked');
+      el.textContent = '○';
+    } else {
+      el.classList.remove('unchecked');
+      el.textContent = '✓';
+    }
+  }
+
+  // Auto-advance splash → home after 2.5s
+  setTimeout(() => {
+    const splashTab = document.querySelector('.screen-tab');
+    if (splashTab.classList.contains('active')) {
+      switchTab('home', document.querySelectorAll('.screen-tab')[1]);
+    }
+  }, 2500);
+</script>
+</body>
+</html>

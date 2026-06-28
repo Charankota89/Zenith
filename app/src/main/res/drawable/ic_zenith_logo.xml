@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    <!-- Outer glow circle -->
+    <path
+        android:fillColor="#221A4F"
+        android:pathData="M48,8 A40,40 0 1,1 47.9,8 Z" />
+    <!-- Z letter shape for ZENITH -->
+    <path
+        android:fillColor="#7C4DFF"
+        android:pathData="M28,30 L68,30 L68,36 L38,60 L68,60 L68,66 L28,66 L28,60 L58,36 L28,36 Z" />
+    <!-- Accent dot -->
+    <path
+        android:fillColor="#18FFFF"
+        android:pathData="M64,26 A4,4 0 1,1 63.9,26 Z" />
+</vector>

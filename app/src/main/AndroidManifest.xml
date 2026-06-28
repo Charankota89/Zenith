@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ─── PERMISSIONS ─── -->
+
+    <!-- Usage Stats (grant via ADB) -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- System overlay (grant via Settings or ADB) -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- Foreground service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
+    <!-- Notifications (Android 13+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Biometric unlock -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
+    <!-- Boot completed - restart services -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- Vibrate for reminders -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Wake lock for WorkManager -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Internet (Gemini API - Module 5) -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- ─── APPLICATION ─── -->
+    <application
+        android:name=".ZenithApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Zenith"
+        android:requestLegacyExternalStorage="true"
+        tools:targetApi="33">
+
+        <!-- ─── ACTIVITIES ─── -->
+
+        <!-- Splash / Entry -->
+        <activity
+            android:name=".ui.SplashActivity"
+            android:exported="true"
+            android:noHistory="true"
+            android:theme="@style/Theme.Zenith.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Main container -->
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Permission Setup -->
+        <activity
+            android:name=".ui.PermissionSetupActivity"
+            android:exported="false" />
+
+        <!-- Usage Stats detail -->
+        <activity
+            android:name=".module1_screen.usage.UsageDetailActivity"
+            android:exported="false" />
+
+        <!-- App Timer setup -->
+        <activity
+            android:name=".module1_screen.timer.AppTimerActivity"
+            android:exported="false" />
+
+        <!-- PIN setup/verify -->
+        <activity
+            android:name=".module1_screen.locker.PinActivity"
+            android:exported="false" />
+
+        <!-- Overlay lock screen (shown over locked app) -->
+        <activity
+            android:name=".module1_screen.locker.LockScreenActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:showOnLockScreen="true"
+            android:theme="@style/Theme.Zenith.Overlay" />
+
+        <!-- ─── SERVICES ─── -->
+
+        <!-- AccessibilityService: detects foreground app + reel counting -->
+        <service
+            android:name=".module1_screen.locker.ZenithAccessibilityService"
+            android:exported="true"
+            android:label="@string/accessibility_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
+        <!-- ForegroundService: notification hub + monitoring -->
+        <service
+            android:name=".module1_screen.notification.ZenithForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+
+        <!-- ─── RECEIVERS ─── -->
+
+        <!-- Boot receiver to restart services -->
+        <receiver
+            android:name=".utils.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <!-- ─── PROVIDERS ─── -->
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            android:exported="false"
+            tools:node="remove" />
+
+    </application>
+
+</manifest>

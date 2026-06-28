@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zenith</string>
+    <string name="tagline">Rise Above. Stay Focused.</string>
+    <string name="accessibility_service_label">Zenith Screen Monitor</string>
+    <string name="accessibility_service_description">Zenith uses Accessibility Service to detect which app is in the foreground and count social media reels watched.</string>
+
+    <!-- Navigation labels -->
+    <string name="nav_home">Home</string>
+    <string name="nav_screen">Screen</string>
+    <string name="nav_focus">Focus</string>
+    <string name="nav_career">Career</string>
+    <string name="nav_wellbeing">Wellbeing</string>
+
+    <!-- Permission prompts -->
+    <string name="perm_usage_title">Usage Access Required</string>
+    <string name="perm_usage_desc">Zenith needs usage access to track your screen time per app.</string>
+    <string name="perm_overlay_title">Draw Over Apps Required</string>
+    <string name="perm_overlay_desc">Zenith needs this permission to block apps when you exceed your time limit.</string>
+    <string name="perm_accessibility_title">Accessibility Service Required</string>
+    <string name="perm_accessibility_desc">Zenith uses Accessibility Service to detect which apps you open and count reels watched.</string>
+
+    <!-- Common -->
+    <string name="btn_grant">Grant Permission</string>
+    <string name="btn_done">Done</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_set_limit">Set Limit</string>
+    <string name="loading">Loading…</string>
+    <string name="no_data">No data yet. Pull to refresh.</string>
+</resources>
