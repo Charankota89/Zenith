@@ -17,4 +17,5 @@
     <color name="usage_high">#D85A30</color>
     <color name="usage_medium">#EF9F27</color>
     <color name="usage_low">#1D9E75</color>
+    <color name="nav_unselected">#999999</color>
 </resources>
