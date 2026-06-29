@@ -1,39 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brand Colors -->
-    <color name="zenith_purple">#7C4DFF</color>
-    <color name="zenith_purple_dark">#5722CC</color>
-    <color name="zenith_blue">#448AFF</color>
-    <color name="zenith_blue_dark">#2962FF</color>
-    <color name="zenith_cyan">#18FFFF</color>
-    <color name="zenith_green">#69F0AE</color>
-    <color name="zenith_amber">#FFD740</color>
-    <color name="zenith_red">#FF5252</color>
-    <color name="zenith_orange">#FF6D00</color>
-
-    <!-- Background Layers -->
-    <color name="bg_dark">#0D0F1A</color>
-    <color name="bg_surface">#12152A</color>
-    <color name="card_dark">#1A1D2E</color>
-    <color name="card_elevated">#22263A</color>
-
-    <!-- Text Colors -->
+    <color name="zenith_purple">#7C6FE0</color>
+    <color name="zenith_dark">#0A0A14</color>
+    <color name="zenith_teal">#1D9E75</color>
+    <color name="zenith_lavender">#F5F4FF</color>
+    <color name="zenith_coral">#D85A30</color>
+    <color name="zenith_amber">#EF9F27</color>
     <color name="white">#FFFFFF</color>
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#B0BEC5</color>
-    <color name="text_hint">#7C83A0</color>
-    <color name="text_disabled">#4A4F6A</color>
-
-    <!-- Usage bar colors -->
-    <color name="usage_high">#FF5252</color>
-    <color name="usage_medium">#FFD740</color>
-    <color name="usage_low">#69F0AE</color>
-
-    <!-- Gradient end colors -->
-    <color name="gradient_start">#7C4DFF</color>
-    <color name="gradient_end">#448AFF</color>
-
-    <!-- Bottom nav -->
-    <color name="nav_selected">#7C4DFF</color>
-    <color name="nav_unselected">#4A4F6A</color>
+    <color name="black">#000000</color>
+    <color name="text_primary">#1A1A2E</color>
+    <color name="text_secondary">#666680</color>
+    <color name="surface_card">#F8F8FF</color>
+    <color name="bg_dark">#0A0A14</color>
+    <color name="card_dark">#12122A</color>
+    <color name="zenith_blue">#5B8DEF</color>
+    <color name="usage_high">#D85A30</color>
+    <color name="usage_medium">#EF9F27</color>
+    <color name="usage_low">#1D9E75</color>
 </resources>

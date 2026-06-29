@@ -11,7 +11,7 @@ android {
         minSdk 29
         targetSdk 34
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -44,10 +44,9 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     // Lifecycle + ViewModel + LiveData
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.8.2'
-    implementation 'androidx.lifecycle:lifecycle-livedata:2.8.2'
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.8.2'
-    implementation 'androidx.lifecycle:lifecycle-process:2.8.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.7.0'
 
     // Room DB
     implementation 'androidx.room:room-runtime:2.6.1'
@@ -56,22 +55,16 @@ dependencies {
     // WorkManager
     implementation 'androidx.work:work-runtime:2.9.0'
 
-    // Navigation Component
-    implementation 'androidx.navigation:navigation-fragment:2.7.7'
-    implementation 'androidx.navigation:navigation-ui:2.7.7'
-
     // Biometric
     implementation 'androidx.biometric:biometric:1.1.0'
 
     // MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
-    // Glide removed — app icons loaded via PackageManager directly (no annotation processor needed)
-
-    // OkHttp (Module 5 - Gemini API)
+    // OkHttp (Gemini AI)
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 
-    // Gson (JSON parsing)
+    // Gson
     implementation 'com.google.code.gson:gson:2.10.1'
 
     // Testing

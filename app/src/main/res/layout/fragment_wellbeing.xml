@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/zenith_lavender">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How are you feeling?"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Mood buttons row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <Button android:id="@+id/btnMood1"
+                android:layout_width="0dp" android:layout_height="56dp"
+                android:layout_weight="1" android:text="😞"
+                android:textSize="22sp" android:background="?attr/selectableItemBackground"/>
+            <Button android:id="@+id/btnMood2"
+                android:layout_width="0dp" android:layout_height="56dp"
+                android:layout_weight="1" android:text="😕"
+                android:textSize="22sp" android:background="?attr/selectableItemBackground"/>
+            <Button android:id="@+id/btnMood3"
+                android:layout_width="0dp" android:layout_height="56dp"
+                android:layout_weight="1" android:text="😐"
+                android:textSize="22sp" android:background="?attr/selectableItemBackground"/>
+            <Button android:id="@+id/btnMood4"
+                android:layout_width="0dp" android:layout_height="56dp"
+                android:layout_weight="1" android:text="🙂"
+                android:textSize="22sp" android:background="?attr/selectableItemBackground"/>
+            <Button android:id="@+id/btnMood5"
+                android:layout_width="0dp" android:layout_height="56dp"
+                android:layout_weight="1" android:text="😄"
+                android:textSize="22sp" android:background="?attr/selectableItemBackground"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvMoodFeedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="15sp"
+            android:textColor="@color/zenith_purple"
+            android:gravity="center"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Eye Break reminder -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp" android:orientation="vertical"
+                android:background="@color/white">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="👁️ 20-20-20 Rule" android:textSize="14sp" android:textStyle="bold"
+                    android:textColor="@color/text_primary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Every 20 minutes, look 20 feet away for 20 seconds."
+                    android:textSize="13sp" android:textColor="@color/text_secondary"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+</ScrollView>

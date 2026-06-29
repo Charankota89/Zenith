@@ -3,61 +3,84 @@ package com.zenith.app;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.os.Build;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import com.zenith.app.service.EyeBreakWorker;
+import com.zenith.app.service.MidnightResetWorker;
+import com.zenith.app.service.PostureWorker;
+import com.zenith.app.service.TimerCheckWorker;
+import com.zenith.app.util.AppConstants;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
-import com.zenith.app.utils.Constants;
-
-/**
- * Application class for Zenith.
- * Initialises notification channels on startup.
- */
 public class ZenithApp extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannels();
+        scheduleWorkers();
     }
 
     private void createNotificationChannels() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager nm = getSystemService(NotificationManager.class);
+        NotificationManager manager = getSystemService(NotificationManager.class);
 
-            // Usage alerts channel
-            NotificationChannel usageChannel = new NotificationChannel(
-                    Constants.CHANNEL_USAGE_ALERTS,
-                    "Usage Alerts",
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            usageChannel.setDescription("Alerts when you approach or hit your app time limits");
+        NotificationChannel usageChannel = new NotificationChannel(
+            AppConstants.CHANNEL_ID_USAGE, "Usage Alerts",
+            NotificationManager.IMPORTANCE_HIGH);
+        usageChannel.setDescription("Alerts when you are near your app time limits");
 
-            // Focus channel
-            NotificationChannel focusChannel = new NotificationChannel(
-                    Constants.CHANNEL_FOCUS,
-                    "Focus & Study",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            focusChannel.setDescription("Pomodoro timer, goal completion, and study reminders");
+        NotificationChannel focusChannel = new NotificationChannel(
+            AppConstants.CHANNEL_ID_FOCUS, "Focus Mode",
+            NotificationManager.IMPORTANCE_LOW);
+        focusChannel.setDescription("Focus mode active notification");
 
-            // Wellness channel
-            NotificationChannel wellnessChannel = new NotificationChannel(
-                    Constants.CHANNEL_WELLNESS,
-                    "Wellness Reminders",
-                    NotificationManager.IMPORTANCE_LOW
-            );
-            wellnessChannel.setDescription("Eye breaks, posture alerts, mood check-ins");
+        NotificationChannel wellbeingChannel = new NotificationChannel(
+            AppConstants.CHANNEL_ID_WELLBEING, "Wellbeing Reminders",
+            NotificationManager.IMPORTANCE_DEFAULT);
+        wellbeingChannel.setDescription("Eye breaks, posture, mood check-ins");
 
-            // Foreground service channel
-            NotificationChannel fgChannel = new NotificationChannel(
-                    Constants.CHANNEL_FOREGROUND,
-                    "Zenith Monitor",
-                    NotificationManager.IMPORTANCE_MIN
-            );
-            fgChannel.setDescription("Background monitoring service");
+        NotificationChannel careerChannel = new NotificationChannel(
+            AppConstants.CHANNEL_ID_CAREER, "Career Updates",
+            NotificationManager.IMPORTANCE_DEFAULT);
+        careerChannel.setDescription("Career mode and habit streak notifications");
 
-            nm.createNotificationChannels(java.util.Arrays.asList(
-                    usageChannel, focusChannel, wellnessChannel, fgChannel
-            ));
-        }
+        manager.createNotificationChannel(usageChannel);
+        manager.createNotificationChannel(focusChannel);
+        manager.createNotificationChannel(wellbeingChannel);
+        manager.createNotificationChannel(careerChannel);
+    }
+
+    private void scheduleWorkers() {
+        WorkManager wm = WorkManager.getInstance(this);
+
+        PeriodicWorkRequest timerCheck = new PeriodicWorkRequest.Builder(
+            TimerCheckWorker.class, 15, TimeUnit.MINUTES).build();
+        wm.enqueueUniquePeriodicWork("timer_check",
+            ExistingPeriodicWorkPolicy.KEEP, timerCheck);
+
+        Calendar midnight = Calendar.getInstance();
+        midnight.add(Calendar.DAY_OF_YEAR, 1);
+        midnight.set(Calendar.HOUR_OF_DAY, 0);
+        midnight.set(Calendar.MINUTE, 1);
+        midnight.set(Calendar.SECOND, 0);
+        long delay = midnight.getTimeInMillis() - System.currentTimeMillis();
+
+        PeriodicWorkRequest midnightReset = new PeriodicWorkRequest.Builder(
+            MidnightResetWorker.class, 24, TimeUnit.HOURS)
+            .setInitialDelay(delay, TimeUnit.MILLISECONDS).build();
+        wm.enqueueUniquePeriodicWork("midnight_reset",
+            ExistingPeriodicWorkPolicy.KEEP, midnightReset);
+
+        PeriodicWorkRequest eyeBreak = new PeriodicWorkRequest.Builder(
+            EyeBreakWorker.class, 20, TimeUnit.MINUTES).build();
+        wm.enqueueUniquePeriodicWork("eye_break",
+            ExistingPeriodicWorkPolicy.KEEP, eyeBreak);
+
+        PeriodicWorkRequest postureAlert = new PeriodicWorkRequest.Builder(
+            PostureWorker.class, 45, TimeUnit.MINUTES).build();
+        wm.enqueueUniquePeriodicWork("posture_alert",
+            ExistingPeriodicWorkPolicy.KEEP, postureAlert);
     }
 }

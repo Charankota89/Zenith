@@ -1,31 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- Base dark theme -->
-    <style name="Theme.Zenith" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Zenith" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/zenith_purple</item>
-        <item name="colorPrimaryVariant">@color/zenith_purple_dark</item>
-        <item name="colorSecondary">@color/zenith_blue</item>
-        <item name="colorSurface">@color/card_dark</item>
-        <item name="android:colorBackground">@color/bg_dark</item>
-        <item name="android:windowBackground">@color/bg_dark</item>
-        <item name="android:statusBarColor">@color/bg_dark</item>
-        <item name="android:navigationBarColor">@color/bg_dark</item>
-        <item name="android:textColorPrimary">@color/text_primary</item>
-        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="colorPrimaryVariant">@color/zenith_dark</item>
+        <item name="colorAccent">@color/zenith_teal</item>
+        <item name="android:colorBackground">@color/zenith_lavender</item>
+        <item name="android:windowBackground">@color/zenith_lavender</item>
     </style>
 
-    <!-- Splash screen theme (fullscreen) -->
     <style name="Theme.Zenith.Splash" parent="Theme.Zenith">
+        <item name="android:colorBackground">@color/zenith_dark</item>
+        <item name="android:windowBackground">@color/zenith_dark</item>
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">@color/bg_dark</item>
     </style>
-
-    <!-- Overlay lock screen theme (draws over other apps) -->
-    <style name="Theme.Zenith.Overlay" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/bg_dark</item>
-        <item name="android:windowIsTranslucent">false</item>
-        <item name="colorPrimary">@color/zenith_purple</item>
-    </style>
-
 </resources>
