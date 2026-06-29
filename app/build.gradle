@@ -35,6 +35,7 @@ android {
 
 dependencies {
     // AndroidX Core
+    implementation 'androidx.core:core:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -65,9 +66,7 @@ dependencies {
     // MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
-    // Glide (app icons)
-    implementation 'com.github.bumptech.glide:glide:4.16.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
+    // Glide removed — app icons loaded via PackageManager directly (no annotation processor needed)
 
     // OkHttp (Module 5 - Gemini API)
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'

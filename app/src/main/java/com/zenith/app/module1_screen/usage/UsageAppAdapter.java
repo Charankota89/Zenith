@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.zenith.app.data.db.entity.AppUsageEntity;
 import com.zenith.app.databinding.ItemAppUsageBinding;
 import com.zenith.app.utils.DateUtils;
@@ -18,10 +17,12 @@ import com.zenith.app.utils.DateUtils;
 /**
  * RecyclerView adapter for the per-app usage list.
  * Uses ListAdapter with DiffCallback for efficient updates.
+ * App icons are loaded via PackageManager — no external image-loading library needed.
  */
 public class UsageAppAdapter extends ListAdapter<AppUsageEntity, UsageAppAdapter.ViewHolder> {
 
-    private static final long MAX_MINUTES_REFERENCE = 120L; // 2 hours for 100% progress bar
+    /** 2-hour reference: reaching 120 min = 100% on the progress bar */
+    private static final long MAX_MINUTES_REFERENCE = 120L;
 
     public UsageAppAdapter() {
         super(DIFF_CALLBACK);
@@ -37,10 +38,10 @@ public class UsageAppAdapter extends ListAdapter<AppUsageEntity, UsageAppAdapter
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(getItem(position));
+        holder.bind(getItem(position), position);
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final ItemAppUsageBinding binding;
 
@@ -49,7 +50,7 @@ public class UsageAppAdapter extends ListAdapter<AppUsageEntity, UsageAppAdapter
             this.binding = binding;
         }
 
-        void bind(AppUsageEntity entity) {
+        void bind(AppUsageEntity entity, int position) {
             binding.tvAppName.setText(entity.appName);
             binding.tvUsageTime.setText(DateUtils.formatMinutes(entity.usageMinutes));
 
@@ -58,23 +59,19 @@ public class UsageAppAdapter extends ListAdapter<AppUsageEntity, UsageAppAdapter
                     (entity.usageMinutes * 100L) / MAX_MINUTES_REFERENCE);
             binding.progressUsage.setProgress(progress);
 
-            // Rank indicator
-            int position = getBindingAdapterPosition();
+            // Rank number (1-indexed)
             binding.tvRank.setText(String.valueOf(position + 1));
 
-            // App icon via Glide
+            // App icon via PackageManager
             try {
-                Drawable icon = binding.getRoot().getContext()
-                        .getPackageManager().getApplicationIcon(entity.packageName);
-                Glide.with(binding.getRoot().getContext())
-                        .load(icon)
-                        .into(binding.ivAppIcon);
+                PackageManager pm = binding.getRoot().getContext().getPackageManager();
+                Drawable icon = pm.getApplicationIcon(entity.packageName);
+                binding.ivAppIcon.setImageDrawable(icon);
             } catch (PackageManager.NameNotFoundException e) {
-                binding.ivAppIcon.setImageResource(
-                        android.R.drawable.sym_def_app_icon);
+                binding.ivAppIcon.setImageResource(android.R.drawable.sym_def_app_icon);
             }
 
-            // Color the progress bar based on rank
+            // Color the progress bar based on position (top 1 = red, 2-3 = amber, rest = green)
             int color;
             if (position == 0) {
                 color = binding.getRoot().getContext()
