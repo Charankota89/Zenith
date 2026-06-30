@@ -23,4 +23,7 @@ public interface StudySessionDao {
 
     @Query("SELECT SUM(durationMillis) FROM study_sessions WHERE date >= :fromDate")
     long getTotalStudyTimeSince(String fromDate);
+
+    @Query("SELECT COUNT(*) FROM study_sessions WHERE date = :date")
+    int getSessionCountForDate(String date);
 }

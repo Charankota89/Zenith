@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#F00A0A1C"
+    android:padding="20dp">
+
+    <!-- Header row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="14dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="ZENITH"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15"
+            android:textColor="#7C6FE0"/>
+
+        <TextView
+            android:id="@+id/tvScreenOnTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="9:41 AM"
+            android:textSize="13sp"
+            android:textColor="#B0B4CC"/>
+
+        <TextView
+            android:id="@+id/btnScreenOnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="  ✕"
+            android:textSize="18sp"
+            android:textColor="#666680"
+            android:padding="4dp"/>
+    </LinearLayout>
+
+    <!-- Stats row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Screen time -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#15FFFFFF"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📱"
+                android:textSize="22sp"/>
+
+            <TextView
+                android:id="@+id/tvScreenOnScreenTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0h 0m"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SCREEN"
+                android:textSize="9sp"
+                android:letterSpacing="0.1"
+                android:textColor="#7C7CA0"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="60dp"
+            android:background="#1AFFFFFF"
+            android:layout_marginHorizontal="8dp"/>
+
+        <!-- Habits -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#15FFFFFF"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔥"
+                android:textSize="22sp"/>
+
+            <TextView
+                android:id="@+id/tvScreenOnHabits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 / 0"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HABITS"
+                android:textSize="9sp"
+                android:letterSpacing="0.1"
+                android:textColor="#7C7CA0"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="60dp"
+            android:background="#1AFFFFFF"
+            android:layout_marginHorizontal="8dp"/>
+
+        <!-- Focus sessions -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#15FFFFFF"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎯"
+                android:textSize="22sp"/>
+
+            <TextView
+                android:id="@+id/tvScreenOnFocus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SESSIONS"
+                android:textSize="9sp"
+                android:letterSpacing="0.1"
+                android:textColor="#7C7CA0"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Motivational message -->
+    <TextView
+        android:id="@+id/tvScreenOnMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stay focused. Every minute counts."
+        android:textSize="12sp"
+        android:textColor="#7C7CA0"
+        android:gravity="center"
+        android:layout_marginTop="12dp"/>
+</LinearLayout>

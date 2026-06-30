@@ -8,51 +8,72 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.zenith.app.databinding.FragmentScreenBinding;
+import com.zenith.app.db.entity.AppUsageEntity;
+import com.zenith.app.util.TimeUtils;
 
 public class ScreenFragment extends Fragment {
 
-    private FragmentScreenBinding binding;
+    private FragmentScreenBinding b;
     private ScreenViewModel       vm;
-    private AppUsageAdapter       adapter;
+    private AppUsageAdapter       usageAdapter;
+    private BrowserVisitAdapter   browserAdapter;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        binding = FragmentScreenBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+    public View onCreateView(@NonNull LayoutInflater inf, ViewGroup parent, Bundle saved) {
+        b = FragmentScreenBinding.inflate(inf, parent, false);
+        return b.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle saved) {
+        super.onViewCreated(view, saved);
+
         vm = new ViewModelProvider(this,
-            new ScreenViewModelFactory(requireContext())).get(ScreenViewModel.class);
+            new ScreenViewModelFactory(requireContext()))
+            .get(ScreenViewModel.class);
 
-        adapter = new AppUsageAdapter();
-        binding.rvApps.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.rvApps.setAdapter(adapter);
+        // App usage RecyclerView
+        usageAdapter = new AppUsageAdapter();
+        b.rvAppUsage.setLayoutManager(new LinearLayoutManager(requireContext()));
+        b.rvAppUsage.setAdapter(usageAdapter);
+        b.rvAppUsage.addItemDecoration(
+            new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
 
+        // Browser visits RecyclerView
+        browserAdapter = new BrowserVisitAdapter();
+        b.rvBrowserVisits.setLayoutManager(new LinearLayoutManager(requireContext()));
+        b.rvBrowserVisits.setAdapter(browserAdapter);
+
+        // Observe app usage
         vm.usageList.observe(getViewLifecycleOwner(), list -> {
-            adapter.submitList(list);
-            if (list != null && !list.isEmpty()) {
-                long totalMillis = list.stream()
-                    .mapToLong(e -> e.usageTimeMillis).sum();
-                long hours   = totalMillis / 3600000;
-                long minutes = (totalMillis % 3600000) / 60000;
-                binding.tvTotalTime.setText("Total: " + hours + "h " + minutes + "m");
+            usageAdapter.setItems(list);
+            long totalMs = 0;
+            if (list != null) {
+                for (AppUsageEntity e : list) totalMs += e.usageTimeMillis;
             }
+            b.tvTotalTime.setText(TimeUtils.formatDuration(totalMs));
+            b.tvAppCount.setText((list == null ? 0 : list.size()) + " apps tracked");
         });
 
-        binding.btnSync.setOnClickListener(v -> vm.syncUsage());
+        // Observe browser history
+        vm.browserList.observe(getViewLifecycleOwner(), visits -> {
+            browserAdapter.setItems(visits);
+            int count = visits == null ? 0 : visits.size();
+            b.tvBrowserCount.setText(count + " sites");
+            b.tvBrowserEmpty.setVisibility(count == 0 ? View.VISIBLE : View.GONE);
+            b.rvBrowserVisits.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
+        });
+
+        // Sync button
+        b.btnSync.setOnClickListener(v -> vm.syncUsage());
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        b = null;
     }
 }

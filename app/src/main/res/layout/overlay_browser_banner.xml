@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#E60A0A14"
+    android:padding="12dp"
+    android:gravity="center_vertical">
+
+    <!-- Globe icon -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🌐"
+        android:textSize="22sp"
+        android:layout_marginEnd="10dp"/>
+
+    <!-- Domain + URL -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvBrowserDomain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/tvBrowserUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:textColor="#AAAACC"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginTop="1dp"/>
+    </LinearLayout>
+
+    <!-- Dismiss button -->
+    <TextView
+        android:id="@+id/btnBrowserClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="✕"
+        android:textSize="16sp"
+        android:textColor="#AAAACC"
+        android:padding="8dp"
+        android:layout_marginStart="8dp"/>
+</LinearLayout>

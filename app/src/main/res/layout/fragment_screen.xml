@@ -1,44 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/zenith_lavender">
+    android:background="@color/zenith_dark"
+    android:fillViewport="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:text="Screen Time"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_primary"/>
-
-    <TextView
-        android:id="@+id/tvTotalTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="4dp"
-        android:text="Total: 0h 0m"
-        android:textSize="14sp"
-        android:textColor="@color/text_secondary"/>
-
-    <Button
-        android:id="@+id/btnSync"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="8dp"
-        android:text="Sync Usage"
-        android:backgroundTint="@color/zenith_purple"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvApps"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="8dp"
-        android:padding="8dp"/>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:paddingBottom="80dp">
+
+        <!-- Header row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Screen Time"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"/>
+
+            <Button
+                android:id="@+id/btnSync"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="↻ Sync"
+                android:textSize="11sp"
+                android:backgroundTint="#1F1F40"
+                android:textColor="@color/zenith_purple"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
+        </LinearLayout>
+
+        <!-- Today total card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#1A1845"
+            android:padding="20dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TODAY'S SCREEN TIME"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.15"
+                android:textColor="@color/text_secondary"/>
+
+            <TextView
+                android:id="@+id/tvTotalTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0h 0m"
+                android:textSize="44sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginTop="6dp"/>
+
+            <TextView
+                android:id="@+id/tvAppCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 apps tracked"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- App usage label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TODAY'S APPS"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.12"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- App usage list -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvAppUsage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#1A1A3A"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Browser history section header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🌐  BROWSER HISTORY"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.12"
+                android:textColor="@color/text_secondary"/>
+
+            <TextView
+                android:id="@+id/tvBrowserCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 sites"
+                android:textSize="11sp"
+                android:textColor="@color/zenith_purple"/>
+        </LinearLayout>
+
+        <!-- Browser visits list -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvBrowserVisits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
+
+        <!-- Empty state for browser -->
+        <TextView
+            android:id="@+id/tvBrowserEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No browser activity detected yet.\nGrant Accessibility Service to enable browser tracking."
+            android:textSize="13sp"
+            android:textColor="@color/text_secondary"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.5"
+            android:padding="16dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+</ScrollView>

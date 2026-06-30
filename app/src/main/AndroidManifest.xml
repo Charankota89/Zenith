@@ -2,18 +2,40 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Usage stats (screen time) -->
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions"/>
+
+    <!-- Draw overlays (lock screen / browser banner) -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+    <!-- Foreground service (usage monitor) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+
+    <!-- Notifications (Android 13+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <!-- Boot auto-start -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <!-- Vibration for alerts -->
     <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <!-- Biometric / fingerprint for PIN unlock -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+
+    <!-- Network (future sync features) -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <!-- Wake lock (keep monitor alive) -->
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <!-- Query installed apps for usage tracking -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission"/>
 
     <application
         android:name=".ZenithApp"
@@ -37,15 +59,24 @@
         </activity>
 
         <!-- Main (5-tab bottom nav) -->
-        <activity android:name=".ui.MainActivity" android:exported="false"/>
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
 
         <!-- Onboarding -->
         <activity android:name=".ui.onboarding.OnboardingActivity" android:exported="false"/>
 
-        <!-- Settings -->
+        <!-- PIN Setup -->
         <activity android:name=".ui.settings.PinSetupActivity" android:exported="false"/>
 
-        <!-- Accessibility Service (lock overlays + reel counter) -->
+        <!-- ══ GUARDIAN ACCESSIBILITY SERVICE ══
+             Capabilities:
+             - TYPE_WINDOW_STATE_CHANGED → detect app switches
+             - TYPE_VIEW_SCROLLED → reel counter
+             - TYPE_WINDOW_CONTENT_CHANGED → browser URL reading
+             - retrieveInteractiveWindows → full window traversal
+        -->
         <service
             android:name=".service.GuardianAccessibilityService"
             android:exported="true"
@@ -58,7 +89,7 @@
                 android:resource="@xml/accessibility_service_config"/>
         </service>
 
-        <!-- Foreground usage monitor service -->
+        <!-- Foreground usage monitor -->
         <service
             android:name=".service.UsageMonitorService"
             android:foregroundServiceType="specialUse"
