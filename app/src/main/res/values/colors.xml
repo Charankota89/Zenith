@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="zenith_purple">#7C6FE0</color>
-    <color name="zenith_dark">#0A0A14</color>
-    <color name="zenith_teal">#1D9E75</color>
-    <color name="zenith_lavender">#F5F4FF</color>
-    <color name="zenith_coral">#D85A30</color>
-    <color name="zenith_amber">#EF9F27</color>
+    <!-- ── Brand Theme Colors ────────────────────────────────────────── -->
+    <!-- Primary Theme color: Teal (formerly purple mapping) -->
+    <color name="zenith_purple">#0D9488</color>
+    <color name="zenith_teal">#14B8A6</color>
+    <color name="zenith_blue">#06B6D4</color>
+    <color name="zenith_amber">#F59E0B</color>
+    <color name="zenith_coral">#EF4444</color>
+
+    <!-- ── Base Screen & Card Tones ──────────────────────────────────── -->
+    <!-- Creamy White background -->
+    <color name="zenith_lavender">#FDFBF7</color>
+    <color name="bg_dark">#FDFBF7</color>
+    <!-- Deep Charcoal for dark/neutral elements -->
+    <color name="zenith_dark">#111B18</color>
+    <color name="card_dark">#F7F5F0</color>
+    <color name="surface_card">#FFFFFF</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="text_primary">#1A1A2E</color>
-    <color name="text_secondary">#666680</color>
-    <color name="surface_card">#F8F8FF</color>
-    <color name="bg_dark">#0A0A14</color>
-    <color name="card_dark">#12122A</color>
-    <color name="zenith_blue">#5B8DEF</color>
-    <color name="usage_high">#D85A30</color>
-    <color name="usage_medium">#EF9F27</color>
-    <color name="usage_low">#1D9E75</color>
-    <color name="nav_unselected">#999999</color>
+
+    <!-- ── Typography Tones ────────────────────────────────────────── -->
+    <color name="text_primary">#111B18</color>
+    <color name="text_secondary">#4A5D57</color>
+
+    <!-- ── Monitoring & Selection States ─────────────────────────────── -->
+    <color name="usage_high">#EF4444</color>
+    <color name="usage_medium">#F59E0B</color>
+    <color name="usage_low">#0D9488</color>
+    <color name="nav_unselected">#8E9E9A</color>
 </resources>

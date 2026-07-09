@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.zenith.app.databinding.FragmentHomeBinding;
+import com.zenith.app.R;
+import com.zenith.app.ui.settings.SettingsFragment;
 import com.zenith.app.util.TimeUtils;
 
 public class HomeFragment extends Fragment {
@@ -33,6 +35,14 @@ public class HomeFragment extends Fragment {
 
         binding.tvGreeting.setText("Good day — " + TimeUtils.getDayOfWeek());
         binding.tvTagline.setText("Rise above. Stay focused.");
+
+        binding.btnSettings.setOnClickListener(v -> {
+            getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, new SettingsFragment())
+                .addToBackStack(null)
+                .commit();
+        });
 
         vm.totalScreenTime.observe(getViewLifecycleOwner(), millis -> {
             long hours   = millis / 3600000;

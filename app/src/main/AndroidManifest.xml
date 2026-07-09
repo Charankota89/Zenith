@@ -61,8 +61,16 @@
         <!-- Main (5-tab bottom nav) -->
         <activity
             android:name=".ui.MainActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize"/>
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter android:label="Verify Email Link">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="zenith" android:host="unlock"/>
+            </intent-filter>
+        </activity>
 
         <!-- Onboarding -->
         <activity android:name=".ui.onboarding.OnboardingActivity" android:exported="false"/>

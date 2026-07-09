@@ -32,7 +32,7 @@ public interface HabitDao {
     @Query("SELECT COUNT(*) FROM habits WHERE completedToday = 1")
     int countCompletedToday();
 
-    @Query("SELECT COUNT(*) FROM habits WHERE completedToday = 1")
+    @Query("SELECT COUNT(*) FROM habits WHERE completedToday = 1 AND :date IS NOT NULL")
     int getCompletedCountForDate(String date);
 
     @Query("SELECT COUNT(*) FROM habits")

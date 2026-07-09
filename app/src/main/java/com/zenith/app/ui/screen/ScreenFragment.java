@@ -49,7 +49,7 @@ public class ScreenFragment extends Fragment {
 
         // Observe app usage
         vm.usageList.observe(getViewLifecycleOwner(), list -> {
-            usageAdapter.setItems(list);
+            usageAdapter.submitList(list);  // ListAdapter uses submitList
             long totalMs = 0;
             if (list != null) {
                 for (AppUsageEntity e : list) totalMs += e.usageTimeMillis;

@@ -30,6 +30,9 @@ public class GuardianAccessibilityService extends AccessibilityService {
     private View               lockerOverlay;
     private View               reelPopup;
     private View               browserBanner;
+    private View               limitWarningOverlay;
+    private String             lastNotifiedApp  = "";
+    private int                lastNotifiedPct  = 0;
 
     private String  currentPkg       = "";
     private String  currentUrl       = "";
@@ -38,6 +41,23 @@ public class GuardianAccessibilityService extends AccessibilityService {
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler         uiHandler = new Handler(Looper.getMainLooper());
+
+    private long appOpenedTime = 0;
+
+    private final Runnable limitCheckerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            checkAndIncrementUsage();
+            uiHandler.postDelayed(this, 5000);
+        }
+    };
+
+    @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+        appOpenedTime = System.currentTimeMillis();
+        uiHandler.post(limitCheckerRunnable);
+    }
 
     // Known browser packages
     private static final List<String> BROWSER_PKGS = Arrays.asList(
@@ -68,7 +88,9 @@ public class GuardianAccessibilityService extends AccessibilityService {
         // ── App switch ──
         if (type == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             if (!pkg.equals(currentPkg)) {
+                checkAndIncrementUsage();
                 currentPkg = pkg;
+                appOpenedTime = System.currentTimeMillis();
                 checkIfLocked(pkg);
                 checkFocusMode(pkg);
                 if (!isReelApp(pkg)) { reelCount = 0; reelSessionStart = 0; }
@@ -240,6 +262,48 @@ public class GuardianAccessibilityService extends AccessibilityService {
                     ? "This app is not in your focus whitelist.\nStay on task!"
                     : "You hit your daily limit.\nIt unlocks tomorrow. Stay strong!");
 
+            View layoutDetails = lockerOverlay.findViewById(R.id.layoutRequestEmailDetails);
+            View layoutEmailSent = lockerOverlay.findViewById(R.id.layoutEmailSent);
+            if (isFocus) {
+                layoutDetails.setVisibility(View.GONE);
+                layoutEmailSent.setVisibility(View.GONE);
+            } else {
+                layoutDetails.setVisibility(View.VISIBLE);
+                layoutEmailSent.setVisibility(View.GONE);
+                
+                SharedPreferences pr = getSharedPreferences(AppConstants.PREF_NAME, Context.MODE_PRIVATE);
+                String email = pr.getString("user_email", "ramcharan@gmail.com");
+
+                lockerOverlay.findViewById(R.id.btnSendEmail).setOnClickListener(v -> {
+                    android.widget.EditText etReason = lockerOverlay.findViewById(R.id.etUnlockReason);
+                    String reasonText = etReason.getText().toString().trim();
+                    if (reasonText.isEmpty()) {
+                        android.widget.Toast.makeText(this, "Please enter a reason to unlock the app.", android.widget.Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    android.widget.RadioGroup rg = lockerOverlay.findViewById(R.id.rgDuration);
+                    int checkedId = rg.getCheckedRadioButtonId();
+                    long durationMin = 5;
+                    if (checkedId == R.id.rb15) {
+                        durationMin = 15;
+                    } else if (checkedId == R.id.rb30) {
+                        durationMin = 30;
+                    }
+
+                    android.widget.Toast.makeText(this, "Verification email sent to " + email, android.widget.Toast.LENGTH_LONG).show();
+                    
+                    // Post mock verification notification
+                    postVerificationNotification(label, currentPkg, durationMin, reasonText);
+
+                    ((TextView) lockerOverlay.findViewById(R.id.tvEmailSentMessage))
+                        .setText("Verification link sent to " + email + "!\nPlease check your email (or tap the verification notification banner above) to verify and unlock.");
+                    
+                    layoutDetails.setVisibility(View.GONE);
+                    layoutEmailSent.setVisibility(View.VISIBLE);
+                });
+            }
+
             lockerOverlay.findViewById(R.id.btnGoBack).setOnClickListener(v -> {
                 removeLocker();
                 performGlobalAction(GLOBAL_ACTION_BACK);
@@ -290,8 +354,149 @@ public class GuardianAccessibilityService extends AccessibilityService {
     }
 
     // ─────────────────────────────────────────────
+    //  Real-time screen usage checking & warning
+    // ─────────────────────────────────────────────
+    private void checkAndIncrementUsage() {
+        String pkg = currentPkg;
+        if (pkg == null || pkg.isEmpty() || pkg.equals(getPackageName())) return;
+
+        long now = System.currentTimeMillis();
+        if (appOpenedTime == 0) appOpenedTime = now;
+        long elapsed = now - appOpenedTime;
+        appOpenedTime = now;
+
+        if (elapsed <= 0) return;
+
+        executor.execute(() -> {
+            AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+            String today = TimeUtils.getTodayDate();
+            AppUsageEntity e = db.appUsageDao().getUsageForApp(pkg, today);
+            if (e != null) {
+                if (e.unlockExpiresAt > 0 && now < e.unlockExpiresAt) {
+                    e.usageTimeMillis += elapsed;
+                    db.appUsageDao().update(e);
+                    uiHandler.post(this::removeLocker);
+                    return;
+                }
+                
+                if (e.unlockExpiresAt > 0 && now >= e.unlockExpiresAt) {
+                    e.isLocked = true;
+                    e.unlockExpiresAt = 0;
+                    db.appUsageDao().update(e);
+                    uiHandler.post(() -> showLockerOverlay(e.appName, false));
+                    return;
+                }
+
+                e.usageTimeMillis += elapsed;
+                if (e.limitMillis > 0) {
+                    long pct = (e.usageTimeMillis * 100L) / e.limitMillis;
+                    if (pct >= 100) {
+                        e.isLocked = true;
+                        db.appUsageDao().update(e);
+                        uiHandler.post(() -> showLockerOverlay(e.appName, false));
+                    } else if (pct >= 80) {
+                        uiHandler.post(() -> showLimitWarningBanner(e.appName, 80, e.limitMillis - e.usageTimeMillis));
+                    } else if (pct >= 50) {
+                        uiHandler.post(() -> showLimitWarningBanner(e.appName, 50, e.limitMillis - e.usageTimeMillis));
+                    }
+                }
+                db.appUsageDao().update(e);
+            }
+        });
+    }
+
+    private void showLimitWarningBanner(String appName, int pct, long remainingMs) {
+        if (appName.equals(lastNotifiedApp) && pct == lastNotifiedPct) return;
+        lastNotifiedApp = appName;
+        lastNotifiedPct = pct;
+
+        uiHandler.post(() -> {
+            ensureWindowManager();
+            if (limitWarningOverlay != null) {
+                try { windowManager.removeView(limitWarningOverlay); } catch (Exception ignored) {}
+            }
+
+            LayoutInflater inf = LayoutInflater.from(this);
+            limitWarningOverlay = inf.inflate(R.layout.overlay_browser_banner, null);
+
+            TextView tvIcon = (TextView) ((android.view.ViewGroup) limitWarningOverlay).getChildAt(0);
+            if (tvIcon != null) tvIcon.setText("⚠️");
+
+            TextView tvTitle = limitWarningOverlay.findViewById(R.id.tvBrowserDomain);
+            if (tvTitle != null) tvTitle.setText(appName + " limit warning");
+
+            TextView tvDesc = limitWarningOverlay.findViewById(R.id.tvBrowserUrl);
+            long remainingMins = remainingMs / 60000;
+            if (tvDesc != null) {
+                tvDesc.setText(pct + "% limit reached (" + remainingMins + " mins remaining)");
+            }
+
+            limitWarningOverlay.findViewById(R.id.btnBrowserClose).setOnClickListener(v -> {
+                if (limitWarningOverlay != null && windowManager != null) {
+                    try { windowManager.removeView(limitWarningOverlay); } catch (Exception ignored) {}
+                    limitWarningOverlay = null;
+                }
+            });
+
+            WindowManager.LayoutParams p = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                PixelFormat.TRANSLUCENT);
+            p.gravity = Gravity.TOP;
+            p.y = 80;
+            windowManager.addView(limitWarningOverlay, p);
+
+            uiHandler.postDelayed(() -> {
+                if (limitWarningOverlay != null && windowManager != null) {
+                    try { windowManager.removeView(limitWarningOverlay); } catch (Exception ignored) {}
+                    limitWarningOverlay = null;
+                }
+            }, 6000);
+        });
+    }
+
+    // ─────────────────────────────────────────────
     //  Helpers
     // ─────────────────────────────────────────────
+    private void postVerificationNotification(String appName, String targetPkg, long durationMin, String reason) {
+        String deepLink = "zenith://unlock?pkg=" + targetPkg + "&duration=" + durationMin + "&reason=" + android.net.Uri.encode(reason);
+        android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(deepLink));
+        intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        
+        android.app.PendingIntent pi = android.app.PendingIntent.getActivity(
+            this,
+            999,
+            intent,
+            android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE
+        );
+
+        android.app.NotificationManager nm = (android.app.NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (nm == null) return;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            android.app.NotificationChannel channel = new android.app.NotificationChannel(
+                "unlock_channel",
+                "Zenith Unlocking",
+                android.app.NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.setDescription("Email Verification Unlocks");
+            nm.createNotificationChannel(channel);
+        }
+
+        android.app.Notification notification = new androidx.core.app.NotificationCompat.Builder(this, "unlock_channel")
+            .setSmallIcon(android.R.drawable.ic_dialog_email)
+            .setContentTitle("✉️ Verify Zenith Unlock request")
+            .setContentText("Click here to approve unlock request for " + appName + " (" + durationMin + "m)")
+            .setContentIntent(pi)
+            .setAutoCancel(true)
+            .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
+            .build();
+
+        nm.notify(999, notification);
+    }
     private boolean isReelApp(String pkg) {
         return AppConstants.INSTAGRAM_PKG.equals(pkg)
             || AppConstants.YOUTUBE_PKG.equals(pkg)
@@ -329,8 +534,13 @@ public class GuardianAccessibilityService extends AccessibilityService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        uiHandler.removeCallbacks(limitCheckerRunnable);
         executor.shutdown();
         uiHandler.removeCallbacksAndMessages(null);
         removeLocker(); removeReelPopup(); removeBrowserBanner();
+        if (limitWarningOverlay != null && windowManager != null) {
+            try { windowManager.removeView(limitWarningOverlay); } catch (Exception ignored) {}
+            limitWarningOverlay = null;
+        }
     }
 }

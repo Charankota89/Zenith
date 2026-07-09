@@ -15,4 +15,6 @@ public class AppUsageEntity {
     public boolean isFocusWhitelisted;
     public boolean isCareerApp;
     public String  date;
+    public long    unlockExpiresAt;
+    public String  unlockReason;
 }

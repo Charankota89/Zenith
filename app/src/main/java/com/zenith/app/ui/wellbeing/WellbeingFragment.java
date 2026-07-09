@@ -13,6 +13,7 @@ import com.zenith.app.databinding.FragmentWellbeingBinding;
 public class WellbeingFragment extends Fragment {
 
     private FragmentWellbeingBinding binding;
+    private WellbeingViewModel       vm;
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -26,7 +27,10 @@ public class WellbeingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Mood selector (1–5 emoji)
+        vm = new ViewModelProvider(this,
+            new WellbeingViewModelFactory(requireContext())).get(WellbeingViewModel.class);
+
+        // Mood selector (1–5 emoji) — save to DB on tap
         int[] moodBtns = {
             com.zenith.app.R.id.btnMood1, com.zenith.app.R.id.btnMood2,
             com.zenith.app.R.id.btnMood3, com.zenith.app.R.id.btnMood4,
@@ -34,8 +38,10 @@ public class WellbeingFragment extends Fragment {
         };
         for (int i = 0; i < moodBtns.length; i++) {
             int score = i + 1;
-            binding.getRoot().findViewById(moodBtns[i]).setOnClickListener(v ->
-                binding.tvMoodFeedback.setText(getMoodFeedback(score)));
+            binding.getRoot().findViewById(moodBtns[i]).setOnClickListener(v -> {
+                binding.tvMoodFeedback.setText(getMoodFeedback(score));
+                vm.saveMood(score, null);  // Save to Room DB
+            });
         }
     }
 

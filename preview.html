@@ -3,91 +3,127 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Zenith — App Preview</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<title>Zenith — App Preview | Focus. Control. Your Peak.</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <style>
+  /* ══════════════════════════════════════
+     DESIGN TOKENS — match colors.xml
+  ══════════════════════════════════════ */
   :root {
-    --purple: #7C4DFF;
-    --purple-dark: #5722CC;
-    --blue: #448AFF;
-    --cyan: #18FFFF;
-    --green: #69F0AE;
-    --amber: #FFD740;
-    --red: #FF5252;
-    --orange: #FF6D00;
-    --bg-dark: #0D0F1A;
-    --bg-surface: #12152A;
-    --card: #1A1D2E;
-    --card-elevated: #22263A;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B0BEC5;
-    --text-hint: #7C83A0;
-    --text-disabled: #4A4F6A;
+    --purple:      #0D9488;
+    --purple-glow: rgba(13,148,136,0.35);
+    --teal:        #14B8A6;
+    --teal-glow:   rgba(20,184,166,0.25);
+    --amber:       #F59E0B;
+    --amber-glow:  rgba(245,158,11,0.2);
+    --coral:       #EF4444;
+    --coral-glow:  rgba(239,68,68,0.25);
+    --blue:        #06B6D4;
+    --blue-glow:   rgba(6,182,212,0.25);
+    --dark:        #FDFBF7;
+    --card-dark:   rgba(255, 255, 255, 0.55);
+    --surface:     rgba(255, 255, 255, 0.7);
+    --border:      rgba(13, 148, 136, 0.08);
+    --text-1:      #111B18;
+    --text-2:      #374151;
+    --text-3:      #6B7280;
+    --lavender:    #FDFBF7;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body.dark {
+    --dark:        #0A1210;
+    --card-dark:   rgba(20, 32, 28, 0.6);
+    --surface:     rgba(30, 48, 42, 0.75);
+    --border:      rgba(20, 184, 166, 0.15);
+    --text-1:      #F3F4F6;
+    --text-2:      #D1D5DB;
+    --text-3:      #9CA3AF;
+    --lavender:    #0A1210;
+    background:    #060A09 !important;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
 
   body {
-    font-family: 'Inter', sans-serif;
-    background: #080A14;
+    font-family: 'Outfit', sans-serif;
+    background: #F4F3EF;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    padding: 32px 20px 72px;
     min-height: 100vh;
-    padding: 30px 20px 60px;
     overflow-x: hidden;
   }
 
-  /* ── Page header ── */
+  /* ══ PAGE HEADER ══ */
   .page-header {
     text-align: center;
-    margin-bottom: 36px;
-    animation: fadeDown 0.6s ease;
+    margin-bottom: 8px;
+    animation: fadeDown 0.5s ease;
   }
   .page-header h1 {
-    font-size: 32px;
+    font-size: 34px;
     font-weight: 900;
-    letter-spacing: 4px;
+    letter-spacing: 6px;
     background: linear-gradient(135deg, var(--purple), var(--blue));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  .page-header p {
-    color: var(--text-hint);
-    font-size: 14px;
+  .page-header .sub {
+    font-size: 13px;
+    color: var(--text-3);
     margin-top: 6px;
+    letter-spacing: 1px;
+  }
+  .build-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(29,158,117,0.12);
+    border: 1px solid rgba(29,158,117,0.3);
+    color: var(--teal);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-top: 10px;
     letter-spacing: 0.5px;
   }
+  .build-badge::before { content: '●'; font-size: 8px; }
 
-  /* ── Tab switcher ── */
+  /* ══ SCREEN TABS ══ */
   .screen-tabs {
     display: flex;
-    gap: 8px;
-    margin-bottom: 28px;
-    background: var(--card);
+    gap: 4px;
+    margin: 24px 0 20px;
+    background: #EAE6DD;
     border-radius: 14px;
-    padding: 6px;
+    padding: 5px;
+    border: 1px solid var(--border);
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 560px;
   }
   .screen-tab {
-    padding: 8px 20px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-hint);
+    padding: 7px 16px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-3);
     cursor: pointer;
     border: none;
     background: transparent;
-    transition: all 0.25s;
+    transition: all 0.2s;
     letter-spacing: 0.3px;
   }
+  .screen-tab:hover { color: var(--text-2); }
   .screen-tab.active {
     background: var(--purple);
-    color: white;
-    box-shadow: 0 4px 16px rgba(124,77,255,0.4);
+    color: #fff;
+    box-shadow: 0 4px 16px var(--purple-glow);
   }
 
-  /* ── Phone frame ── */
+  /* ══ PHONE FRAME ══ */
   .phone-wrap {
     position: relative;
     display: flex;
@@ -95,1170 +131,1332 @@
   }
   .phone-frame {
     width: 360px;
-    height: 720px;
-    background: var(--bg-dark);
-    border-radius: 44px;
-    border: 2px solid #2A2D3E;
+    height: 740px;
+    background: var(--dark);
+    border-radius: 48px;
+    border: 2px solid #252540;
     overflow: hidden;
     position: relative;
     box-shadow:
-      0 0 0 6px #0D0F1A,
-      0 0 0 8px #2A2D3E,
-      0 40px 80px rgba(0,0,0,0.8),
-      inset 0 0 60px rgba(124,77,255,0.03);
+      0 0 0 7px #0B0B18,
+      0 0 0 9px #252540,
+      0 50px 100px rgba(0,0,0,0.9),
+      inset 0 0 80px rgba(124,111,224,0.02);
+  }
+  /* Notch */
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: 100px; height: 28px;
+    background: #0A0A14;
+    border-radius: 0 0 16px 16px;
+    z-index: 100;
   }
 
-  /* ── Status bar ── */
+  /* ══ STATUS BAR ══ */
   .status-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 24px 4px;
-    background: var(--bg-dark);
+    padding: 14px 24px 4px;
+    background: var(--dark);
+    position: relative;
+    z-index: 10;
   }
-  .status-time {
-    font-size: 13px;
-    font-weight: 700;
-    color: white;
-  }
-  .status-icons {
-    font-size: 11px;
-    color: white;
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
+  .status-time { font-size: 12px; font-weight: 700; color: var(--text-1); }
+  .status-icons { font-size: 10px; color: var(--text-1); display: flex; gap: 5px; align-items: center; }
 
-  /* ── Screens ── */
+  /* ══ SCREENS ══ */
   .screen {
     display: none;
-    height: calc(100% - 32px);
+    height: calc(100% - 38px);
     overflow-y: auto;
     scrollbar-width: none;
+    position: relative;
+    box-sizing: border-box;
+  }
+  .screen.has-nav {
+    padding-bottom: 84px;
   }
   .screen::-webkit-scrollbar { display: none; }
-  .screen.active { display: block; }
+  .screen.active {
+    display: block;
+    animation: screenSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
 
-  /* ── SPLASH SCREEN ── */
-  .splash {
-    background: var(--bg-dark);
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     SPLASH SCREEN
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .splash-screen {
     height: 100%;
+    background: var(--dark);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0;
-    animation: splashIn 1s ease;
+    animation: splashIn 0.8s ease;
   }
   @keyframes splashIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity:0; transform:scale(0.93); }
+    to   { opacity:1; transform:scale(1); }
   }
   .splash-logo {
-    width: 90px;
-    height: 90px;
-    background: linear-gradient(135deg, #2A1A5E, #1A0D3E);
+    width: 88px; height: 88px;
+    background: linear-gradient(135deg, #1E1750, #0D0920);
     border-radius: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 42px;
-    font-weight: 900;
-    color: var(--purple);
-    box-shadow: 0 0 40px rgba(124,77,255,0.4), 0 0 80px rgba(124,77,255,0.15);
-    border: 1px solid rgba(124,77,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 44px; font-weight: 900; color: var(--purple);
+    box-shadow: 0 0 50px var(--purple-glow), 0 0 100px rgba(124,111,224,0.08);
+    border: 1px solid rgba(124,111,224,0.25);
     margin-bottom: 28px;
-    position: relative;
-  }
-  .splash-logo::after {
-    content: '';
-    width: 10px; height: 10px;
-    background: var(--cyan);
-    border-radius: 50%;
-    position: absolute;
-    top: 8px; right: 8px;
-    box-shadow: 0 0 12px var(--cyan);
   }
   .splash-name {
-    font-size: 42px;
-    font-weight: 900;
-    letter-spacing: 8px;
-    color: white;
-    text-align: center;
+    font-size: 44px; font-weight: 900; letter-spacing: 10px;
+    color: var(--text-1); text-align: center;
   }
   .splash-tagline {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-top: 10px;
-    letter-spacing: 1px;
+    font-size: 13px; color: var(--text-3);
+    margin-top: 10px; letter-spacing: 2px; text-align: center;
+  }
+  .splash-loader {
+    margin-top: 56px;
+    display: flex; gap: 7px;
+  }
+  .loader-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--text-3);
+    animation: dotFade 1.4s ease infinite;
+  }
+  .loader-dot:nth-child(1) { animation-delay: 0s; }
+  .loader-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loader-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotFade {
+    0%,100% { opacity:0.2; transform:scale(0.8); }
+    50% { opacity:1; background:var(--purple); transform:scale(1.2); }
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     ONBOARDING SCREEN
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .onboarding-screen {
+    height: 100%;
+    background: var(--dark);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 32px 28px;
     text-align: center;
   }
-  .splash-dots {
-    display: flex;
-    gap: 6px;
-    margin-top: 48px;
+  .ob-icon {
+    font-size: 64px; margin-bottom: 28px;
+    animation: floatIcon 3s ease-in-out infinite;
   }
-  .splash-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--text-disabled);
+  @keyframes floatIcon {
+    0%,100% { transform:translateY(0); }
+    50% { transform:translateY(-8px); }
   }
-  .splash-dot.active {
+  .ob-title {
+    font-size: 24px; font-weight: 800; color: var(--text-1);
+    margin-bottom: 12px; line-height: 1.2;
+  }
+  .ob-desc {
+    font-size: 14px; color: var(--text-2); line-height: 1.7;
+    margin-bottom: 40px;
+  }
+  .ob-dots { display: flex; gap: 8px; justify-content: center; margin-bottom: 36px; }
+  .ob-dot {
+    height: 6px; border-radius: 3px;
+    background: var(--text-3); transition: all 0.3s;
+  }
+  .ob-dot.active { width: 24px; background: var(--purple); }
+  .ob-dot:not(.active) { width: 6px; }
+  .ob-btn {
+    width: 100%; height: 52px;
     background: var(--purple);
-    width: 18px;
-    border-radius: 3px;
-    animation: dotPulse 1.5s ease infinite;
+    color: #fff; font-size: 15px; font-weight: 700;
+    border: none; border-radius: 16px; cursor: pointer;
+    box-shadow: 0 8px 24px var(--purple-glow);
+    transition: transform 0.1s, box-shadow 0.1s;
+    letter-spacing: 0.3px;
   }
-  @keyframes dotPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
+  .ob-btn:active { transform: scale(0.97); box-shadow: none; }
 
-  /* ── HOME SCREEN ── */
-  .home-screen {
-    background: var(--bg-dark);
-    padding: 16px 16px 80px;
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     SHARED SCREEN LAYOUT
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .app-screen {
+    background: var(--dark);
+    padding: 14px 14px 80px;
+    min-height: 100%;
   }
-  .home-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 22px;
+  .screen-hdr {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
   }
-  .home-header-left {}
-  .home-greeting { font-size: 13px; color: var(--text-secondary); }
-  .home-date { font-size: 20px; font-weight: 800; color: white; margin-top: 2px; }
-  .zenith-badge {
-    background: linear-gradient(135deg, var(--purple), var(--blue));
+  .screen-title { font-size: 22px; font-weight: 800; color: var(--text-1); }
+  .chip {
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 11px; font-weight: 700;
+  }
+  .chip-purple { background:rgba(124,111,224,0.12); border:1px solid rgba(124,111,224,0.3); color:var(--purple); }
+  .chip-teal   { background:rgba(29,158,117,0.1);  border:1px solid rgba(29,158,117,0.3);  color:var(--teal); }
+  .chip-blue   { background:rgba(91,141,239,0.1);  border:1px solid rgba(91,141,239,0.3);  color:var(--blue); }
+
+  /* ── Cards & Glassmorphism ── */
+  .card, .stat-mini, .nav-card, .pomo-card, .focus-toggle-card, .study-row, .eye-card, .habit-card {
+    background: var(--card-dark);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 32px 0 rgba(13, 148, 136, 0.03);
     border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    color: white;
-    box-shadow: 0 4px 16px rgba(124,77,255,0.35);
+    padding: 18px;
+    margin-bottom: 12px;
+    position: relative; overflow: hidden;
+  }
+  .card-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+    color: var(--text-3); margin-bottom: 8px;
+  }
+  .card-value { font-size: 28px; font-weight: 900; color: var(--text-1); }
+  .card-sub { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+  .card-accent-left {
+    position: absolute; left:0; top:0; bottom:0; width:3px;
+    border-radius: 20px 0 0 20px;
   }
 
-  /* XP Bar */
-  .xp-card {
-    background: linear-gradient(135deg, rgba(124,77,255,0.15), rgba(68,138,255,0.1));
-    border: 1px solid rgba(124,77,255,0.2);
-    border-radius: 18px;
-    padding: 14px 16px;
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .xp-level-badge {
-    width: 42px; height: 42px;
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     HOME SCREEN
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .home-greeting { font-size: 12px; color: var(--text-3); letter-spacing: 0.5px; }
+  .home-day { font-size: 20px; font-weight: 800; color: var(--text-1); margin-top: 2px; }
+  .zenith-pill {
     background: linear-gradient(135deg, var(--purple), var(--blue));
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
+    color: #fff; font-size: 11px; font-weight: 800;
+    letter-spacing: 2px; padding: 5px 14px; border-radius: 20px;
+    box-shadow: 0 4px 16px var(--purple-glow);
   }
-  .xp-info { flex: 1; }
-  .xp-label { font-size: 10px; color: var(--text-hint); letter-spacing: 0.8px; font-weight: 600; }
-  .xp-level { font-size: 15px; font-weight: 800; color: white; margin: 2px 0; }
-  .xp-bar-track {
-    height: 5px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 3px;
-    overflow: hidden;
-    margin-top: 6px;
-  }
-  .xp-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--purple), var(--blue));
-    border-radius: 3px;
-    width: 35%;
-    animation: barGrow 1s ease;
-  }
-  .xp-pts { font-size: 11px; color: var(--text-hint); margin-top: 2px; }
 
-  /* Summary cards row */
-  .stat-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
+  .stat-grid { display: grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
   .stat-mini {
-    background: var(--card);
-    border-radius: 16px;
-    padding: 14px;
-    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 16px; padding: 14px; margin-bottom: 0;
   }
   .stat-mini-icon { font-size: 20px; margin-bottom: 8px; }
-  .stat-mini-label { font-size: 10px; color: var(--text-hint); letter-spacing: 0.6px; font-weight: 600; }
-  .stat-mini-value { font-size: 22px; font-weight: 800; color: white; margin-top: 2px; }
-  .stat-mini-sub { font-size: 10px; color: var(--text-hint); margin-top: 2px; }
+  .stat-mini-label { font-size: 9px; font-weight: 700; color: var(--text-3); letter-spacing: 1px; }
+  .stat-mini-val { font-size: 22px; font-weight: 900; color: var(--text-1); margin-top: 3px; }
+  .stat-mini-sub { font-size: 10px; color: var(--text-3); margin-top: 2px; }
 
-  /* Big cards */
-  .home-card {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 18px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    cursor: pointer;
-    border: 1px solid rgba(255,255,255,0.04);
-    transition: transform 0.15s, box-shadow 0.15s;
-    position: relative;
-    overflow: hidden;
+  .nav-card {
+    border-radius: 18px; padding: 16px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 14px;
+    cursor: pointer; transition: transform 0.15s;
   }
-  .home-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
+  .nav-card:active { transform: scale(0.98); }
+  .nav-card-icon {
+    width: 46px; height: 46px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
   }
-  .home-card.purple::before { background: var(--purple); }
-  .home-card.blue::before { background: var(--blue); }
-  .home-card.green::before { background: var(--green); }
-  .home-card.amber::before { background: var(--amber); }
-  .home-card:active { transform: scale(0.98); }
-  .home-card-icon {
-    width: 46px; height: 46px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    flex-shrink: 0;
-  }
-  .bg-purple { background: rgba(124,77,255,0.15); }
-  .bg-blue { background: rgba(68,138,255,0.15); }
-  .bg-green { background: rgba(105,240,174,0.12); }
-  .bg-amber { background: rgba(255,215,64,0.12); }
-  .home-card-info { flex: 1; }
-  .home-card-label { font-size: 10px; color: var(--text-hint); letter-spacing: 0.8px; font-weight: 600; }
-  .home-card-value { font-size: 26px; font-weight: 800; color: white; margin-top: 2px; }
-  .home-card-sub { font-size: 11px; color: var(--text-hint); margin-top: 2px; }
-  .card-arrow { font-size: 18px; color: var(--text-disabled); }
+  .nav-card-info { flex:1; }
+  .nav-card-lbl { font-size: 10px; font-weight: 700; color: var(--text-3); letter-spacing: 1px; }
+  .nav-card-val { font-size: 22px; font-weight: 800; color: var(--text-1); margin-top: 2px; }
+  .nav-card-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .nav-card-arrow { font-size: 20px; color: var(--text-3); }
+  .bg-purple-soft { background: rgba(124,111,224,0.12); }
+  .bg-teal-soft   { background: rgba(29,158,117,0.12); }
+  .bg-amber-soft  { background: rgba(239,159,39,0.12); }
+  .bg-blue-soft   { background: rgba(91,141,239,0.12); }
+  .bg-coral-soft  { background: rgba(216,90,48,0.12); }
 
-  /* ── SCREEN / USAGE ── */
-  .usage-screen {
-    background: var(--bg-dark);
-    padding: 16px 16px 80px;
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     SCREEN TIME
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .total-card {
+    background: linear-gradient(135deg, rgba(124,111,224,0.12), rgba(91,141,239,0.06));
+    border: 1px solid rgba(124,111,224,0.2);
+    border-radius: 22px; padding: 22px; text-align: center; margin-bottom: 14px;
   }
-  .screen-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 18px;
-  }
-  .screen-title {
-    font-size: 22px;
-    font-weight: 800;
-    color: white;
-  }
-  .sync-chip {
-    background: rgba(124,77,255,0.15);
-    border: 1px solid rgba(124,77,255,0.3);
-    border-radius: 20px;
-    padding: 4px 12px;
-    font-size: 11px;
-    color: var(--purple);
-    font-weight: 600;
-  }
+  .total-time { font-size: 54px; font-weight: 900; color: var(--text-1); line-height: 1; margin: 6px 0; }
 
-  /* Today total card */
-  .today-card {
-    background: linear-gradient(135deg, rgba(124,77,255,0.12), rgba(68,138,255,0.08));
-    border: 1px solid rgba(124,77,255,0.2);
-    border-radius: 22px;
-    padding: 22px;
-    text-align: center;
-    margin-bottom: 14px;
-  }
-  .today-label { font-size: 10px; color: var(--text-hint); letter-spacing: 1.2px; font-weight: 700; }
-  .today-time { font-size: 52px; font-weight: 900; color: white; line-height: 1.1; margin-top: 6px; }
-  .today-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
-
-  /* Chart card */
-  .chart-card {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 18px;
-    margin-bottom: 14px;
-    border: 1px solid rgba(255,255,255,0.04);
-  }
-  .chart-label { font-size: 10px; color: var(--text-hint); letter-spacing: 1px; font-weight: 700; margin-bottom: 14px; }
-  .bar-chart {
-    display: flex;
-    align-items: flex-end;
-    gap: 8px;
-    height: 100px;
-  }
-  .bar-col {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    height: 100%;
-    justify-content: flex-end;
-  }
+  .bar-chart { display: flex; align-items: flex-end; gap: 7px; height: 90px; margin-top: 14px; }
+  .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; height:100%; justify-content:flex-end; }
   .bar {
-    width: 100%;
-    border-radius: 6px 6px 0 0;
-    background: linear-gradient(180deg, var(--purple), rgba(124,77,255,0.4));
-    animation: barUp 0.8s ease;
-    transform-origin: bottom;
-    min-height: 4px;
+    width: 100%; border-radius: 5px 5px 0 0;
+    background: linear-gradient(180deg, var(--purple), rgba(124,111,224,0.3));
+    animation: barUp 0.7s ease; transform-origin: bottom; min-height:3px;
   }
-  .bar.today {
-    background: linear-gradient(180deg, var(--blue), rgba(68,138,255,0.4));
-    box-shadow: 0 0 12px rgba(68,138,255,0.3);
+  .bar.active-day {
+    background: linear-gradient(180deg, var(--blue), rgba(91,141,239,0.3));
+    box-shadow: 0 0 10px var(--blue-glow);
   }
-  @keyframes barUp {
-    from { transform: scaleY(0); }
-    to { transform: scaleY(1); }
-  }
-  .bar-day { font-size: 9px; color: var(--text-hint); font-weight: 600; }
-  .bar-time { font-size: 8px; color: var(--text-disabled); }
+  @keyframes barUp { from{transform:scaleY(0)} to{transform:scaleY(1)} }
+  .bar-day { font-size: 9px; color: var(--text-3); font-weight: 600; }
 
-  /* App list */
-  .section-label {
-    font-size: 10px;
-    color: var(--text-hint);
-    letter-spacing: 1.2px;
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-  .app-item {
-    background: var(--card);
-    border-radius: 16px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border: 1px solid rgba(255,255,255,0.03);
+  .sec-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; color: var(--text-3); margin: 12px 0 8px; }
+
+  .app-row {
+    background: var(--card-dark); border-radius: 14px;
+    border: 1px solid var(--border); padding: 11px 14px;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 11px;
     animation: slideIn 0.3s ease;
   }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-  .app-rank {
-    font-size: 11px;
-    color: var(--text-disabled);
-    font-weight: 700;
-    width: 18px;
-    text-align: center;
-    flex-shrink: 0;
-  }
-  .app-icon-circle {
-    width: 38px; height: 38px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-  .app-info { flex: 1; min-width: 0; }
-  .app-name { font-size: 13px; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .app-progress-track {
-    height: 4px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 2px;
-    margin-top: 5px;
-    overflow: hidden;
-  }
-  .app-progress-bar {
-    height: 100%;
-    border-radius: 2px;
-  }
-  .bar-red { background: var(--red); }
-  .bar-amber { background: var(--amber); }
-  .bar-green { background: var(--green); }
-  .bar-purple { background: var(--purple); }
-  .app-time {
-    font-size: 13px;
-    font-weight: 700;
-    color: white;
-    white-space: nowrap;
-  }
+  @keyframes slideIn { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:none} }
+  .app-rank { font-size: 11px; font-weight: 700; color: var(--text-3); width: 18px; text-align:center; flex-shrink:0; }
+  .app-icon  { width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+  .app-icon img { width: 22px; height: 22px; object-fit: contain; }
+  .app-info  { flex:1; min-width:0; }
+  .app-name  { font-size: 13px; font-weight: 600; color:var(--text-1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .app-bar-track { height:3px; background:rgba(255,255,255,0.07); border-radius:2px; margin-top:5px; overflow:hidden; }
+  .app-bar-fill  { height:100%; border-radius:2px; }
+  .fill-coral  { background: var(--coral); }
+  .fill-amber  { background: var(--amber); }
+  .fill-purple { background: var(--purple); }
+  .fill-teal   { background: var(--teal); }
+  .app-time { font-size:13px; font-weight:700; color:var(--text-1); white-space:nowrap; }
 
-  /* ── FOCUS SCREEN ── */
-  .focus-screen {
-    background: var(--bg-dark);
-    padding: 16px 16px 80px;
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     FOCUS SCREEN
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .pomo-card {
+    background: linear-gradient(135deg, rgba(91,141,239,0.1), rgba(124,111,224,0.06));
+    border: 1px solid rgba(91,141,239,0.2);
+    border-radius: 24px; padding: 24px; text-align: center; margin-bottom: 12px;
   }
-  .pomodoro-card {
-    background: linear-gradient(135deg, rgba(68,138,255,0.12), rgba(24,255,255,0.05));
-    border: 1px solid rgba(68,138,255,0.2);
-    border-radius: 24px;
-    padding: 28px;
-    text-align: center;
-    margin-bottom: 14px;
-  }
+  .pomo-session { font-size: 12px; color: var(--text-3); letter-spacing: 0.5px; }
+  .pomo-subject { font-size: 17px; font-weight: 800; color: var(--text-1); margin: 6px 0 20px; }
   .pomo-ring {
-    width: 130px; height: 130px;
-    border-radius: 50%;
+    width: 130px; height: 130px; border-radius: 50%;
     background: conic-gradient(var(--blue) 0% 62%, rgba(255,255,255,0.06) 62%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 16px;
-    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px; position: relative;
   }
   .pomo-ring::before {
-    content: '';
-    width: 104px; height: 104px;
-    background: #12152A;
-    border-radius: 50%;
-    position: absolute;
+    content:''; width:104px; height:104px;
+    background: var(--dark); border-radius:50%; position:absolute;
   }
-  .pomo-time {
-    font-size: 28px;
-    font-weight: 900;
-    color: white;
-    position: relative;
-    z-index: 1;
-  }
-  .pomo-label {
-    font-size: 11px;
-    position: relative;
-    z-index: 1;
-    color: var(--text-hint);
-    letter-spacing: 0.5px;
-  }
-  .pomo-session { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
-  .pomo-subject { font-size: 18px; font-weight: 800; color: white; margin-bottom: 20px; }
-  .pomo-buttons { display: flex; gap: 10px; justify-content: center; }
+  .pomo-inner { position:relative; z-index:1; }
+  .pomo-time { font-size:28px; font-weight:900; color:var(--text-1); }
+  .pomo-label { font-size:10px; color:var(--text-3); letter-spacing:0.5px; }
+  .pomo-btns { display:flex; gap:10px; justify-content:center; }
   .pomo-btn {
-    padding: 10px 24px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.1s;
+    padding: 10px 22px; border-radius:12px; font-size:13px; font-weight:700;
+    border:none; cursor:pointer; transition: transform 0.1s;
   }
-  .pomo-btn:active { transform: scale(0.95); }
-  .pomo-btn.primary { background: var(--blue); color: white; box-shadow: 0 4px 16px rgba(68,138,255,0.35); }
-  .pomo-btn.secondary { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
+  .pomo-btn:active { transform: scale(0.96); }
+  .pomo-primary { background:var(--blue); color:#fff; box-shadow:0 4px 16px var(--blue-glow); }
+  .pomo-secondary { background:rgba(255,255,255,0.06); color:var(--text-2); }
 
-  /* Focus mode toggle */
-  .focus-mode-card {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 18px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    border: 1px solid rgba(255,255,255,0.04);
+  .focus-toggle-card {
+    background: var(--card-dark); border-radius: 18px;
+    border: 1px solid var(--border); padding: 16px;
+    display: flex; align-items: center; gap: 14px; margin-bottom: 12px;
   }
-  .focus-toggle {
-    width: 48px; height: 28px;
-    background: var(--purple);
-    border-radius: 14px;
-    position: relative;
-    cursor: pointer;
-    box-shadow: 0 0 12px rgba(124,77,255,0.4);
-    transition: background 0.3s;
-    flex-shrink: 0;
+  .toggle-track {
+    width: 50px; height: 28px; border-radius: 14px;
+    background: var(--purple); position: relative; cursor: pointer;
+    box-shadow: 0 0 12px var(--purple-glow); transition: background 0.3s; flex-shrink:0;
   }
-  .focus-toggle::after {
-    content: '';
-    width: 22px; height: 22px;
-    background: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 3px; right: 3px;
-    transition: right 0.3s;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  .toggle-track::after {
+    content:''; width:22px; height:22px; background:#fff; border-radius:50%;
+    position:absolute; top:3px; right:3px;
+    transition: right 0.3s; box-shadow:0 2px 6px rgba(0,0,0,0.3);
   }
-  .focus-toggle.off { background: rgba(255,255,255,0.1); }
-  .focus-toggle.off::after { right: 23px; }
+  .toggle-track.off { background: rgba(255,255,255,0.1); box-shadow:none; }
+  .toggle-track.off::after { right:25px; }
 
-  /* Study log */
-  .study-log-item {
-    background: var(--card-elevated);
-    border-radius: 14px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .study-row {
+    background: var(--surface); border-radius: 14px; padding: 12px 14px;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 12px;
   }
-  .study-subject-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--blue);
-    flex-shrink: 0;
-  }
-  .study-subject { font-size: 13px; font-weight: 600; color: white; }
-  .study-duration { font-size: 11px; color: var(--text-hint); margin-top: 2px; }
-  .study-time-badge {
-    margin-left: auto;
-    background: rgba(68,138,255,0.15);
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--blue);
+  .study-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .study-sub { font-size:13px; font-weight:600; color:var(--text-1); }
+  .study-dur { font-size:11px; color:var(--text-3); margin-top:2px; }
+  .study-badge {
+    margin-left:auto; padding:4px 10px; border-radius:8px;
+    font-size:12px; font-weight:700;
   }
 
-  /* ── BOTTOM NAV ── */
-  .bottom-nav {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    background: var(--bg-surface);
-    border-top: 1px solid rgba(255,255,255,0.06);
-    display: flex;
-    padding: 8px 0 12px;
-  }
-  .nav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-  .nav-item:active { opacity: 0.7; }
-  .nav-icon { font-size: 20px; }
-  .nav-label { font-size: 9px; font-weight: 600; color: var(--text-hint); letter-spacing: 0.3px; }
-  .nav-item.active .nav-label { color: var(--purple); }
-  .nav-item.active .nav-icon { filter: drop-shadow(0 0 6px var(--purple)); }
-  .nav-dot {
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: var(--purple);
-    margin-top: -2px;
-    display: none;
-  }
-  .nav-item.active .nav-dot { display: block; }
-
-  /* ── WELLBEING ── */
-  .wellbeing-screen {
-    background: var(--bg-dark);
-    padding: 16px 16px 80px;
-  }
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     WELLBEING SCREEN
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
   .mood-card {
-    background: linear-gradient(135deg, rgba(105,240,174,0.08), rgba(24,255,255,0.05));
-    border: 1px solid rgba(105,240,174,0.15);
-    border-radius: 22px;
-    padding: 20px;
-    margin-bottom: 14px;
-    text-align: center;
+    background: linear-gradient(135deg, rgba(29,158,117,0.08), rgba(91,141,239,0.04));
+    border: 1px solid rgba(29,158,117,0.15);
+    border-radius: 22px; padding: 20px; margin-bottom: 12px; text-align:center;
   }
-  .mood-title { font-size: 15px; font-weight: 700; color: white; margin-bottom: 4px; }
-  .mood-sub { font-size: 12px; color: var(--text-hint); margin-bottom: 16px; }
-  .mood-emojis { display: flex; justify-content: space-around; }
-  .mood-emoji {
-    width: 44px; height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    border-radius: 14px;
-    cursor: pointer;
-    transition: transform 0.15s, background 0.15s;
+  .mood-title { font-size:15px; font-weight:700; color:var(--text-1); margin-bottom:4px; }
+  .mood-sub { font-size:12px; color:var(--text-3); margin-bottom:16px; }
+  .mood-row { display:flex; justify-content:space-around; }
+  .mood-btn {
+    width:44px; height:44px; border-radius:14px; display:flex;
+    align-items:center; justify-content:center; font-size:24px;
+    cursor:pointer; transition: transform 0.15s, background 0.15s;
     background: rgba(255,255,255,0.04);
   }
-  .mood-emoji:hover { transform: scale(1.2); background: rgba(255,255,255,0.1); }
-  .mood-emoji.selected { background: rgba(105,240,174,0.2); transform: scale(1.15); }
+  .mood-btn:hover { transform:scale(1.2); background:rgba(255,255,255,0.1); }
+  .mood-btn.sel { background:rgba(29,158,117,0.2); transform:scale(1.15); }
+  .mood-feedback { font-size:13px; color:var(--teal); margin-top:12px; min-height:20px; font-weight:600; }
 
-  .streak-card {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 18px;
-    margin-bottom: 12px;
-    border: 1px solid rgba(255,255,255,0.04);
-  }
-  .streak-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-  .streak-title { font-size: 14px; font-weight: 700; color: white; }
-  .streak-best { font-size: 11px; color: var(--text-hint); }
-  .habit-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-  .habit-row:last-child { border-bottom: none; }
-  .habit-emoji { font-size: 18px; }
-  .habit-name { flex: 1; font-size: 13px; font-weight: 600; color: white; }
-  .habit-streak { font-size: 12px; color: var(--amber); font-weight: 700; }
-  .habit-check {
-    width: 24px; height: 24px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    background: rgba(105,240,174,0.2);
-    color: var(--green);
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .habit-check.unchecked { background: rgba(255,255,255,0.06); color: var(--text-disabled); }
+  .mood-week-card { background:var(--card-dark); border-radius:18px; border:1px solid var(--border); padding:16px; margin-bottom:12px; }
+  .mw-row { display:flex; align-items:center; gap:10px; margin-bottom:7px; }
+  .mw-day { font-size:10px; color:var(--text-3); width:24px; }
+  .mw-track { flex:1; height:7px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden; }
+  .mw-fill { height:100%; border-radius:4px; background:linear-gradient(90deg, var(--teal), #18E0A0); }
+  .mw-val { font-size:12px; width:22px; }
 
-  .wellness-bar-card {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 18px;
-    margin-bottom: 12px;
+  .eye-card {
+    background: linear-gradient(135deg, rgba(91,141,239,0.08), rgba(124,111,224,0.04));
+    border: 1px solid rgba(91,141,239,0.15);
+    border-radius: 18px; padding: 16px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 14px;
   }
-  .w-bar-label { font-size: 10px; color: var(--text-hint); letter-spacing: 1px; font-weight: 700; margin-bottom: 10px; }
-  .w-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-  .w-bar-day { font-size: 10px; color: var(--text-hint); width: 24px; }
-  .w-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
-  .w-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--green), var(--cyan)); }
-  .w-bar-val { font-size: 10px; color: var(--text-secondary); font-weight: 600; width: 28px; text-align: right; }
+  .eye-icon { font-size:32px; }
+  .eye-title { font-size:14px; font-weight:700; color:var(--text-1); }
+  .eye-desc { font-size:12px; color:var(--text-3); margin-top:3px; }
+  .eye-timer { font-size:18px; font-weight:900; color:var(--blue); margin-left:auto; flex-shrink:0; }
 
-  /* ── Animations ── */
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-12px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     CAREER SCREEN
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .add-habit-row {
+    display: flex; gap: 10px; margin-bottom: 14px;
   }
-  @keyframes barGrow {
-    from { width: 0; }
-    to {}
+  .habit-input {
+    flex:1; background:var(--card-dark); border:1px solid var(--border);
+    border-radius:14px; padding:12px 16px; font-size:14px;
+    color:var(--text-1); font-family:'Inter',sans-serif; outline:none;
+    transition: border-color 0.2s;
   }
+  .habit-input::placeholder { color:var(--text-3); }
+  .habit-input:focus { border-color: rgba(13,148,136,0.5); }
+  .add-btn {
+    width:48px; height:48px; border-radius:14px; background:var(--purple);
+    border:none; color:#fff; font-size:22px; cursor:pointer;
+    box-shadow: 0 4px 16px var(--purple-glow); transition:transform 0.1s;
+    flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  }
+  .add-btn:active { transform:scale(0.93); }
 
-  /* ── Floating label ── */
-  .floating-chip {
+  .habit-card {
+    background: var(--card-dark); border-radius:16px;
+    border: 1px solid var(--border); padding: 14px 16px;
+    margin-bottom: 9px; display: flex; align-items: center; gap: 12px;
+    animation: slideIn 0.3s ease;
+  }
+  .habit-emoji { font-size: 22px; }
+  .habit-info { flex:1; }
+  .habit-name { font-size:14px; font-weight:600; color:var(--text-1); }
+  .habit-streak { font-size:12px; color:var(--amber); margin-top:3px; font-weight:700; }
+  .complete-btn {
+    padding: 8px 14px; border-radius: 10px; font-size: 12px;
+    font-weight: 700; border: none; cursor: pointer; transition: all 0.2s;
+    flex-shrink:0;
+  }
+  .complete-btn.done { background:rgba(29,158,117,0.15); color:var(--teal); }
+  .complete-btn.todo { background:var(--teal); color:#fff; box-shadow:0 3px 12px var(--teal-glow); }
+  .complete-btn.todo:active { transform:scale(0.95); }
+
+  .career-stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; margin-bottom:14px; }
+  .cstat { background:var(--card-dark); border:1px solid var(--border); border-radius:14px; padding:12px; text-align:center; }
+  .cstat-val { font-size:20px; font-weight:900; color:var(--text-1); }
+  .cstat-lbl { font-size:9px; color:var(--text-3); margin-top:3px; letter-spacing:0.8px; font-weight:700; }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     BOTTOM NAVIGATION
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  .bottom-nav {
     position: absolute;
-    top: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--purple);
-    color: white;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 6px 16px;
-    border-radius: 20px;
-    white-space: nowrap;
-    animation: chipPop 0.4s ease;
-    box-shadow: 0 4px 20px rgba(124,77,255,0.5);
+    bottom: 16px;
+    left: 12px;
+    right: 12px;
+    background: var(--card-dark);
+    backdrop-filter: blur(20px) saturate(190%);
+    -webkit-backdrop-filter: blur(20px) saturate(190%);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    display: none;
+    padding: 10px 0;
+    z-index: 150;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.02);
   }
-  @keyframes chipPop {
-    from { opacity: 0; transform: translateX(-50%) translateY(8px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .bottom-nav.visible {
+    display: flex;
   }
+  .nav-item {
+    flex:1; display:flex; flex-direction:column; align-items:center;
+    gap:3px; cursor:pointer; transition:opacity 0.15s;
+  }
+  .nav-item:active { opacity:0.6; }
+  .nav-icon { font-size:20px; transition: filter 0.2s; }
+  .nav-lbl { font-size:9px; font-weight:700; color:var(--text-3); letter-spacing:0.3px; }
+  .nav-item.active .nav-lbl { color: var(--purple); }
+  .nav-item.active .nav-icon { filter: drop-shadow(0 0 6px var(--purple)); }
+  .nav-pip {
+    width:4px; height:4px; border-radius:50%;
+    background:var(--purple); display:none; margin-top:-2px;
+  }
+  .nav-item.active .nav-pip { display:block; }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     UTILITY ANIMATIONS
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  @keyframes fadeDown {
+    from { opacity:0; transform:translateY(-10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes screenSlideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes barGrow { from{width:0} to{} }
+
+  /* Settings page styles */
+  .settings-btn {
+    width:100%; height:48px; border:none; border-radius:14px;
+    font-size:13px; font-weight:700; color:#fff; cursor:pointer;
+    transition: transform 0.1s; display:flex; align-items:center;
+    justify-content:center; gap:8px;
+  }
+  .settings-btn:active { transform:scale(0.97); }
+  .btn-purple { background:var(--purple); box-shadow:0 4px 16px var(--purple-glow); }
+  .btn-teal { background:var(--teal); box-shadow:0 4px 16px var(--teal-glow); }
+  .goal-adjuster { display:flex; align-items:center; gap:10px; margin-top:8px; }
+  .goal-btn {
+    width:38px; height:38px; border-radius:10px; border:none;
+    background:rgba(255,255,255,0.06); color:#fff; font-size:18px;
+    font-weight:700; cursor:pointer; transition:background 0.2s;
+  }
+  .goal-btn:hover { background:rgba(255,255,255,0.1); }
+  .goal-val { flex:1; text-align:center; font-size:20px; font-weight:800; color:var(--purple); }
+
+  /* Scrollbar for page */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #08080F; }
+  ::-webkit-scrollbar-thumb { background: #252540; border-radius: 3px; }
+
+  /* ══ GOOGLE ACCOUNT PICKER MODAL ══ */
+  .modal-overlay {
+    position: absolute; top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.65);
+    display: flex; align-items: flex-end;
+    z-index: 200;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-overlay.show { opacity: 1; pointer-events: auto; }
+  .modal-card {
+    width: 100%;
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px;
+    transform: translateY(100%);
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.15);
+  }
+  .modal-overlay.show .modal-card { transform: translateY(0); }
+  .modal-hdr {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .modal-title { font-size: 16px; font-weight: 800; color: var(--text-1); }
+  .modal-close { font-size: 18px; cursor: pointer; color: var(--text-3); }
+  .account-list { display: flex; flex-direction: column; gap: 8px; }
+  .account-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 14px; border-radius: 16px;
+    background: var(--card-dark); border: 1px solid var(--border);
+    cursor: pointer; transition: transform 0.15s, background 0.15s;
+  }
+  .account-item:active { transform: scale(0.98); }
+  .account-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: #0D9488; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700;
+  }
+  .account-info { flex: 1; }
+  .account-name { font-size: 13px; font-weight: 700; color: var(--text-1); }
+  .account-email { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
+<!-- PAGE HEADER -->
 <div class="page-header">
   <h1>ZENITH</h1>
-  <p>Interactive App Preview — Rise Above. Stay Focused.</p>
+  <p class="sub">Focus. Control. Your Peak.</p>
+  <div style="display:flex; justify-content:center; gap:10px; margin-top:10px;">
+    <div class="build-badge">Build 94bab98 · All 5 modules complete</div>
+    <div class="build-badge" style="cursor:pointer; background:rgba(13,148,136,0.1); border-color:rgba(13,148,136,0.3); color:var(--purple);" onclick="toggleDarkMode()">🌓 Mode</div>
+  </div>
 </div>
 
-<!-- Screen switcher tabs -->
+<!-- SCREEN TAB SWITCHER -->
 <div class="screen-tabs">
-  <button class="screen-tab active" onclick="switchTab('splash', this)">Splash</button>
-  <button class="screen-tab" onclick="switchTab('home', this)">Home</button>
-  <button class="screen-tab" onclick="switchTab('usage', this)">Screen</button>
-  <button class="screen-tab" onclick="switchTab('focus', this)">Focus</button>
-  <button class="screen-tab" onclick="switchTab('wellbeing', this)">Wellbeing</button>
+  <button class="screen-tab active"  onclick="go('splash',    this)">Splash</button>
+  <button class="screen-tab"         onclick="go('onboarding',this)">Onboarding</button>
+  <button class="screen-tab"         onclick="go('home',      this)">Home</button>
+  <button class="screen-tab"         onclick="go('screen',    this)">Screen</button>
+  <button class="screen-tab"         onclick="go('focus',     this)">Focus</button>
+  <button class="screen-tab"         onclick="go('wellbeing', this)">Wellbeing</button>
+  <button class="screen-tab"         onclick="go('career',    this)">Growth</button>
+  <button class="screen-tab"         onclick="go('settings',  this)">Settings</button>
 </div>
 
+<!-- PHONE SHELL -->
 <div class="phone-wrap">
-  <div class="phone-frame">
+<div class="phone-frame">
 
-    <!-- Status Bar -->
-    <div class="status-bar">
-      <span class="status-time">9:41</span>
-      <div class="status-icons">
-        <span>●●●</span>
-        <span>WiFi</span>
-        <span>🔋</span>
+  <!-- Mock Email Notification Banner -->
+  <div id="mockEmailNotification" style="position:absolute; top:-80px; left:16px; right:16px; height:68px; background:#1F2937; border:1px solid rgba(255,255,255,0.15); border-radius:16px; display:flex; align-items:center; padding:12px; gap:12px; z-index:1000; box-shadow:0 8px 30px rgba(0,0,0,0.5); transition:all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor:pointer;" onclick="triggerVerificationMock()">
+    <div style="font-size:24px;">✉️</div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
+      <div style="font-weight:700; color:#fff; font-size:13px;">Verify Zenith Unlock Link</div>
+      <div style="color:#9CA3AF; font-size:11px;" id="tvNotificationContentMock">Tap here to verify unlock for Instagram (15m)</div>
+    </div>
+    <div style="font-size:12px; color:#9CA3AF;" onclick="event.stopPropagation(); document.getElementById('mockEmailNotification').style.top = '-80px';">✕</div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <span class="status-time" id="clockTime">9:41</span>
+    <div class="status-icons">
+      <span>▲▲▲</span>
+      <span>WiFi</span>
+      <span>🔋</span>
+    </div>
+  </div>
+
+  <!-- ══ SPLASH ══ -->
+  <div class="screen active" id="screen-splash">
+    <div class="splash-screen">
+      <div class="splash-logo">Z</div>
+      <div class="splash-name">ZENITH</div>
+      <div class="splash-tagline">FOCUS. CONTROL. YOUR PEAK.</div>
+      <div class="splash-loader">
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
       </div>
     </div>
+  </div>
 
-    <!-- ══ SPLASH SCREEN ══ -->
-    <div class="screen active" id="screen-splash">
-      <div class="splash">
-        <div class="splash-logo">Z</div>
-        <div class="splash-name">ZENITH</div>
-        <div class="splash-tagline">Rise Above. Stay Focused.</div>
-        <div class="splash-dots">
-          <div class="splash-dot"></div>
-          <div class="splash-dot active"></div>
-          <div class="splash-dot"></div>
-        </div>
+  <!-- ══ ONBOARDING ══ -->
+  <div class="screen" id="screen-onboarding">
+    <div class="onboarding-screen">
+      <div class="ob-icon" id="obIcon">⏱️</div>
+      <div class="ob-title" id="obTitle">Take Back Your Time</div>
+      <div class="ob-desc" id="obDesc">Zenith tracks every minute you spend on social media and apps — with no judgment, just clarity.</div>
+      <div class="ob-dots">
+        <div class="ob-dot active" id="obDot0"></div>
+        <div class="ob-dot"       id="obDot1"></div>
+        <div class="ob-dot"       id="obDot2"></div>
       </div>
+      <button class="ob-btn" id="obBtn" onclick="obNext()">Next →</button>
+      <button class="ob-btn" id="obGoogleBtn" style="background:#FFFFFF; color:#111B18; border:1px solid rgba(0,0,0,0.08); box-shadow:0 4px 12px rgba(0,0,0,0.04); margin-top:12px; display:none; align-items:center; justify-content:center; gap:8px" onclick="showGooglePicker(true)">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Sign in with Google
+      </button>
     </div>
+  </div>
 
-    <!-- ══ HOME SCREEN ══ -->
-    <div class="screen" id="screen-home">
-      <div class="home-screen">
-        <div class="home-header">
-          <div class="home-header-left">
-            <div class="home-greeting">Good evening 👋</div>
-            <div class="home-date">Sat, Jun 28</div>
-          </div>
-          <div class="zenith-badge">ZENITH</div>
+  <!-- ══ HOME ══ -->
+  <div class="screen has-nav" id="screen-home">
+    <div class="app-screen">
+
+      <!-- Header -->
+      <div class="screen-hdr" style="margin-bottom:24px">
+        <div>
+          <div class="home-greeting" id="tvGreeting">Good day — Monday</div>
+          <div class="home-day" id="tvTagline" style="font-size: 22px; font-weight: 800; color: var(--text-1); margin-top: 4px;">Rise above. Stay focused.</div>
         </div>
-
-        <!-- XP / Level card -->
-        <div class="xp-card">
-          <div class="xp-level-badge">⚡</div>
-          <div class="xp-info">
-            <div class="xp-label">YOUR LEVEL</div>
-            <div class="xp-level">Focused</div>
-            <div class="xp-bar-track"><div class="xp-bar-fill"></div></div>
-            <div class="xp-pts">350 / 600 XP → Disciplined</div>
-          </div>
-        </div>
-
-        <!-- Mini stats -->
-        <div class="stat-row">
-          <div class="stat-mini">
-            <div class="stat-mini-icon">📱</div>
-            <div class="stat-mini-label">SCREEN TODAY</div>
-            <div class="stat-mini-value">3h 24m</div>
-            <div class="stat-mini-sub">↓ 42m vs yesterday</div>
-          </div>
-          <div class="stat-mini">
-            <div class="stat-mini-icon">📚</div>
-            <div class="stat-mini-label">STUDY TODAY</div>
-            <div class="stat-mini-value">1h 15m</div>
-            <div class="stat-mini-sub">Goal: 3h • 42%</div>
-          </div>
-        </div>
-
-        <!-- Big cards -->
-        <div class="home-card purple" onclick="switchTab('usage', document.querySelectorAll('.screen-tab')[2])">
-          <div class="home-card-icon bg-purple">📱</div>
-          <div class="home-card-info">
-            <div class="home-card-label">SCREEN TIME</div>
-            <div class="home-card-value">3h 24m</div>
-            <div class="home-card-sub">12 apps • Instagram #1</div>
-          </div>
-          <div class="card-arrow">›</div>
-        </div>
-
-        <div class="home-card blue" onclick="switchTab('focus', document.querySelectorAll('.screen-tab')[3])">
-          <div class="home-card-icon bg-blue">🎯</div>
-          <div class="home-card-info">
-            <div class="home-card-label">FOCUS MODE</div>
-            <div class="home-card-value">OFF</div>
-            <div class="home-card-sub">Tap to activate · 3 sessions today</div>
-          </div>
-          <div class="card-arrow">›</div>
-        </div>
-
-        <div class="home-card green">
-          <div class="home-card-icon bg-green">🔥</div>
-          <div class="home-card-info">
-            <div class="home-card-label">HABIT STREAK</div>
-            <div class="home-card-value">7 days</div>
-            <div class="home-card-sub">LeetCode · Reading · Exercise</div>
-          </div>
-          <div class="card-arrow">›</div>
-        </div>
-
-        <div class="home-card amber" onclick="switchTab('wellbeing', document.querySelectorAll('.screen-tab')[4])">
-          <div class="home-card-icon bg-amber">💚</div>
-          <div class="home-card-info">
-            <div class="home-card-label">WELLBEING</div>
-            <div class="home-card-value">😊 Good</div>
-            <div class="home-card-sub">Mood logged · Eye break in 12m</div>
-          </div>
-          <div class="card-arrow">›</div>
+        <div style="display:flex; align-items:center; gap:8px">
+          <div class="zenith-pill" style="cursor:pointer; padding:8px; border-radius:50%; width:38px; height:38px; display:flex; align-items:center; justify-content:center;" onclick="go('settings')">⚙️</div>
         </div>
       </div>
 
-      <!-- Bottom Nav -->
-      <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('home', document.querySelectorAll('.screen-tab')[1])">
-          <div class="nav-icon">🏠</div>
-          <div class="nav-label">Home</div>
-          <div class="nav-dot"></div>
-        </div>
-        <div class="nav-item" onclick="switchTab('usage', document.querySelectorAll('.screen-tab')[2])">
-          <div class="nav-icon">📱</div>
-          <div class="nav-label">Screen</div>
-          <div class="nav-dot"></div>
-        </div>
-        <div class="nav-item" onclick="switchTab('focus', document.querySelectorAll('.screen-tab')[3])">
-          <div class="nav-icon">🎯</div>
-          <div class="nav-label">Focus</div>
-          <div class="nav-dot"></div>
-        </div>
-        <div class="nav-item">
-          <div class="nav-icon">💼</div>
-          <div class="nav-label">Career</div>
-          <div class="nav-dot"></div>
-        </div>
-        <div class="nav-item" onclick="switchTab('wellbeing', document.querySelectorAll('.screen-tab')[4])">
-          <div class="nav-icon">💚</div>
-          <div class="nav-label">Wellbeing</div>
-          <div class="nav-dot"></div>
-        </div>
+      <!-- Screen Time Card -->
+      <div class="card" onclick="go('screen', getTab('screen'))" style="cursor:pointer; transition:transform 0.15s;">
+        <div class="card-label">📱 SCREEN TIME TODAY</div>
+        <div class="card-value" id="tvScreenTime">2h 14m</div>
+        <div class="card-accent-left" style="background:var(--purple)"></div>
       </div>
+
+      <!-- Habit Progress Card -->
+      <div class="card" onclick="go('career', getTab('career'))" style="cursor:pointer; transition:transform 0.15s;">
+        <div class="card-label">✅ HABIT PROGRESS</div>
+        <div class="card-value" id="tvHabitCount" style="color:var(--teal)">3 habits done today</div>
+        <div class="card-accent-left" style="background:var(--teal)"></div>
+      </div>
+
+      <!-- Study Time Card -->
+      <div class="card" onclick="go('focus')" style="cursor:pointer; transition:transform 0.15s;">
+        <div class="card-label">📚 STUDY TIME</div>
+        <div class="card-value" id="tvStudyTime" style="color:var(--amber)">1h 15m studied</div>
+        <div class="card-accent-left" style="background:var(--amber)"></div>
+      </div>
+
     </div>
+  </div>
 
-    <!-- ══ USAGE / SCREEN SCREEN ══ -->
-    <div class="screen" id="screen-usage">
-      <div class="usage-screen">
-        <div class="screen-title-row">
-          <div class="screen-title">Screen Time</div>
-          <div class="sync-chip">↻ Synced</div>
-        </div>
+  <!-- ══ SCREEN TIME ══ -->
+  <div class="screen has-nav" id="screen-screen">
+    <div class="app-screen">
+      <div class="screen-hdr">
+        <div class="screen-title">Screen Time</div>
+        <div class="chip chip-purple">↻ Synced</div>
+      </div>
 
-        <!-- Today total -->
-        <div class="today-card">
-          <div class="today-label">TODAY'S SCREEN TIME</div>
-          <div class="today-time">3h 24m</div>
-          <div class="today-sub">12 apps tracked · ↓ 42 min vs yesterday</div>
-        </div>
+      <!-- Total card -->
+      <div class="total-card">
+        <div class="card-label">TODAY'S TOTAL</div>
+        <div class="total-time">3h 24m</div>
+        <div class="card-sub">12 apps tracked · ↓ 42 min vs yesterday</div>
+      </div>
 
-        <!-- Weekly bar chart -->
-        <div class="chart-card">
-          <div class="chart-label">WEEKLY OVERVIEW</div>
-          <div class="bar-chart">
-            <div class="bar-col">
-              <div class="bar" style="height:52%;animation-delay:0.0s"></div>
-              <div class="bar-day">Mon</div>
-            </div>
-            <div class="bar-col">
-              <div class="bar" style="height:75%;animation-delay:0.1s"></div>
-              <div class="bar-day">Tue</div>
-            </div>
-            <div class="bar-col">
-              <div class="bar" style="height:60%;animation-delay:0.2s"></div>
-              <div class="bar-day">Wed</div>
-            </div>
-            <div class="bar-col">
-              <div class="bar" style="height:90%;animation-delay:0.3s"></div>
-              <div class="bar-day">Thu</div>
-            </div>
-            <div class="bar-col">
-              <div class="bar" style="height:45%;animation-delay:0.4s"></div>
-              <div class="bar-day">Fri</div>
-            </div>
-            <div class="bar-col">
-              <div class="bar" style="height:68%;animation-delay:0.5s"></div>
-              <div class="bar-day">Sat</div>
-            </div>
-            <div class="bar-col">
-              <div class="bar today" style="height:57%;animation-delay:0.6s"></div>
-              <div class="bar-day">Sun</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- App list -->
-        <div class="section-label">TODAY'S APPS</div>
-
-        <div class="app-item">
-          <div class="app-rank">1</div>
-          <div class="app-icon-circle" style="background:rgba(228,64,95,0.15);font-size:22px">📸</div>
-          <div class="app-info">
-            <div class="app-name">Instagram</div>
-            <div class="app-progress-track"><div class="app-progress-bar bar-red" style="width:85%"></div></div>
-          </div>
-          <div class="app-time">1h 42m</div>
-        </div>
-
-        <div class="app-item">
-          <div class="app-rank">2</div>
-          <div class="app-icon-circle" style="background:rgba(255,0,0,0.1);font-size:22px">▶️</div>
-          <div class="app-info">
-            <div class="app-name">YouTube</div>
-            <div class="app-progress-track"><div class="app-progress-bar bar-amber" style="width:55%"></div></div>
-          </div>
-          <div class="app-time">48m</div>
-        </div>
-
-        <div class="app-item">
-          <div class="app-rank">3</div>
-          <div class="app-icon-circle" style="background:rgba(29,161,242,0.1);font-size:22px">🐦</div>
-          <div class="app-info">
-            <div class="app-name">Twitter / X</div>
-            <div class="app-progress-track"><div class="app-progress-bar bar-purple" style="width:30%"></div></div>
-          </div>
-          <div class="app-time">27m</div>
-        </div>
-
-        <div class="app-item">
-          <div class="app-rank">4</div>
-          <div class="app-icon-circle" style="background:rgba(105,240,174,0.1);font-size:22px">💬</div>
-          <div class="app-info">
-            <div class="app-name">WhatsApp</div>
-            <div class="app-progress-track"><div class="app-progress-bar bar-green" style="width:20%"></div></div>
-          </div>
-          <div class="app-time">18m</div>
-        </div>
-
-        <div class="app-item">
-          <div class="app-rank">5</div>
-          <div class="app-icon-circle" style="background:rgba(68,138,255,0.1);font-size:22px">🧠</div>
-          <div class="app-info">
-            <div class="app-name">LeetCode</div>
-            <div class="app-progress-track"><div class="app-progress-bar bar-green" style="width:15%"></div></div>
-          </div>
-          <div class="app-time">9m</div>
+      <!-- Weekly chart -->
+      <div class="card" style="padding-bottom:14px">
+        <div class="card-label">WEEKLY OVERVIEW</div>
+        <div class="bar-chart">
+          <div class="bar-col"><div class="bar" style="height:50%;animation-delay:.0s"></div><div class="bar-day">Mon</div></div>
+          <div class="bar-col"><div class="bar" style="height:78%;animation-delay:.1s"></div><div class="bar-day">Tue</div></div>
+          <div class="bar-col"><div class="bar" style="height:62%;animation-delay:.2s"></div><div class="bar-day">Wed</div></div>
+          <div class="bar-col"><div class="bar" style="height:88%;animation-delay:.3s"></div><div class="bar-day">Thu</div></div>
+          <div class="bar-col"><div class="bar" style="height:44%;animation-delay:.4s"></div><div class="bar-day">Fri</div></div>
+          <div class="bar-col"><div class="bar" style="height:70%;animation-delay:.5s"></div><div class="bar-day">Sat</div></div>
+          <div class="bar-col"><div class="bar active-day" style="height:57%;animation-delay:.6s"></div><div class="bar-day">Sun</div></div>
         </div>
       </div>
 
-      <!-- Bottom Nav -->
-      <div class="bottom-nav">
-        <div class="nav-item" onclick="switchTab('home', document.querySelectorAll('.screen-tab')[1])">
-          <div class="nav-icon">🏠</div><div class="nav-label">Home</div><div class="nav-dot"></div>
+      <div class="sec-label">TODAY'S APPS</div>
+
+      <div class="app-row" onclick="triggerMockLock('Instagram')" style="cursor:pointer">
+        <div class="app-rank">1</div>
+        <div class="app-icon" style="background:rgba(228,64,95,0.06)"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram"></div>
+        <div class="app-info">
+          <div class="app-name">Instagram</div>
+          <div class="app-bar-track"><div class="app-bar-fill fill-coral" style="width:85%"></div></div>
         </div>
-        <div class="nav-item active">
-          <div class="nav-icon">📱</div><div class="nav-label">Screen</div><div class="nav-dot"></div>
-        </div>
-        <div class="nav-item" onclick="switchTab('focus', document.querySelectorAll('.screen-tab')[3])">
-          <div class="nav-icon">🎯</div><div class="nav-label">Focus</div><div class="nav-dot"></div>
-        </div>
-        <div class="nav-item">
-          <div class="nav-icon">💼</div><div class="nav-label">Career</div><div class="nav-dot"></div>
-        </div>
-        <div class="nav-item" onclick="switchTab('wellbeing', document.querySelectorAll('.screen-tab')[4])">
-          <div class="nav-icon">💚</div><div class="nav-label">Wellbeing</div><div class="nav-dot"></div>
-        </div>
+        <div class="app-time">1h 42m</div>
       </div>
+      <div class="app-row" onclick="triggerMockLock('YouTube')" style="cursor:pointer">
+        <div class="app-rank">2</div>
+        <div class="app-icon" style="background:rgba(255,0,0,0.05)"><img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_play_button_icon_%282013%E2%80%932017%29.svg" alt="YouTube"></div>
+        <div class="app-info">
+          <div class="app-name">YouTube</div>
+          <div class="app-bar-track"><div class="app-bar-fill fill-amber" style="width:55%"></div></div>
+        </div>
+        <div class="app-time">48m</div>
+      </div>
+      <div class="app-row">
+        <div class="app-rank">3</div>
+        <div class="app-icon" style="background:rgba(255,255,255,0.05)"><img src="https://upload.wikimedia.org/wikipedia/commons/5/57/X_logo_2023.svg" alt="X"></div>
+        <div class="app-info">
+          <div class="app-name">Twitter / X</div>
+          <div class="app-bar-track"><div class="app-bar-fill fill-purple" style="width:30%"></div></div>
+        </div>
+        <div class="app-time">27m</div>
+      </div>
+      <div class="app-row">
+        <div class="app-rank">4</div>
+        <div class="app-icon" style="background:rgba(37,211,102,0.05)"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"></div>
+        <div class="app-info">
+          <div class="app-name">WhatsApp</div>
+          <div class="app-bar-track"><div class="app-bar-fill fill-teal" style="width:22%"></div></div>
+        </div>
+        <div class="app-time">18m</div>
+      </div>
+      <div class="app-row">
+        <div class="app-rank">5</div>
+        <div class="app-icon" style="background:rgba(239,159,37,0.05)"><img src="https://upload.wikimedia.org/wikipedia/commons/1/19/LeetCode_Logo.svg" alt="LeetCode"></div>
+        <div class="app-info">
+          <div class="app-name">LeetCode</div>
+          <div class="app-bar-track"><div class="app-bar-fill fill-teal" style="width:12%"></div></div>
+        </div>
+        <div class="app-time">9m</div>
+      </div>
+
     </div>
+  </div>
 
-    <!-- ══ FOCUS SCREEN ══ -->
-    <div class="screen" id="screen-focus">
-      <div class="focus-screen">
-        <div class="screen-title-row">
-          <div class="screen-title">Focus</div>
-          <div class="sync-chip" style="color:var(--blue);border-color:rgba(68,138,255,0.3);background:rgba(68,138,255,0.1)">Session 3</div>
-        </div>
+  <!-- ══ FOCUS ══ -->
+  <div class="screen has-nav" id="screen-focus">
+    <div class="app-screen">
+      <div class="screen-hdr">
+        <div class="screen-title">Focus</div>
+        <div class="chip chip-blue">Session 3</div>
+      </div>
 
-        <!-- Pomodoro -->
-        <div class="pomodoro-card">
-          <div class="pomo-session">Pomodoro · Work Session</div>
-          <div class="pomo-subject">📖 Data Structures & Algorithms</div>
-          <div class="pomo-ring">
-            <div>
-              <div class="pomo-time">09:33</div>
-              <div class="pomo-label">remaining</div>
-            </div>
-          </div>
-          <div class="pomo-buttons">
-            <button class="pomo-btn secondary">⏸ Pause</button>
-            <button class="pomo-btn primary">✓ Done Early</button>
+      <!-- Pomodoro card -->
+      <div class="pomo-card">
+        <div class="pomo-session">Pomodoro · Work Session</div>
+        <div class="pomo-subject">📖 Data Structures &amp; Algorithms</div>
+        <div class="pomo-ring">
+          <div class="pomo-inner">
+            <div class="pomo-time">09:33</div>
+            <div class="pomo-label">remaining</div>
           </div>
         </div>
+        <div class="pomo-btns">
+          <button class="pomo-btn pomo-secondary">⏸ Pause</button>
+          <button class="pomo-btn pomo-primary">✓ Done Early</button>
+        </div>
+      </div>
 
-        <!-- Focus Mode toggle -->
-        <div class="focus-mode-card">
+      <!-- Focus mode toggle -->
+      <div class="focus-toggle-card">
+        <div style="flex:1">
+          <div class="card-label" style="margin-bottom:3px">FOCUS MODE</div>
+          <div style="font-size:15px;font-weight:700;color:#fff">🎯 Active</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:2px">Blocking 9 distracting apps</div>
+        </div>
+        <div class="toggle-track" id="focusToggle" onclick="this.classList.toggle('off')"></div>
+      </div>
+
+      <!-- Study goal -->
+      <div class="card">
+        <div class="card-label">STUDY GOAL TODAY</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
           <div style="flex:1">
-            <div class="home-card-label">FOCUS MODE</div>
-            <div style="font-size:15px;font-weight:700;color:white;margin-top:3px">🎯 Active</div>
-            <div style="font-size:11px;color:var(--text-hint);margin-top:2px">Blocking 9 distracting apps</div>
-          </div>
-          <div class="focus-toggle" id="focusToggle" onclick="toggleFocus()"></div>
-        </div>
-
-        <!-- Goal progress -->
-        <div class="chart-card" style="margin-bottom:12px">
-          <div class="chart-label">STUDY GOAL PROGRESS</div>
-          <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
-            <div style="flex:1">
-              <div style="height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden">
-                <div style="height:100%;width:42%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:5px;animation:barGrow 1s ease"></div>
-              </div>
-              <div style="display:flex;justify-content:space-between;margin-top:5px">
-                <span style="font-size:11px;color:var(--text-hint)">1h 15m studied</span>
-                <span style="font-size:11px;color:var(--text-hint)">Goal: 3h</span>
-              </div>
+            <div style="height:9px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden">
+              <div style="height:100%;width:42%;background:linear-gradient(90deg,var(--blue),#6EC6FF);border-radius:5px;animation:barGrow 1s ease"></div>
             </div>
-            <div style="font-size:20px;font-weight:900;color:var(--blue)">42%</div>
+            <div style="display:flex;justify-content:space-between;margin-top:5px">
+              <span style="font-size:11px;color:var(--text-3)">1h 15m studied</span>
+              <span style="font-size:11px;color:var(--text-3)">Goal: 3h</span>
+            </div>
           </div>
-        </div>
-
-        <!-- Study log -->
-        <div class="section-label">TODAY'S STUDY LOG</div>
-
-        <div class="study-log-item">
-          <div class="study-subject-dot" style="background:var(--purple)"></div>
-          <div>
-            <div class="study-subject">DSA — Arrays & Hashing</div>
-            <div class="study-duration">10:00 AM → 10:47 AM</div>
-          </div>
-          <div class="study-time-badge" style="color:var(--purple);background:rgba(124,77,255,0.15)">47m</div>
-        </div>
-
-        <div class="study-log-item">
-          <div class="study-subject-dot" style="background:var(--green)"></div>
-          <div>
-            <div class="study-subject">Java — OOP Concepts</div>
-            <div class="study-duration">2:00 PM → 2:28 PM</div>
-          </div>
-          <div class="study-time-badge" style="color:var(--green);background:rgba(105,240,174,0.12)">28m</div>
-        </div>
-
-        <div class="study-log-item">
-          <div class="study-subject-dot" style="background:var(--blue)"></div>
-          <div>
-            <div class="study-subject">DSA — In Progress 🔴 LIVE</div>
-            <div class="study-duration">9:07 PM → now</div>
-          </div>
-          <div class="study-time-badge">•••</div>
+          <div style="font-size:20px;font-weight:900;color:var(--blue)">42%</div>
         </div>
       </div>
 
-      <!-- Bottom Nav -->
-      <div class="bottom-nav">
-        <div class="nav-item" onclick="switchTab('home', document.querySelectorAll('.screen-tab')[1])">
-          <div class="nav-icon">🏠</div><div class="nav-label">Home</div><div class="nav-dot"></div>
+      <div class="sec-label">TODAY'S STUDY LOG</div>
+
+      <div class="study-row">
+        <div class="study-dot" style="background:var(--purple)"></div>
+        <div>
+          <div class="study-sub">DSA — Arrays &amp; Hashing</div>
+          <div class="study-dur">10:00 AM → 10:47 AM</div>
         </div>
-        <div class="nav-item" onclick="switchTab('usage', document.querySelectorAll('.screen-tab')[2])">
-          <div class="nav-icon">📱</div><div class="nav-label">Screen</div><div class="nav-dot"></div>
-        </div>
-        <div class="nav-item active">
-          <div class="nav-icon">🎯</div><div class="nav-label">Focus</div><div class="nav-dot"></div>
-        </div>
-        <div class="nav-item">
-          <div class="nav-icon">💼</div><div class="nav-label">Career</div><div class="nav-dot"></div>
-        </div>
-        <div class="nav-item" onclick="switchTab('wellbeing', document.querySelectorAll('.screen-tab')[4])">
-          <div class="nav-icon">💚</div><div class="nav-label">Wellbeing</div><div class="nav-dot"></div>
-        </div>
+        <div class="study-badge" style="color:var(--purple);background:rgba(124,111,224,0.12)">47m</div>
       </div>
+      <div class="study-row">
+        <div class="study-dot" style="background:var(--teal)"></div>
+        <div>
+          <div class="study-sub">Java — OOP Concepts</div>
+          <div class="study-dur">2:00 PM → 2:28 PM</div>
+        </div>
+        <div class="study-badge" style="color:var(--teal);background:rgba(29,158,117,0.12)">28m</div>
+      </div>
+      <div class="study-row">
+        <div class="study-dot" style="background:var(--blue)"></div>
+        <div>
+          <div class="study-sub">DSA — In Progress 🔴</div>
+          <div class="study-dur">9:07 PM → now</div>
+        </div>
+        <div class="study-badge" style="color:var(--blue);background:rgba(91,141,239,0.12)">•••</div>
+      </div>
+
     </div>
+  </div>
 
-    <!-- ══ WELLBEING SCREEN ══ -->
-    <div class="screen" id="screen-wellbeing">
-      <div class="wellbeing-screen">
-        <div class="screen-title-row">
-          <div class="screen-title">Wellbeing</div>
-          <div class="sync-chip" style="color:var(--green);border-color:rgba(105,240,174,0.3);background:rgba(105,240,174,0.08)">✓ Eye break done</div>
+  <!-- ══ WELLBEING ══ -->
+  <div class="screen has-nav" id="screen-wellbeing">
+    <div class="app-screen">
+      <div class="screen-hdr">
+        <div class="screen-title">Wellbeing</div>
+        <div class="chip chip-teal">✓ Eye break done</div>
+      </div>
+
+      <!-- Mood -->
+      <div class="mood-card">
+        <div class="mood-title">How are you feeling today?</div>
+        <div class="mood-sub">Tap to log your mood</div>
+        <div class="mood-row">
+          <div class="mood-btn" onclick="pickMood(this,'That\'s okay. Tomorrow is a new day.')">😞</div>
+          <div class="mood-btn" onclick="pickMood(this,'Hang in there. You\'re stronger than you think.')">😕</div>
+          <div class="mood-btn sel" onclick="pickMood(this,'Decent. Keep pushing forward.')">😐</div>
+          <div class="mood-btn" onclick="pickMood(this,'Feeling good. Keep the momentum!')">🙂</div>
+          <div class="mood-btn" onclick="pickMood(this,'You\'re on fire! Ride this energy!')">😄</div>
         </div>
+        <div class="mood-feedback" id="moodFb">Decent. Keep pushing forward.</div>
+      </div>
 
-        <!-- Mood check-in -->
-        <div class="mood-card">
-          <div class="mood-title">How are you feeling today?</div>
-          <div class="mood-sub">Tap to log your mood</div>
-          <div class="mood-emojis">
-            <div class="mood-emoji" onclick="selectMood(this)">😢</div>
-            <div class="mood-emoji" onclick="selectMood(this)">😔</div>
-            <div class="mood-emoji selected" onclick="selectMood(this)">😊</div>
-            <div class="mood-emoji" onclick="selectMood(this)">😄</div>
-            <div class="mood-emoji" onclick="selectMood(this)">🤩</div>
-          </div>
+      <!-- 7-day mood chart -->
+      <div class="mood-week-card">
+        <div class="card-label">MOOD THIS WEEK</div>
+        <div class="mw-row"><div class="mw-day">Mon</div><div class="mw-track"><div class="mw-fill" style="width:80%"></div></div><div class="mw-val">😄</div></div>
+        <div class="mw-row"><div class="mw-day">Tue</div><div class="mw-track"><div class="mw-fill" style="width:40%"></div></div><div class="mw-val">😕</div></div>
+        <div class="mw-row"><div class="mw-day">Wed</div><div class="mw-track"><div class="mw-fill" style="width:60%"></div></div><div class="mw-val">🙂</div></div>
+        <div class="mw-row"><div class="mw-day">Thu</div><div class="mw-track"><div class="mw-fill" style="width:100%"></div></div><div class="mw-val">😄</div></div>
+        <div class="mw-row"><div class="mw-day">Fri</div><div class="mw-track"><div class="mw-fill" style="width:75%"></div></div><div class="mw-val">🙂</div></div>
+        <div class="mw-row"><div class="mw-day">Sat</div><div class="mw-track"><div class="mw-fill" style="width:65%"></div></div><div class="mw-val">😐</div></div>
+        <div class="mw-row"><div class="mw-day">Sun</div><div class="mw-track"><div class="mw-fill" style="width:60%;opacity:.5"></div></div><div class="mw-val">·</div></div>
+      </div>
+
+      <!-- 20-20-20 eye break reminder -->
+      <div class="eye-card">
+        <div class="eye-icon">👁️</div>
+        <div>
+          <div class="eye-title">20-20-20 Rule</div>
+          <div class="eye-desc">Look 20 ft away for 20 seconds. Next break in:</div>
         </div>
+        <div class="eye-timer">14:20</div>
+      </div>
 
-        <!-- Mood chart -->
-        <div class="wellness-bar-card">
-          <div class="w-bar-label">MOOD THIS WEEK</div>
-          <div class="w-bar-row"><div class="w-bar-day">Mon</div><div class="w-bar-track"><div class="w-bar-fill" style="width:80%"></div></div><div class="w-bar-val">😄</div></div>
-          <div class="w-bar-row"><div class="w-bar-day">Tue</div><div class="w-bar-track"><div class="w-bar-fill" style="width:40%"></div></div><div class="w-bar-val">😔</div></div>
-          <div class="w-bar-row"><div class="w-bar-day">Wed</div><div class="w-bar-track"><div class="w-bar-fill" style="width:60%"></div></div><div class="w-bar-val">😊</div></div>
-          <div class="w-bar-row"><div class="w-bar-day">Thu</div><div class="w-bar-track"><div class="w-bar-fill" style="width:100%"></div></div><div class="w-bar-val">🤩</div></div>
-          <div class="w-bar-row"><div class="w-bar-day">Fri</div><div class="w-bar-track"><div class="w-bar-fill" style="width:75%"></div></div><div class="w-bar-val">😄</div></div>
-          <div class="w-bar-row"><div class="w-bar-day">Sat</div><div class="w-bar-track"><div class="w-bar-fill" style="width:65%"></div></div><div class="w-bar-val">😊</div></div>
-          <div class="w-bar-row"><div class="w-bar-day">Sun</div><div class="w-bar-track"><div class="w-bar-fill" style="width:65%;opacity:0.5"></div></div><div class="w-bar-val">•</div></div>
+      <!-- Posture reminder -->
+      <div class="eye-card" style="border-color:rgba(239,159,39,0.2);background:linear-gradient(135deg,rgba(239,159,39,0.07),rgba(91,141,239,0.03))">
+        <div class="eye-icon">🧘</div>
+        <div>
+          <div class="eye-title" style="color:#fff">Posture Check</div>
+          <div class="eye-desc">Sit straight, roll your shoulders. Next in:</div>
         </div>
+        <div class="eye-timer" style="color:var(--amber)">32:10</div>
+      </div>
 
-        <!-- Habit streaks -->
-        <div class="streak-card">
-          <div class="streak-header">
-            <div class="streak-title">🔥 Habit Streaks</div>
-            <div class="streak-best">Longest: 14 days</div>
-          </div>
-          <div class="habit-row">
-            <div class="habit-emoji">💻</div>
+    </div>
+  </div>
+
+  <!-- ══ CAREER ══ -->
+  <div class="screen has-nav" id="screen-career">
+    <div class="app-screen">
+      <div class="screen-hdr">
+        <div class="screen-title">Growth</div>
+        <div class="chip chip-purple">🔥 7-day streak</div>
+      </div>
+
+      <!-- Career stats row -->
+      <div class="career-stats">
+        <div class="cstat">
+          <div class="cstat-val">7</div>
+          <div class="cstat-lbl">DAY STREAK</div>
+        </div>
+        <div class="cstat">
+          <div class="cstat-val" style="color:var(--teal)">3/4</div>
+          <div class="cstat-lbl">DONE TODAY</div>
+        </div>
+        <div class="cstat">
+          <div class="cstat-val" style="color:var(--amber)">14</div>
+          <div class="cstat-lbl">BEST STREAK</div>
+        </div>
+      </div>
+
+      <!-- Add new habit -->
+      <div class="add-habit-row">
+        <input class="habit-input" id="habitInput" type="text" placeholder="Add new habit…" />
+        <button class="add-btn" onclick="addHabit()">+</button>
+      </div>
+
+      <div class="sec-label">YOUR HABITS</div>
+
+      <!-- Habit list -->
+      <div id="habitList">
+        <div class="habit-card">
+          <div class="habit-emoji">💻</div>
+          <div class="habit-info">
             <div class="habit-name">Solve 1 LeetCode</div>
-            <div class="habit-streak">🔥 7</div>
-            <div class="habit-check" onclick="toggleHabit(this)">✓</div>
+            <div class="habit-streak">🔥 7 day streak</div>
           </div>
-          <div class="habit-row">
-            <div class="habit-emoji">📖</div>
+          <button class="complete-btn done" onclick="toggleHabit(this)">✓ Done</button>
+        </div>
+        <div class="habit-card">
+          <div class="habit-emoji">📖</div>
+          <div class="habit-info">
             <div class="habit-name">Read 20 pages</div>
-            <div class="habit-streak">🔥 4</div>
-            <div class="habit-check" onclick="toggleHabit(this)">✓</div>
+            <div class="habit-streak">🔥 4 day streak</div>
           </div>
-          <div class="habit-row">
-            <div class="habit-emoji">🏃</div>
+          <button class="complete-btn done" onclick="toggleHabit(this)">✓ Done</button>
+        </div>
+        <div class="habit-card">
+          <div class="habit-emoji">🏃</div>
+          <div class="habit-info">
             <div class="habit-name">Morning exercise</div>
-            <div class="habit-streak">🔥 7</div>
-            <div class="habit-check unchecked" onclick="toggleHabit(this)">○</div>
+            <div class="habit-streak">🔥 7 day streak</div>
           </div>
-          <div class="habit-row">
-            <div class="habit-emoji">🧘</div>
+          <button class="complete-btn todo" onclick="toggleHabit(this)">Complete</button>
+        </div>
+        <div class="habit-card">
+          <div class="habit-emoji">🧘</div>
+          <div class="habit-info">
             <div class="habit-name">10 min meditation</div>
-            <div class="habit-streak">🔥 3</div>
-            <div class="habit-check unchecked" onclick="toggleHabit(this)">○</div>
+            <div class="habit-streak">🔥 3 day streak</div>
           </div>
+          <button class="complete-btn done" onclick="toggleHabit(this)">✓ Done</button>
         </div>
       </div>
 
-      <!-- Bottom Nav -->
-      <div class="bottom-nav">
-        <div class="nav-item" onclick="switchTab('home', document.querySelectorAll('.screen-tab')[1])">
-          <div class="nav-icon">🏠</div><div class="nav-label">Home</div><div class="nav-dot"></div>
+    </div>
+  </div>
+
+  <!-- ══ SETTINGS ══ -->
+  <div class="screen" id="screen-settings">
+    <div class="app-screen">
+      <div class="screen-hdr">
+        <div class="screen-title">Settings</div>
+        <div class="chip chip-purple" style="cursor:pointer;" onclick="go('home')">← Back</div>
+      </div>
+
+      <!-- Career Mode Toggle -->
+      <div class="card" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <div style="flex:1">
+          <div class="card-label" style="margin-bottom:3px">GROWTH MODE</div>
+          <div style="font-size:14px; font-weight:700; color:#fff">💼 Priorities Filter</div>
+          <div style="font-size:11px; color:var(--text-3); margin-top:2px">Prioritize work apps over social media</div>
         </div>
-        <div class="nav-item" onclick="switchTab('usage', document.querySelectorAll('.screen-tab')[2])">
-          <div class="nav-icon">📱</div><div class="nav-label">Screen</div><div class="nav-dot"></div>
+        <div class="toggle-track off" id="careerToggle" onclick="this.classList.toggle('off')"></div>
+      </div>
+
+      <!-- Daily Screen Goal Card -->
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-label">DAILY SCREEN TIME GOAL</div>
+        <div style="font-size:13px; color:var(--text-2); margin-bottom:10px">Limit distracting apps usage</div>
+        <div class="goal-adjuster">
+          <button class="goal-btn" onclick="adjustGoal(-15)">−</button>
+          <div class="goal-val" id="settingsGoalVal">120 min</div>
+          <button class="goal-btn" onclick="adjustGoal(15)">+</button>
         </div>
-        <div class="nav-item" onclick="switchTab('focus', document.querySelectorAll('.screen-tab')[3])">
-          <div class="nav-icon">🎯</div><div class="nav-label">Focus</div><div class="nav-dot"></div>
-        </div>
-        <div class="nav-item">
-          <div class="nav-icon">💼</div><div class="nav-label">Career</div><div class="nav-dot"></div>
-        </div>
-        <div class="nav-item active">
-          <div class="nav-icon">💚</div><div class="nav-label">Wellbeing</div><div class="nav-dot"></div>
-        </div>
+      </div>
+
+      <!-- Security PIN Setup -->
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-label">SECURITY &amp; PIN</div>
+        <div style="font-size:13px; color:var(--text-2); margin-bottom:12px">Lock your limits configuration</div>
+        <button class="settings-btn btn-purple" onclick="setupPin()">Change PIN</button>
+      </div>
+
+      <!-- Background Service Control -->
+      <div class="card" style="margin-bottom:24px;">
+        <div class="card-label">BACKGROUND MONITOR</div>
+        <div style="font-size:13px; color:var(--text-2); margin-bottom:12px">If tracking halts, restart service</div>
+        <button class="settings-btn btn-teal" onclick="restartMonitor()">Restart Service</button>
+      </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Bottom Nav -->
+  <div class="bottom-nav" id="globalBottomNav">
+    <div class="nav-item active" onclick="go('home')">      <div class="nav-icon">🏠</div><div class="nav-lbl">Home</div>     <div class="nav-pip"></div></div>
+    <div class="nav-item"        onclick="go('screen')">    <div class="nav-icon">📱</div><div class="nav-lbl">Screen</div>   <div class="nav-pip"></div></div>
+    <div class="nav-item"        onclick="go('focus')">     <div class="nav-icon">🎯</div><div class="nav-lbl">Focus</div>    <div class="nav-pip"></div></div>
+    <div class="nav-item"        onclick="go('wellbeing')"> <div class="nav-icon">💚</div><div class="nav-lbl">Wellbeing</div><div class="nav-pip"></div></div>
+    <div class="nav-item"        onclick="go('career')">    <div class="nav-icon">💼</div><div class="nav-lbl">Growth</div>   <div class="nav-pip"></div></div>
+  </div>
+
+  <!-- App Locked overlay inside phone-frame -->
+  <div class="modal-overlay" id="appLockedOverlay" style="background:#0A0A14; align-items:center; justify-content:center; flex-direction:column; padding:24px; box-sizing:border-box; overflow-y:auto;">
+    <div style="font-size:48px; margin-bottom:12px;">🔒</div>
+    <div style="font-size:22px; font-weight:800; color:#fff; text-align:center; margin-bottom:6px;" id="tvLockedAppMock">App is locked</div>
+    <div style="font-size:12px; color:#B0B4CC; text-align:center; line-height:1.4; margin-bottom:20px;">You hit your daily limit.<br>It unlocks tomorrow. Stay strong!</div>
+    
+    <!-- Email Verification Request panel -->
+    <div id="layoutRequestEmailDetailsMock" style="width:100%; display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">
+      <div style="font-size:12px; font-weight:700; color:#fff;">Why do you need to unlock?</div>
+      <input type="text" id="etUnlockReasonMock" placeholder="e.g., Quick check on messages" style="width:100%; height:44px; background:rgba(255,255,255,0.06); border:1px solid var(--border); border-radius:10px; padding:0 12px; color:#fff; font-size:13px; box-sizing:border-box;" />
+      
+      <div style="font-size:12px; font-weight:700; color:#fff;">Select unlock duration</div>
+      <div style="display:flex; gap:12px; justify-content:center; margin-bottom:4px;">
+        <label style="color:#fff; font-size:13px; display:flex; align-items:center; gap:4px; cursor:pointer;"><input type="radio" name="durationMock" value="5" checked style="accent-color:var(--teal)" /> 5 min</label>
+        <label style="color:#fff; font-size:13px; display:flex; align-items:center; gap:4px; cursor:pointer;"><input type="radio" name="durationMock" value="15" style="accent-color:var(--teal)" /> 15 min</label>
+        <label style="color:#fff; font-size:13px; display:flex; align-items:center; gap:4px; cursor:pointer;"><input type="radio" name="durationMock" value="30" style="accent-color:var(--teal)" /> 30 min</label>
+      </div>
+      
+      <button class="settings-btn btn-teal" style="width:100%; height:48px;" onclick="sendEmailMock()">📧 Send Verification Email</button>
+    </div>
+    
+    <!-- Email Verification Sent/Waiting panel -->
+    <div id="layoutEmailSentMock" style="width:100%; display:none; flex-direction:column; align-items:center; text-align:center; gap:12px; margin-bottom:16px;">
+      <div style="font-size:28px;">✉️</div>
+      <div style="font-size:12px; color:#fff; line-height:1.5;" id="tvEmailSentMessageMock">Verification link sent to ramcharan@gmail.com! Please check your email or click the notification banner to verify.</div>
+      <div style="display:flex; gap:8px; align-items:center; margin-top:4px;">
+        <div style="width:16px; height:16px; border:2px solid var(--teal); border-top-color:transparent; border-radius:50%; animation: spin 1s linear infinite;"></div>
+        <div style="font-size:11px; color:#B0B4CC; font-style:italic;">Waiting for verification link click...</div>
       </div>
     </div>
 
+    <button class="settings-btn" style="width:100%; height:48px; background:rgba(255,255,255,0.06); border:none; margin-bottom:12px; color:#fff" onclick="document.getElementById('appLockedOverlay').classList.remove('show'); go('home')">🏠 Go to Home Screen</button>
+  </div>
+
+  <!-- Google Account Picker Bottom Sheet Modal -->
+  <div class="modal-overlay" id="googlePickerModal">
+      <div class="modal-card">
+        <div class="modal-hdr">
+          <div class="modal-title">Sign in with Google</div>
+          <div class="modal-close" onclick="showGooglePicker(false)">✕</div>
+        </div>
+        <div class="account-list">
+          <div class="account-item" onclick="selectGoogleAccount('Ram Charan', 'ramcharan@gmail.com')">
+            <div class="account-avatar" style="background:#0D9488">R</div>
+            <div class="account-info">
+              <div class="account-name">Ram Charan</div>
+              <div class="account-email">ramcharan@gmail.com</div>
+            </div>
+          </div>
+          <div class="account-item" onclick="alert('Google Play Services redirecting to login page...')">
+            <div class="account-avatar" style="background:var(--text-3)">+</div>
+            <div class="account-info">
+              <div class="account-name">Add another account</div>
+              <div class="account-email">Use a different Google account</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div><!-- /phone-frame -->
 </div><!-- /phone-wrap -->
 
 <script>
-  function switchTab(screenId, tabEl) {
-    // Hide all screens
+  /* ── Screen switcher ── */
+  const SCREEN_MAP = {
+    splash:0, onboarding:1, home:2, screen:3, focus:4, wellbeing:5, career:6, settings:7
+  };
+  const tabs = document.querySelectorAll('.screen-tab');
+  const bottomNavItems = document.querySelectorAll('#globalBottomNav .nav-item');
+  const BOTTOM_NAV_MAP = {
+    home: 0, screen: 1, focus: 2, wellbeing: 3, career: 4
+  };
+
+  function go(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    // Deactivate all tabs
-    document.querySelectorAll('.screen-tab').forEach(t => t.classList.remove('active'));
-    // Show target
-    document.getElementById('screen-' + screenId).classList.add('active');
-    if (tabEl) tabEl.classList.add('active');
-  }
-
-  function toggleFocus() {
-    const t = document.getElementById('focusToggle');
-    t.classList.toggle('off');
-  }
-
-  function selectMood(el) {
-    document.querySelectorAll('.mood-emoji').forEach(e => e.classList.remove('selected'));
-    el.classList.add('selected');
-  }
-
-  function toggleHabit(el) {
-    const isChecked = !el.classList.contains('unchecked');
-    if (isChecked) {
-      el.classList.add('unchecked');
-      el.textContent = '○';
+    document.getElementById('screen-' + id).classList.add('active');
+    
+    // Debug tabs outside phone frame
+    tabs.forEach(t => t.classList.remove('active'));
+    if (SCREEN_MAP[id] !== undefined) {
+      tabs[SCREEN_MAP[id]].classList.add('active');
+    }
+    
+    // Global bottom nav inside phone frame
+    bottomNavItems.forEach(item => item.classList.remove('active'));
+    if (BOTTOM_NAV_MAP[id] !== undefined) {
+      bottomNavItems[BOTTOM_NAV_MAP[id]].classList.add('active');
+    }
+    
+    // Toggle global bottom nav visibility
+    const NAV_SCREENS = ['home', 'screen', 'focus', 'wellbeing', 'career'];
+    const bottomNav = document.getElementById('globalBottomNav');
+    if (NAV_SCREENS.includes(id)) {
+      bottomNav.classList.add('visible');
     } else {
-      el.classList.remove('unchecked');
-      el.textContent = '✓';
+      bottomNav.classList.remove('visible');
     }
   }
 
-  // Auto-advance splash → home after 2.5s
+  function getTab(id) { return tabs[SCREEN_MAP[id]]; }
+
+  /* ── Settings Controls ── */
+  let dailyGoalMin = 120;
+  function adjustGoal(amount) {
+    dailyGoalMin += amount;
+    if (dailyGoalMin < 15) dailyGoalMin = 15;
+    if (dailyGoalMin > 480) dailyGoalMin = 480;
+    document.getElementById('settingsGoalVal').textContent = dailyGoalMin + ' min';
+  }
+
+  function setupPin() {
+    const pin = prompt("Enter new 4-digit security PIN:", "1234");
+    if (pin && pin.length >= 4) {
+      alert("PIN saved successfully! Your configuration limits are locked.");
+    } else if (pin) {
+      alert("PIN must be at least 4 digits.");
+    }
+  }
+
+  function restartMonitor() {
+    alert("Usage Monitor Service restarted! Tracking active.");
+  }
+
+  /* ── Live clock in status bar ── */
+  function updateClock() {
+    const now = new Date();
+    let h = now.getHours(), m = now.getMinutes();
+    document.getElementById('clockTime').textContent =
+      h + ':' + String(m).padStart(2,'0');
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+
+  /* ── Home day of week ── */
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  document.getElementById('tvGreeting').textContent = "Good day — " + days[new Date().getDay()];
+
+  /* ── Auto-advance splash → home ── */
   setTimeout(() => {
-    const splashTab = document.querySelector('.screen-tab');
-    if (splashTab.classList.contains('active')) {
-      switchTab('home', document.querySelectorAll('.screen-tab')[1]);
+    if (document.getElementById('screen-splash').classList.contains('active')) {
+      go('home');
     }
   }, 2500);
+
+  /* ── Onboarding ── */
+  const ob = [
+    { icon:'⏱️', title:'Take Back Your Time',
+      desc:'Zenith tracks every minute on social media — no judgment, just clarity.' },
+    { icon:'🔒', title:'Set Limits. Lock Apps.',
+      desc:'Set daily time limits. When you hit them, the app locks itself — automatically.' },
+    { icon:'🚀', title:'Focus. Grow. Rise.',
+      desc:'Pomodoro, habit tracking, skill timer, mood check-ins — everything to reach your peak.' }
+  ];
+  let obPage = 0;
+
+  function obNext() {
+    obPage++;
+    if (obPage >= ob.length) { go('home'); obPage = 0; return; }
+    document.getElementById('obIcon').textContent  = ob[obPage].icon;
+    document.getElementById('obTitle').textContent = ob[obPage].title;
+    document.getElementById('obDesc').textContent  = ob[obPage].desc;
+    
+    const onFinalPage = obPage === ob.length - 1;
+    document.getElementById('obBtn').style.display = onFinalPage ? 'none' : 'block';
+    document.getElementById('obGoogleBtn').style.display = onFinalPage ? 'flex' : 'none';
+    
+    [0,1,2].forEach(i => {
+      document.getElementById('obDot'+i).classList.toggle('active', i===obPage);
+    });
+  }
+
+  /* ── Mood selector ── */
+  function pickMood(el, msg) {
+    document.querySelectorAll('#screen-wellbeing .mood-btn').forEach(b => b.classList.remove('sel'));
+    el.classList.add('sel');
+    document.getElementById('moodFb').textContent = msg;
+  }
+
+  /* ── Career: toggle habit ── */
+  function toggleHabit(btn) {
+    const isDone = btn.classList.contains('done');
+    if (isDone) {
+      btn.classList.replace('done','todo');
+      btn.textContent = 'Complete';
+    } else {
+      btn.classList.replace('todo','done');
+      btn.textContent = '✓ Done';
+    }
+  }
+
+  /* ── Career: add habit ── */
+  const emojis = ['⭐','💡','📝','🎵','🏋️','🌿','🔧','📐','💪','🎯'];
+  function addHabit() {
+    const inp = document.getElementById('habitInput');
+    const name = inp.value.trim();
+    if (!name) return;
+    const list = document.getElementById('habitList');
+    const emoji = emojis[list.children.length % emojis.length];
+    const card = document.createElement('div');
+    card.className = 'habit-card';
+    card.style.animation = 'slideIn .3s ease';
+    card.innerHTML = `
+      <div class="habit-emoji">${emoji}</div>
+      <div class="habit-info">
+        <div class="habit-name">${name}</div>
+        <div class="habit-streak">🔥 0 day streak</div>
+      </div>
+      <button class="complete-btn todo" onclick="toggleHabit(this)">Complete</button>`;
+    list.appendChild(card);
+    inp.value = '';
+    inp.focus();
+  }
+
+  /* Allow pressing Enter to add habit */
+  document.getElementById('habitInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addHabit();
+  });
+
+  /* Toggle dark mode class on body */
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark');
+  }
+
+  /* ── Google Account Picker ── */
+  function showGooglePicker(show) {
+    document.getElementById('googlePickerModal').classList.toggle('show', show);
+  }
+
+  let mockUnlockDuration = 5;
+  let mockUnlockReason = "";
+  let mockLockedAppName = "Instagram";
+
+  function sendEmailMock() {
+    const reason = document.getElementById('etUnlockReasonMock').value.trim();
+    if (reason === "") {
+      alert("Please enter a reason to unlock the app.");
+      return;
+    }
+    mockUnlockReason = reason;
+    
+    const radios = document.getElementsByName('durationMock');
+    for (let r of radios) {
+      if (r.checked) {
+        mockUnlockDuration = parseInt(r.value);
+        break;
+      }
+    }
+
+    alert("Verification email sent to ramcharan@gmail.com!");
+    
+    const banner = document.getElementById('mockEmailNotification');
+    document.getElementById('tvNotificationContentMock').textContent = "Click here to approve unlock request for " + mockLockedAppName + " (" + mockUnlockDuration + "m)";
+    banner.style.top = '16px';
+
+    document.getElementById('layoutRequestEmailDetailsMock').style.display = 'none';
+    document.getElementById('layoutEmailSentMock').style.display = 'flex';
+  }
+
+  function triggerVerificationMock() {
+    document.getElementById('mockEmailNotification').style.top = '-80px';
+    alert("Email verification confirmed! App unlocked successfully for " + mockUnlockDuration + " minutes.");
+    
+    const testTimeoutSeconds = mockUnlockDuration;
+    alert("Demo Mode: " + mockLockedAppName + " will automatically re-lock in " + testTimeoutSeconds + " seconds!");
+    
+    document.getElementById('appLockedOverlay').classList.remove('show');
+    
+    document.getElementById('layoutRequestEmailDetailsMock').style.display = 'flex';
+    document.getElementById('layoutEmailSentMock').style.display = 'none';
+    document.getElementById('etUnlockReasonMock').value = '';
+    
+    setTimeout(() => {
+      triggerMockLock(mockLockedAppName);
+    }, testTimeoutSeconds * 1000);
+    
+    go('home');
+  }
+
+  function triggerMockLock(appName) {
+    mockLockedAppName = appName;
+    document.getElementById('tvLockedAppMock').textContent = "🔒 " + appName + " is locked";
+    document.getElementById('appLockedOverlay').classList.add('show');
+  }
+
+  function selectGoogleAccount(name, email) {
+    showGooglePicker(false);
+    
+    const frame = document.querySelector('.phone-frame');
+    const loading = document.createElement('div');
+    loading.style.position = 'absolute';
+    loading.style.top = '0'; loading.style.left = '0'; loading.style.right = '0'; loading.style.bottom = '0';
+    loading.style.background = 'var(--dark)';
+    loading.style.zIndex = '500';
+    loading.style.display = 'flex';
+    loading.style.flexDirection = 'column';
+    loading.style.alignItems = 'center';
+    loading.style.justifyContent = 'center';
+    loading.style.gap = '14px';
+    loading.innerHTML = `
+      <div style="font-size:24px; animation:spin 1s linear infinite">⏳</div>
+      <div style="font-size:13px; font-weight:700; color:var(--text-2)">Signing in as ${name}...</div>
+      <style>
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+      </style>
+    `;
+    frame.appendChild(loading);
+    
+    setTimeout(() => {
+      loading.remove();
+      go('home');
+    }, 1500);
+  }
 </script>
 </body>
 </html>

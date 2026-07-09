@@ -34,4 +34,7 @@ public interface AppUsageDao {
 
     @Query("SELECT * FROM app_usage WHERE date = :date AND isCareerApp = 1")
     List<AppUsageEntity> getCareerAppsForDate(String date);
+
+    @Query("SELECT * FROM app_usage WHERE date = :date ORDER BY usageTimeMillis DESC")
+    List<AppUsageEntity> getUsageForDateSync(String date);
 }

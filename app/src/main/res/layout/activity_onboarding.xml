@@ -51,4 +51,16 @@
         android:backgroundTint="@color/zenith_purple"
         android:textColor="@color/white"
         android:textSize="16sp"/>
+
+    <Button
+        android:id="@+id/btnGoogleSignIn"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Sign in with Google"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        android:elevation="2dp"/>
 </LinearLayout>
