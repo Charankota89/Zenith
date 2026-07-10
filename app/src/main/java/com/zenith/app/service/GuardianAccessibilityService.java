@@ -63,19 +63,31 @@ public class GuardianAccessibilityService extends AccessibilityService {
     private static final List<String> BROWSER_PKGS = Arrays.asList(
         "com.android.chrome",
         "org.mozilla.firefox",
+        "org.mozilla.focus",
         "com.microsoft.emmx",
         "com.opera.browser",
         "com.brave.browser",
         "com.sec.android.app.sbrowser",
-        "com.UCMobile.intl"
+        "com.UCMobile.intl",
+        "com.duckduckgo.mobile.android"
     );
 
-    // URL bar node IDs for Chrome
+    // URL bar node IDs for major browsers
     private static final List<String> URL_BAR_IDS = Arrays.asList(
         "com.android.chrome:id/url_bar",
         "org.mozilla.firefox:id/mozac_browser_toolbar_url_view",
+        "org.mozilla.focus:id/urlView",
+        "org.mozilla.focus:id/mozac_browser_toolbar_url_view",
         "com.microsoft.emmx:id/url_bar",
-        "com.brave.browser:id/url_bar"
+        "com.brave.browser:id/url_bar",
+        "com.sec.android.app.sbrowser:id/location_bar_edit_text",
+        "com.sec.android.app.sbrowser:id/url_bar",
+        "com.sec.android.app.sbrowser:id/url_text",
+        "com.opera.browser:id/url_field",
+        "com.opera.browser:id/url_bar",
+        "com.UCMobile.intl:id/url_bar",
+        "com.UCMobile.intl:id/search_btn",
+        "com.duckduckgo.mobile.android:id/omnibarTextInput"
     );
 
     @Override
@@ -150,8 +162,23 @@ public class GuardianAccessibilityService extends AccessibilityService {
 
     private String findUrlInTree(AccessibilityNodeInfo node) {
         if (node == null) return null;
+        
         CharSequence txt = node.getText();
-        if (txt != null && isLikelyUrl(txt.toString())) return txt.toString();
+        if (txt != null) {
+            String val = txt.toString().trim();
+            if (isLikelyUrl(val)) return val;
+            
+            // Fallback resource name checking for custom browser URL fields
+            String resId = node.getViewIdResourceName();
+            if (resId != null) {
+                String idLower = resId.toLowerCase();
+                if ((idLower.contains("url") || idLower.contains("location") || idLower.contains("address") || idLower.contains("search"))
+                    && val.length() > 3 && val.contains(".") && !val.contains(" ")) {
+                    return val;
+                }
+            }
+        }
+        
         for (int i = 0; i < node.getChildCount(); i++) {
             String found = findUrlInTree(node.getChild(i));
             if (found != null) return found;

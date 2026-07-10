@@ -70,6 +70,9 @@ dependencies {
     // Gson
     implementation("com.google.code.gson:gson:2.11.0")
 
+    // Google Sign In Client
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
