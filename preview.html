@@ -10,36 +10,36 @@
      DESIGN TOKENS — match colors.xml
   ══════════════════════════════════════ */
   :root {
-    --purple:      #0D9488;
-    --purple-glow: rgba(13,148,136,0.35);
-    --teal:        #14B8A6;
-    --teal-glow:   rgba(20,184,166,0.25);
+    --purple:      #6366F1;
+    --purple-glow: rgba(99,102,241,0.35);
+    --teal:        #10B981;
+    --teal-glow:   rgba(16,185,129,0.25);
     --amber:       #F59E0B;
     --amber-glow:  rgba(245,158,11,0.2);
     --coral:       #EF4444;
     --coral-glow:  rgba(239,68,68,0.25);
-    --blue:        #06B6D4;
-    --blue-glow:   rgba(6,182,212,0.25);
-    --dark:        #FDFBF7;
-    --card-dark:   rgba(255, 255, 255, 0.55);
-    --surface:     rgba(255, 255, 255, 0.7);
-    --border:      rgba(13, 148, 136, 0.08);
-    --text-1:      #111B18;
-    --text-2:      #374151;
-    --text-3:      #6B7280;
-    --lavender:    #FDFBF7;
+    --blue:        #0EA5E9;
+    --blue-glow:   rgba(14,165,233,0.25);
+    --dark:        #F8FAFC;
+    --card-dark:   rgba(255, 255, 255, 0.7);
+    --surface:     rgba(255, 255, 255, 0.85);
+    --border:      rgba(99, 102, 241, 0.08);
+    --text-1:      #0F172A;
+    --text-2:      #475569;
+    --text-3:      #94A3B8;
+    --lavender:    #F8FAFC;
   }
 
   body.dark {
-    --dark:        #0A1210;
-    --card-dark:   rgba(20, 32, 28, 0.6);
-    --surface:     rgba(30, 48, 42, 0.75);
-    --border:      rgba(20, 184, 166, 0.15);
-    --text-1:      #F3F4F6;
-    --text-2:      #D1D5DB;
-    --text-3:      #9CA3AF;
-    --lavender:    #0A1210;
-    background:    #060A09 !important;
+    --dark:        #0F172A;
+    --card-dark:   rgba(30, 41, 59, 0.6);
+    --surface:     rgba(15, 23, 42, 0.75);
+    --border:      rgba(99, 102, 241, 0.15);
+    --text-1:      #F8FAFC;
+    --text-2:      #CBD5E1;
+    --text-3:      #94A3B8;
+    --lavender:    #0F172A;
+    background:    #090D16 !important;
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -1169,7 +1169,7 @@
     <!-- Email Verification Sent/Waiting panel -->
     <div id="layoutEmailSentMock" style="width:100%; display:none; flex-direction:column; align-items:center; text-align:center; gap:12px; margin-bottom:16px;">
       <div style="font-size:28px;">✉️</div>
-      <div style="font-size:12px; color:#fff; line-height:1.5;" id="tvEmailSentMessageMock">Verification link sent to ramcharan@gmail.com! Please check your email or click the notification banner to verify.</div>
+      <div style="font-size:12px; color:#fff; line-height:1.5;" id="tvEmailSentMessageMock">Verification link sent to active.session@gmail.com! Please check your email or click the notification banner to verify.</div>
       <div style="display:flex; gap:8px; align-items:center; margin-top:4px;">
         <div style="width:16px; height:16px; border:2px solid var(--teal); border-top-color:transparent; border-radius:50%; animation: spin 1s linear infinite;"></div>
         <div style="font-size:11px; color:#B0B4CC; font-style:italic;">Waiting for verification link click...</div>
@@ -1187,11 +1187,11 @@
           <div class="modal-close" onclick="showGooglePicker(false)">✕</div>
         </div>
         <div class="account-list">
-          <div class="account-item" onclick="selectGoogleAccount('Ram Charan', 'ramcharan@gmail.com')">
-            <div class="account-avatar" style="background:#0D9488">R</div>
+          <div class="account-item" onclick="selectGoogleAccount('Google User', 'active.session@gmail.com')">
+            <div class="account-avatar" style="background:#6366F1">G</div>
             <div class="account-info">
-              <div class="account-name">Ram Charan</div>
-              <div class="account-email">ramcharan@gmail.com</div>
+              <div class="account-name">Google User</div>
+              <div class="account-email">active.session@gmail.com</div>
             </div>
           </div>
           <div class="account-item" onclick="alert('Google Play Services redirecting to login page...')">
@@ -1393,7 +1393,7 @@
       }
     }
 
-    alert("Verification email sent to ramcharan@gmail.com!");
+    alert("Verification email sent to active.session@gmail.com!");
     
     const banner = document.getElementById('mockEmailNotification');
     document.getElementById('tvNotificationContentMock').textContent = "Click here to approve unlock request for " + mockLockedAppName + " (" + mockUnlockDuration + "m)";
