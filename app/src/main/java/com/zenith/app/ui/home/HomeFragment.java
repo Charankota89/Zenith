@@ -36,6 +36,19 @@ public class HomeFragment extends Fragment {
         binding.tvGreeting.setText("Good day — " + TimeUtils.getDayOfWeek());
         binding.tvTagline.setText("Rise above. Stay focused.");
 
+        // Staggered entering animations for cards
+        android.view.animation.Animation anim1 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up_fade_in);
+        android.view.animation.Animation anim2 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up_fade_in);
+        android.view.animation.Animation anim3 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up_fade_in);
+
+        anim1.setStartOffset(100);
+        anim2.setStartOffset(200);
+        anim3.setStartOffset(300);
+
+        binding.cardScreenTime.startAnimation(anim1);
+        binding.cardHabits.startAnimation(anim2);
+        binding.cardStudyTime.startAnimation(anim3);
+
         binding.btnSettings.setOnClickListener(v -> {
             getParentFragmentManager()
                 .beginTransaction()

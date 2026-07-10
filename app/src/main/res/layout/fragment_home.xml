@@ -53,6 +53,7 @@
 
         <!-- Screen Time Card -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardScreenTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
@@ -84,6 +85,7 @@
 
         <!-- Habits Card -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardHabits"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
@@ -115,6 +117,7 @@
 
         <!-- Study Time Card -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardStudyTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"

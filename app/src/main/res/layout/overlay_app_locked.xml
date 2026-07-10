@@ -6,6 +6,7 @@
     android:background="#F20A0A14">
 
     <LinearLayout
+        android:id="@+id/layoutLockContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

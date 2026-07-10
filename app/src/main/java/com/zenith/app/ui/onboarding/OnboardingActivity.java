@@ -69,21 +69,55 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void showPage(int page) {
         currentPage = page;
+        
+        // If it's the first page load, set the content without slide-out animation
+        if (page == 0) {
+            updatePageData(page);
+            return;
+        }
+
+        // Page change transitions: slide out to the left, reset to the right, slide in
+        binding.tvTitle.animate().alpha(0f).translationX(-50f).setDuration(150).withEndAction(() -> {
+            updatePageData(page);
+            binding.tvTitle.setTranslationX(50f);
+            binding.tvTitle.animate().alpha(1f).translationX(0f).setDuration(250).start();
+        }).start();
+
+        binding.tvDesc.animate().alpha(0f).translationX(-50f).setDuration(150).withEndAction(() -> {
+            binding.tvDesc.setTranslationX(50f);
+            binding.tvDesc.animate().alpha(1f).translationX(0f).setDuration(250).start();
+        }).start();
+    }
+
+    private void updatePageData(int page) {
         binding.tvTitle.setText(titles[page]);
         binding.tvDesc.setText(descs[page]);
         if (page == titles.length - 1) {
             binding.btnNext.setVisibility(View.GONE);
             binding.btnGoogleSignIn.setVisibility(View.VISIBLE);
+            binding.btnGoogleSignIn.setAlpha(0f);
+            binding.btnGoogleSignIn.animate().alpha(1f).setDuration(250).start();
         } else {
             binding.btnNext.setVisibility(View.VISIBLE);
             binding.btnNext.setText("Next");
             binding.btnGoogleSignIn.setVisibility(View.GONE);
         }
 
-        // Simple dot indicators
-        binding.dot1.setAlpha(page == 0 ? 1f : 0.3f);
-        binding.dot2.setAlpha(page == 1 ? 1f : 0.3f);
-        binding.dot3.setAlpha(page == 2 ? 1f : 0.3f);
+        // Scale and fade dot indicators
+        animateDot(binding.dot1, page == 0);
+        animateDot(binding.dot2, page == 1);
+        animateDot(binding.dot3, page == 2);
+    }
+
+    private void animateDot(View dot, boolean active) {
+        float targetAlpha = active ? 1.0f : 0.3f;
+        float targetScale = active ? 1.3f : 1.0f;
+        dot.animate()
+            .alpha(targetAlpha)
+            .scaleX(targetScale)
+            .scaleY(targetScale)
+            .setDuration(200)
+            .start();
     }
 
     private void finishOnboarding() {

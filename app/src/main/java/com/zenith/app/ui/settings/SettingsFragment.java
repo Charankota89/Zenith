@@ -51,6 +51,25 @@ public class SettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Staggered entering animations for settings cards
+        android.view.animation.Animation a1 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), com.zenith.app.R.anim.slide_up_fade_in);
+        android.view.animation.Animation a2 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), com.zenith.app.R.anim.slide_up_fade_in);
+        android.view.animation.Animation a3 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), com.zenith.app.R.anim.slide_up_fade_in);
+        android.view.animation.Animation a4 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), com.zenith.app.R.anim.slide_up_fade_in);
+        android.view.animation.Animation a5 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), com.zenith.app.R.anim.slide_up_fade_in);
+
+        a1.setStartOffset(50);
+        a2.setStartOffset(100);
+        a3.setStartOffset(150);
+        a4.setStartOffset(200);
+        a5.setStartOffset(250);
+
+        binding.cardGrowthMode.startAnimation(a1);
+        binding.cardDailyGoal.startAnimation(a2);
+        binding.cardSecurity.startAnimation(a3);
+        binding.cardExport.startAnimation(a4);
+        binding.cardService.startAnimation(a5);
+
         SharedPreferences prefs = requireContext()
             .getSharedPreferences(AppConstants.PREF_NAME, Context.MODE_PRIVATE);
 

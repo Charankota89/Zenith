@@ -19,6 +19,7 @@ public class FocusFragment extends Fragment {
 
     private FragmentFocusBinding binding;
     private FocusViewModel       vm;
+    private android.animation.AnimatorSet timerPulsingAnimator;
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,15 +60,18 @@ public class FocusFragment extends Fragment {
                     binding.btnStart.setText("⏸ Pause");
                     binding.btnStop.setEnabled(true);
                     binding.tvTimerLabel.setText("Focus Time");
+                    startTimerPulsing();
                     break;
                 case PAUSED:
                     binding.btnStart.setText("▶ Resume");
                     binding.btnStop.setEnabled(true);
                     binding.tvTimerLabel.setText("Paused");
+                    stopTimerPulsing();
                     break;
                 case BREAK:
                     binding.btnStart.setEnabled(false);
                     binding.tvTimerLabel.setText("Break Time 🌿");
+                    stopTimerPulsing();
                     break;
                 case IDLE:
                 default:
@@ -75,6 +79,7 @@ public class FocusFragment extends Fragment {
                     binding.btnStart.setEnabled(true);
                     binding.btnStop.setEnabled(false);
                     binding.tvTimerLabel.setText("Pomodoro Timer");
+                    stopTimerPulsing();
                     break;
             }
         });
@@ -114,9 +119,36 @@ public class FocusFragment extends Fragment {
             .show();
     }
 
+    private void startTimerPulsing() {
+        if (timerPulsingAnimator != null && timerPulsingAnimator.isRunning()) return;
+        
+        android.animation.ObjectAnimator scaleX = android.animation.ObjectAnimator.ofFloat(binding.tvTimerDisplay, "scaleX", 1.0f, 1.04f, 1.0f);
+        android.animation.ObjectAnimator scaleY = android.animation.ObjectAnimator.ofFloat(binding.tvTimerDisplay, "scaleY", 1.0f, 1.04f, 1.0f);
+        scaleX.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+        scaleY.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+        
+        timerPulsingAnimator = new android.animation.AnimatorSet();
+        timerPulsingAnimator.playTogether(scaleX, scaleY);
+        timerPulsingAnimator.setDuration(1200);
+        timerPulsingAnimator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+        timerPulsingAnimator.start();
+    }
+
+    private void stopTimerPulsing() {
+        if (timerPulsingAnimator != null) {
+            timerPulsingAnimator.cancel();
+            timerPulsingAnimator = null;
+        }
+        if (binding != null && binding.tvTimerDisplay != null) {
+            binding.tvTimerDisplay.setScaleX(1.0f);
+            binding.tvTimerDisplay.setScaleY(1.0f);
+        }
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        stopTimerPulsing();
         binding = null;
     }
 }

@@ -278,6 +278,10 @@ public class GuardianAccessibilityService extends AccessibilityService {
                     android.widget.EditText etReason = lockerOverlay.findViewById(R.id.etUnlockReason);
                     String reasonText = etReason.getText().toString().trim();
                     if (reasonText.isEmpty()) {
+                        // Shake feedback on empty input
+                        android.view.animation.Animation shake = android.view.animation.AnimationUtils
+                            .loadAnimation(this, R.anim.shake);
+                        etReason.startAnimation(shake);
                         android.widget.Toast.makeText(this, "Please enter a reason to unlock the app.", android.widget.Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -299,8 +303,13 @@ public class GuardianAccessibilityService extends AccessibilityService {
                     ((TextView) lockerOverlay.findViewById(R.id.tvEmailSentMessage))
                         .setText("Verification link sent to " + email + "!\nPlease check your email (or tap the verification notification banner above) to verify and unlock.");
                     
-                    layoutDetails.setVisibility(View.GONE);
-                    layoutEmailSent.setVisibility(View.VISIBLE);
+                    // Crossfade animation between details inputs and email sent state
+                    layoutDetails.animate().alpha(0f).setDuration(200).withEndAction(() -> {
+                        layoutDetails.setVisibility(View.GONE);
+                        layoutEmailSent.setVisibility(View.VISIBLE);
+                        layoutEmailSent.setAlpha(0f);
+                        layoutEmailSent.animate().alpha(1f).setDuration(200).start();
+                    }).start();
                 });
             }
 
@@ -312,6 +321,14 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 removeLocker();
                 performGlobalAction(GLOBAL_ACTION_HOME);
             });
+
+            // Entrance slide-up animation for dialog container
+            View lockContainer = lockerOverlay.findViewById(R.id.layoutLockContainer);
+            if (lockContainer != null) {
+                android.view.animation.Animation anim = android.view.animation.AnimationUtils
+                    .loadAnimation(this, R.anim.slide_up_fade_in);
+                lockContainer.startAnimation(anim);
+            }
 
             WindowManager.LayoutParams p = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
