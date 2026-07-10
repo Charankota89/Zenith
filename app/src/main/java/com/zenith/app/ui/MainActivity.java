@@ -149,4 +149,8 @@ public class MainActivity extends AppCompatActivity {
         currentTabIndex = newIndex;
         transaction.replace(R.id.fragmentContainer, f).commit();
     }
+
+    public void navigateToTab(int navItemId) {
+        binding.bottomNav.setSelectedItemId(navItemId);
+    }
 }

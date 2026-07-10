@@ -14,6 +14,16 @@ import com.zenith.app.util.TimeUtils;
 
 public class AppUsageAdapter extends ListAdapter<AppUsageEntity, AppUsageAdapter.VH> {
 
+    public interface OnItemClickListener {
+        void onItemClick(AppUsageEntity entity);
+    }
+
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
     public AppUsageAdapter() { super(DIFF); }
 
     @NonNull @Override
@@ -24,7 +34,13 @@ public class AppUsageAdapter extends ListAdapter<AppUsageEntity, AppUsageAdapter
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
-        holder.bind(getItem(position), position);
+        AppUsageEntity item = getItem(position);
+        holder.bind(item, position);
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null && position != RecyclerView.NO_POSITION) {
+                listener.onItemClick(item);
+            }
+        });
     }
 
     static class VH extends RecyclerView.ViewHolder {

@@ -51,6 +51,52 @@
                 android:tint="@color/zenith_purple"/>
         </RelativeLayout>
 
+        <!-- Permission warning card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardPermissionWarning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#2D1F24"
+            android:visibility="gone"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <TextView
+                    android:id="@+id/tvPermissionTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚠️ System Permissions Required"
+                    android:textColor="#FCA5A5"
+                    android:textStyle="bold"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:id="@+id/tvPermissionDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Zenith needs Accessibility Service to track active apps and Overlay permission to display lock screens. Tap below to configure."
+                    android:textColor="#FECACA"
+                    android:textSize="12sp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGrantPermissions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Enable Zenith Protector"
+                    android:textSize="12sp"
+                    app:backgroundTint="#EF4444"
+                    app:cornerRadius="8dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
         <!-- Screen Time Card -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardScreenTime"
@@ -59,13 +105,14 @@
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/surface_card"
             xmlns:app="http://schemas.android.com/apk/res-auto">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="20dp"
-                android:background="@color/white">
+                android:background="@color/surface_card">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -91,13 +138,14 @@
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/surface_card"
             xmlns:app="http://schemas.android.com/apk/res-auto">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="20dp"
-                android:background="@color/white">
+                android:background="@color/surface_card">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -123,13 +171,14 @@
             android:layout_marginBottom="12dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/surface_card"
             xmlns:app="http://schemas.android.com/apk/res-auto">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="20dp"
-                android:background="@color/white">
+                android:background="@color/surface_card">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

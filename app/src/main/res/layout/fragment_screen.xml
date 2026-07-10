@@ -45,7 +45,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#1A1845"
+            android:background="@color/surface_card"
             android:padding="20dp"
             android:orientation="vertical"
             android:gravity="center"
@@ -96,7 +96,8 @@
             android:id="@+id/rvAppUsage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
+            android:nestedScrollingEnabled="false"
+            android:layoutAnimation="@anim/layout_fall_down"/>
 
         <!-- Divider -->
         <View
@@ -138,7 +139,8 @@
             android:id="@+id/rvBrowserVisits"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
+            android:nestedScrollingEnabled="false"
+            android:layoutAnimation="@anim/layout_fall_down"/>
 
         <!-- Empty state for browser -->
         <TextView
