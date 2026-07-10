@@ -1,184 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="32dp"
+    android:fillViewport="true"
     android:background="#F20A0A14">
 
-    <!-- Lock icon -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="🔒"
-        android:textSize="56sp"
-        android:gravity="center"
-        android:layout_marginBottom="20dp"/>
-
-    <TextView
-        android:id="@+id/tvLockedApp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="App is locked"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:gravity="center"
-        android:layout_marginBottom="10dp"/>
-
-    <TextView
-        android:id="@+id/tvLockedReason"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="You set this limit — keep going."
-        android:textSize="15sp"
-        android:textColor="#B0B4CC"
-        android:gravity="center"
-        android:lineSpacingMultiplier="1.4"
-        android:layout_marginBottom="48dp"/>
-
-    <Button
-        android:id="@+id/btnGoHome"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:text="🏠  Go to Home Screen"
-        android:backgroundTint="#7C6FE0"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:layout_marginBottom="12dp"/>
-
-    <!-- Unlock details input before requesting email link -->
     <LinearLayout
-        android:id="@+id/layoutRequestEmailDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginBottom="12dp"
-        android:visibility="visible">
+        android:gravity="center"
+        android:padding="32dp">
 
+        <!-- Lock icon -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Why do you need to unlock?"
-            android:textColor="#FFFFFF"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="6dp"/>
-
-        <EditText
-            android:id="@+id/etUnlockReason"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:hint="e.g., Quick check on messages"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#B0B4CC"
-            android:backgroundTint="#0D9488"
-            android:textSize="14sp"
-            android:layout_marginBottom="12dp"
-            android:inputType="text"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select unlock duration"
-            android:textColor="#FFFFFF"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Select duration radio items -->
-        <RadioGroup
-            android:id="@+id/rgDuration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:text="🔒"
+            android:textSize="56sp"
             android:gravity="center"
-            android:layout_marginBottom="16dp">
-            <RadioButton
-                android:id="@+id/rb5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="5 min"
-                android:textColor="#FFFFFF"
-                android:buttonTint="#0D9488"
-                android:checked="true"/>
-            <RadioButton
-                android:id="@+id/rb15"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="15 min"
-                android:textColor="#FFFFFF"
-                android:buttonTint="#0D9488"
-                android:layout_marginStart="8dp"/>
-            <RadioButton
-                android:id="@+id/rb30"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="30 min"
-                android:textColor="#FFFFFF"
-                android:buttonTint="#0D9488"
-                android:layout_marginStart="8dp"/>
-        </RadioGroup>
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:id="@+id/tvLockedApp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="App is locked"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/tvLockedReason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You set this limit — keep going."
+            android:textSize="15sp"
+            android:textColor="#B0B4CC"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.4"
+            android:layout_marginBottom="48dp"/>
 
         <Button
-            android:id="@+id/btnSendEmail"
+            android:id="@+id/btnGoHome"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:text="📧 Send Verification Email"
-            android:backgroundTint="#0D9488"
+            android:text="🏠  Go to Home Screen"
+            android:backgroundTint="#7C6FE0"
             android:textColor="#FFFFFF"
-            android:textSize="15sp"/>
-    </LinearLayout>
+            android:textSize="15sp"
+            android:layout_marginBottom="12dp"/>
 
-    <LinearLayout
-        android:id="@+id/layoutEmailSent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="gone"
-        android:layout_marginBottom="12dp">
-
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Unlock details input before requesting email link -->
+        <LinearLayout
+            android:id="@+id/layoutRequestEmailDetails"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="✉️"
-            android:textSize="32sp"
-            android:layout_marginBottom="8dp"/>
+            android:orientation="vertical"
+            android:layout_marginBottom="12dp"
+            android:visibility="visible">
 
-        <TextView
-            android:id="@+id/tvEmailSentMessage"
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Why do you need to unlock?"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp"/>
+
+            <EditText
+                android:id="@+id/etUnlockReason"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="e.g., Quick check on messages"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#B0B4CC"
+                android:backgroundTint="#0D9488"
+                android:textSize="14sp"
+                android:layout_marginBottom="12dp"
+                android:inputType="text"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select unlock duration"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- Select duration radio items -->
+            <RadioGroup
+                android:id="@+id/rgDuration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="16dp">
+                <RadioButton
+                    android:id="@+id/rb5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5 min"
+                    android:textColor="#FFFFFF"
+                    android:buttonTint="#0D9488"
+                    android:checked="true"/>
+                <RadioButton
+                    android:id="@+id/rb15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15 min"
+                    android:textColor="#FFFFFF"
+                    android:buttonTint="#0D9488"
+                    android:layout_marginStart="8dp"/>
+                <RadioButton
+                    android:id="@+id/rb30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="30 min"
+                    android:textColor="#FFFFFF"
+                    android:buttonTint="#0D9488"
+                    android:layout_marginStart="8dp"/>
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/btnSendEmail"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="📧 Send Verification Email"
+                android:backgroundTint="#0D9488"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutEmailSent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Verification link sent to your registered email! Please click the link inside the email (or click the notification banner) to unlock the app."
-            android:textColor="#FFFFFF"
-            android:textSize="13sp"
+            android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginBottom="16dp"/>
+            android:visibility="gone"
+            android:layout_marginBottom="12dp">
 
-        <ProgressBar
-            android:id="@+id/pbEmailWaiting"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:indeterminateTint="#0D9488"
-            android:layout_marginBottom="8dp"
-            style="?android:attr/progressBarStyleSmall"/>
-            
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Waiting for email verification link click..."
-            android:textColor="#AAAACC"
-            android:textSize="12sp"
-            android:textStyle="italic"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✉️"
+                android:textSize="32sp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvEmailSentMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Verification link sent to your registered email! Please click the link inside the email (or click the notification banner) to unlock the app."
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"/>
+
+            <ProgressBar
+                android:id="@+id/pbEmailWaiting"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:indeterminateTint="#0D9488"
+                android:layout_marginBottom="8dp"
+                style="?android:attr/progressBarStyleSmall"/>
+                
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Waiting for email verification link click..."
+                android:textColor="#AAAACC"
+                android:textSize="12sp"
+                android:textStyle="italic"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnGoBack"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="← Go Back"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:textColor="#B0B4CC"/>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btnGoBack"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:text="← Go Back"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:textColor="#B0B4CC"/>
-</LinearLayout>
+</ScrollView>

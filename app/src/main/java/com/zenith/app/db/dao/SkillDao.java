@@ -25,4 +25,7 @@ public interface SkillDao {
 
     @Query("SELECT * FROM skills WHERE id = :id LIMIT 1")
     SkillEntity getSkillById(int id);
+
+    @Query("SELECT * FROM skills WHERE lastPracticedDate = :date")
+    List<SkillEntity> getSkillsPracticedOnDateSync(String date);
 }

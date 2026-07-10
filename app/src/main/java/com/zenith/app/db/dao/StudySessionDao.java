@@ -26,4 +26,7 @@ public interface StudySessionDao {
 
     @Query("SELECT COUNT(*) FROM study_sessions WHERE date = :date")
     int getSessionCountForDate(String date);
+
+    @Query("SELECT * FROM study_sessions WHERE date = :date")
+    List<StudySessionEntity> getSessionsForDateSync(String date);
 }

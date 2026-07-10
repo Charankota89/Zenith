@@ -37,4 +37,7 @@ public interface HabitDao {
 
     @Query("SELECT COUNT(*) FROM habits")
     int getTotalCount();
+
+    @Query("SELECT * FROM habits WHERE lastCompletedDate = :date")
+    List<HabitEntity> getHabitsCompletedOnDateSync(String date);
 }
