@@ -31,6 +31,10 @@ public class GuardianAccessibilityService extends AccessibilityService {
     private View               reelPopup;
     private View               browserBanner;
     private View               limitWarningOverlay;
+    private View               lockerCapsule;
+    private boolean            isCapsuleExpanded = false;
+    private final Handler      capsuleHandler = new Handler(Looper.getMainLooper());
+    private final Runnable     collapseRunnable = this::collapseCapsule;
     private String             lastNotifiedApp  = "";
     private int                lastNotifiedPct  = 0;
 
@@ -402,7 +406,10 @@ public class GuardianAccessibilityService extends AccessibilityService {
     // ─────────────────────────────────────────────
     private void checkAndIncrementUsage() {
         String pkg = currentPkg;
-        if (pkg == null || pkg.isEmpty() || pkg.equals(getPackageName())) return;
+        if (pkg == null || pkg.isEmpty() || pkg.equals(getPackageName())) {
+            uiHandler.post(this::removeFloatingCapsule);
+            return;
+        }
 
         long now = System.currentTimeMillis();
         if (appOpenedTime == 0) appOpenedTime = now;
@@ -419,7 +426,10 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 if (e.unlockExpiresAt > 0 && now < e.unlockExpiresAt) {
                     e.usageTimeMillis += elapsed;
                     db.appUsageDao().update(e);
-                    uiHandler.post(this::removeLocker);
+                    uiHandler.post(() -> {
+                        removeLocker();
+                        removeFloatingCapsule();
+                    });
                     return;
                 }
                 
@@ -427,7 +437,10 @@ public class GuardianAccessibilityService extends AccessibilityService {
                     e.isLocked = true;
                     e.unlockExpiresAt = 0;
                     db.appUsageDao().update(e);
-                    uiHandler.post(() -> showLockerOverlay(e.appName, false));
+                    uiHandler.post(() -> {
+                        removeFloatingCapsule();
+                        showLockerOverlay(e.appName, false);
+                    });
                     return;
                 }
 
@@ -437,12 +450,24 @@ public class GuardianAccessibilityService extends AccessibilityService {
                     if (pct >= 100) {
                         e.isLocked = true;
                         db.appUsageDao().update(e);
-                        uiHandler.post(() -> showLockerOverlay(e.appName, false));
-                    } else if (pct >= 80) {
-                        uiHandler.post(() -> showLimitWarningBanner(e.appName, 80, e.limitMillis - e.usageTimeMillis));
-                    } else if (pct >= 50) {
-                        uiHandler.post(() -> showLimitWarningBanner(e.appName, 50, e.limitMillis - e.usageTimeMillis));
+                        uiHandler.post(() -> {
+                            removeFloatingCapsule();
+                            showLockerOverlay(e.appName, false);
+                        });
+                    } else {
+                        final long usedVal = e.usageTimeMillis;
+                        final long limitVal = e.limitMillis;
+                        final String nameVal = e.appName;
+                        uiHandler.post(() -> showFloatingCapsule(nameVal, usedVal, limitVal));
+
+                        if (pct >= 80) {
+                            uiHandler.post(() -> showLimitWarningBanner(e.appName, 80, e.limitMillis - e.usageTimeMillis));
+                        } else if (pct >= 50) {
+                            uiHandler.post(() -> showLimitWarningBanner(e.appName, 50, e.limitMillis - e.usageTimeMillis));
+                        }
                     }
+                } else {
+                    uiHandler.post(this::removeFloatingCapsule);
                 }
                 db.appUsageDao().update(e);
             }
@@ -573,15 +598,172 @@ public class GuardianAccessibilityService extends AccessibilityService {
         }
     }
 
-    @Override public void onInterrupt() { removeLocker(); removeReelPopup(); removeBrowserBanner(); }
+    @Override 
+    public void onInterrupt() { 
+        removeLocker(); 
+        removeReelPopup(); 
+        removeBrowserBanner(); 
+        removeFloatingCapsule();
+    }
+
+    private void showFloatingCapsule(String appName, long usedMs, long limitMs) {
+        uiHandler.post(() -> {
+            ensureWindowManager();
+            if (lockerCapsule == null) {
+                LayoutInflater inf = LayoutInflater.from(this);
+                lockerCapsule = inf.inflate(R.layout.overlay_floating_capsule, null);
+
+                WindowManager.LayoutParams p = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR,
+                    PixelFormat.TRANSLUCENT);
+                p.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+                p.y = 40; // Float right below status bar / notch
+
+                // Bounce scale entering transition
+                lockerCapsule.setScaleX(0f);
+                lockerCapsule.setScaleY(0f);
+                lockerCapsule.animate().scaleX(1f).scaleY(1f).setDuration(300)
+                    .setInterpolator(new android.view.animation.OvershootInterpolator()).start();
+
+                windowManager.addView(lockerCapsule, p);
+
+                View container = lockerCapsule.findViewById(R.id.capsule_container);
+                View expandedLayout = lockerCapsule.findViewById(R.id.layoutExpandedDetails);
+                container.setOnClickListener(v -> toggleCapsule(container, expandedLayout, appName, usedMs, limitMs));
+            }
+
+            if (!isCapsuleExpanded) {
+                updateCapsuleData(appName, usedMs, limitMs);
+            }
+        });
+    }
+
+    private void updateCapsuleData(String appName, long usedMs, long limitMs) {
+        if (lockerCapsule == null) return;
+
+        long remainingMs = limitMs - usedMs;
+        long remainingMins = Math.max(0, remainingMs / 60000);
+
+        TextView tvText = lockerCapsule.findViewById(R.id.tvCapsuleText);
+        View dot = lockerCapsule.findViewById(R.id.viewStatusDot);
+
+        if (tvText != null) {
+            tvText.setText(appName + ": " + remainingMins + "m left");
+        }
+
+        if (dot != null) {
+            long pct = (usedMs * 100L) / limitMs;
+            String colorHex = "#34D399"; // Green
+            if (pct >= 80) {
+                colorHex = "#F87171"; // Red
+            } else if (pct >= 50) {
+                colorHex = "#FBBF24"; // Amber
+            }
+            dot.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor(colorHex)));
+        }
+    }
+
+    private void toggleCapsule(View container, View expandedLayout, String appName, long usedMs, long limitMs) {
+        capsuleHandler.removeCallbacks(collapseRunnable);
+        if (isCapsuleExpanded) {
+            collapseCapsule();
+        } else {
+            expandCapsule(container, expandedLayout, appName, usedMs, limitMs);
+            capsuleHandler.postDelayed(collapseRunnable, 4000); // Collapse after 4s
+        }
+    }
+
+    private void expandCapsule(View container, View expandedLayout, String appName, long usedMs, long limitMs) {
+        if (isCapsuleExpanded) return;
+        isCapsuleExpanded = true;
+
+        TextView tvDetail = container.findViewById(R.id.tvExpandedDetail);
+        if (tvDetail != null) {
+            String limitStr = TimeUtils.formatDuration(limitMs);
+            String usedStr = TimeUtils.formatDuration(usedMs);
+            tvDetail.setText("App: " + appName + "\nLimit: " + limitStr + " • Used: " + usedStr);
+        }
+
+        if (expandedLayout != null) {
+            expandedLayout.setVisibility(View.VISIBLE);
+            expandedLayout.setAlpha(0f);
+            expandedLayout.animate().alpha(1f).setDuration(200).start();
+        }
+
+        animateViewHeightAndWidth(container, dpToPx(160), dpToPx(240), dpToPx(36), dpToPx(76));
+    }
+
+    private void collapseCapsule() {
+        if (!isCapsuleExpanded || lockerCapsule == null) return;
+        isCapsuleExpanded = false;
+
+        View container = lockerCapsule.findViewById(R.id.capsule_container);
+        View expandedLayout = lockerCapsule.findViewById(R.id.layoutExpandedDetails);
+
+        if (expandedLayout != null) {
+            expandedLayout.animate().alpha(0f).setDuration(150).withEndAction(() -> {
+                expandedLayout.setVisibility(View.GONE);
+            }).start();
+        }
+
+        if (container != null) {
+            animateViewHeightAndWidth(container, dpToPx(240), dpToPx(160), dpToPx(76), dpToPx(36));
+        }
+    }
+
+    private void animateViewHeightAndWidth(View view, int startWidth, int endWidth, int startHeight, int endHeight) {
+        android.animation.ValueAnimator animator = android.animation.ValueAnimator.ofFloat(0f, 1f);
+        animator.addUpdateListener(animation -> {
+            float fraction = animation.getAnimatedFraction();
+            android.view.ViewGroup.LayoutParams lp = view.getLayoutParams();
+            if (lp != null) {
+                lp.width = (int) (startWidth + (endWidth - startWidth) * fraction);
+                lp.height = (int) (startHeight + (endHeight - startHeight) * fraction);
+                view.setLayoutParams(lp);
+                if (lockerCapsule != null && windowManager != null) {
+                    try {
+                        windowManager.updateViewLayout(lockerCapsule, lockerCapsule.getLayoutParams());
+                    } catch (Exception ignored) {}
+                }
+            }
+        });
+        animator.setDuration(250);
+        animator.start();
+    }
+
+    private int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
+    }
+
+    private void removeFloatingCapsule() {
+        uiHandler.post(() -> {
+            if (lockerCapsule != null && windowManager != null) {
+                try {
+                    windowManager.removeView(lockerCapsule);
+                } catch (Exception ignored) {}
+                lockerCapsule = null;
+                isCapsuleExpanded = false;
+            }
+        });
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         uiHandler.removeCallbacks(limitCheckerRunnable);
+        capsuleHandler.removeCallbacks(collapseRunnable);
         executor.shutdown();
         uiHandler.removeCallbacksAndMessages(null);
-        removeLocker(); removeReelPopup(); removeBrowserBanner();
+        capsuleHandler.removeCallbacksAndMessages(null);
+        removeLocker(); 
+        removeReelPopup(); 
+        removeBrowserBanner();
+        removeFloatingCapsule();
         if (limitWarningOverlay != null && windowManager != null) {
             try { windowManager.removeView(limitWarningOverlay); } catch (Exception ignored) {}
             limitWarningOverlay = null;
