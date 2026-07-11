@@ -16,6 +16,7 @@ public class AppUsageAdapter extends ListAdapter<AppUsageEntity, AppUsageAdapter
 
     public interface OnItemClickListener {
         void onItemClick(AppUsageEntity entity);
+        void onFocusBlockToggle(AppUsageEntity entity, boolean isBlocked);
     }
 
     private OnItemClickListener listener;
@@ -35,7 +36,7 @@ public class AppUsageAdapter extends ListAdapter<AppUsageEntity, AppUsageAdapter
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
         AppUsageEntity item = getItem(position);
-        holder.bind(item, position);
+        holder.bind(item, position, listener);
         holder.itemView.setOnClickListener(v -> {
             if (listener != null && position != RecyclerView.NO_POSITION) {
                 listener.onItemClick(item);
@@ -47,7 +48,7 @@ public class AppUsageAdapter extends ListAdapter<AppUsageEntity, AppUsageAdapter
         final ItemAppUsageBinding b;
         VH(ItemAppUsageBinding b) { super(b.getRoot()); this.b = b; }
 
-        void bind(AppUsageEntity e, int pos) {
+        void bind(AppUsageEntity e, int pos, OnItemClickListener listener) {
             b.tvAppName.setText(e.appName);
             b.tvUsageTime.setText(TimeUtils.formatDuration(e.usageTimeMillis));
             b.tvRank.setText(String.valueOf(pos + 1));
@@ -62,6 +63,15 @@ public class AppUsageAdapter extends ListAdapter<AppUsageEntity, AppUsageAdapter
             } catch (PackageManager.NameNotFoundException ex) {
                 b.ivAppIcon.setImageResource(android.R.drawable.sym_def_app_icon);
             }
+
+            b.switchFocusBlock.setOnCheckedChangeListener(null);
+            b.switchFocusBlock.setChecked(!e.isFocusWhitelisted);
+
+            b.switchFocusBlock.setOnCheckedChangeListener((btn, isChecked) -> {
+                if (listener != null) {
+                    listener.onFocusBlockToggle(e, isChecked);
+                }
+            });
         }
     }
 

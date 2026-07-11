@@ -68,6 +68,7 @@ public class UsageRepository {
                     entity.usageTimeMillis = usageTime;
                     entity.limitMillis     = 0;
                     entity.isLocked        = false;
+                    entity.isFocusWhitelisted = true;
                     entity.date            = today;
                     db.appUsageDao().insert(entity);
                 }

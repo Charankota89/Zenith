@@ -45,45 +45,64 @@ public class ScreenFragment extends Fragment {
         b.rvAppUsage.addItemDecoration(
             new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
 
-        usageAdapter.setOnItemClickListener(entity -> {
-            long currentLimitMins = entity.limitMillis / 60000;
-            int initialHour = (int) (currentLimitMins / 60);
-            int initialMinute = (int) (currentLimitMins % 60);
+        usageAdapter.setOnItemClickListener(new AppUsageAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(AppUsageEntity entity) {
+                long currentLimitMins = entity.limitMillis / 60000;
+                int initialHour = (int) (currentLimitMins / 60);
+                int initialMinute = (int) (currentLimitMins % 60);
 
-            com.google.android.material.timepicker.MaterialTimePicker picker = 
-                new com.google.android.material.timepicker.MaterialTimePicker.Builder()
-                    .setTimeFormat(com.google.android.material.timepicker.TimeFormat.CLOCK_24H)
-                    .setHour(initialHour)
-                    .setMinute(initialMinute)
-                    .setTitleText("Set daily limit: " + entity.appName)
-                    .setInputMode(com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK)
-                    .build();
+                com.google.android.material.timepicker.MaterialTimePicker picker = 
+                    new com.google.android.material.timepicker.MaterialTimePicker.Builder()
+                        .setTimeFormat(com.google.android.material.timepicker.TimeFormat.CLOCK_24H)
+                        .setHour(initialHour)
+                        .setMinute(initialMinute)
+                        .setTitleText("Set daily limit: " + entity.appName)
+                        .setInputMode(com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_CLOCK)
+                        .build();
 
-            picker.addOnPositiveButtonClickListener(v -> {
-                int hour = picker.getHour();
-                int minute = picker.getMinute();
-                long totalMins = (hour * 60L) + minute;
-                long newLimitMillis = totalMins * 60000;
+                picker.addOnPositiveButtonClickListener(v -> {
+                    int hour = picker.getHour();
+                    int minute = picker.getMinute();
+                    long totalMins = (hour * 60L) + minute;
+                    long newLimitMillis = totalMins * 60000;
 
+                    java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+                        com.zenith.app.db.AppDatabase db = com.zenith.app.db.AppDatabase.getInstance(requireContext().getApplicationContext());
+                        entity.limitMillis = newLimitMillis;
+                        if (entity.usageTimeMillis < newLimitMillis || newLimitMillis == 0) {
+                            entity.isLocked = false;
+                            entity.unlockExpiresAt = 0;
+                        }
+                        db.appUsageDao().update(entity);
+                        
+                        if (isAdded()) {
+                            requireActivity().runOnUiThread(() -> {
+                                vm.syncUsage();
+                                Toast.makeText(requireContext(), "Limit updated successfully!", Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    });
+                });
+
+                picker.show(getChildFragmentManager(), "LIMIT_TIME_PICKER");
+            }
+
+            @Override
+            public void onFocusBlockToggle(AppUsageEntity entity, boolean isBlocked) {
                 java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
                     com.zenith.app.db.AppDatabase db = com.zenith.app.db.AppDatabase.getInstance(requireContext().getApplicationContext());
-                    entity.limitMillis = newLimitMillis;
-                    if (entity.usageTimeMillis < newLimitMillis || newLimitMillis == 0) {
-                        entity.isLocked = false;
-                        entity.unlockExpiresAt = 0;
-                    }
+                    entity.isFocusWhitelisted = !isBlocked;
                     db.appUsageDao().update(entity);
                     
                     if (isAdded()) {
                         requireActivity().runOnUiThread(() -> {
-                            vm.syncUsage();
-                            Toast.makeText(requireContext(), "Limit updated successfully!", Toast.LENGTH_SHORT).show();
+                            String status = isBlocked ? "restricted" : "allowed";
+                            Toast.makeText(requireContext(), entity.appName + " is now " + status + " in Focus Mode.", Toast.LENGTH_SHORT).show();
                         });
                     }
                 });
-            });
-
-            picker.show(getChildFragmentManager(), "LIMIT_TIME_PICKER");
+            }
         });
 
         // Browser visits RecyclerView
