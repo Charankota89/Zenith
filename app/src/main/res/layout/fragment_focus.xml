@@ -73,17 +73,52 @@
                     android:layout_marginBottom="16dp"
                     android:hint="Tap to set subject"/>
 
-                <!-- Timer display -->
-                <TextView
-                    android:id="@+id/tvTimerDisplay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="25:00"
-                    android:textSize="64sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:fontFamily="monospace"
-                    android:layout_marginBottom="8dp"/>
+                <!-- Timer display with circular ring -->
+                <FrameLayout
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="24dp">
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/focusProgressIndicator"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        app:indicatorSize="144dp"
+                        app:trackThickness="8dp"
+                        app:indicatorColor="@color/zenith_blue"
+                        app:trackColor="#1594A3B8"
+                        app:trackCornerRadius="4dp"
+                        android:max="100"
+                        android:progress="100"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/tvTimerDisplay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="25:00"
+                            android:textSize="32sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:fontFamily="monospace"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="remaining"
+                            android:textSize="10sp"
+                            android:textColor="@color/text_secondary"
+                            android:layout_marginTop="2dp"/>
+                    </LinearLayout>
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/tvSessionCount"

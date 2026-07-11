@@ -49,6 +49,14 @@ public class FocusFragment extends Fragment {
             long mins = ms / 60000;
             long secs = (ms % 60000) / 1000;
             binding.tvTimerDisplay.setText(String.format("%02d:%02d", mins, secs));
+
+            FocusViewModel.TimerState state = vm.timerState.getValue();
+            long totalMs = 25 * 60 * 1000L;
+            if (state == FocusViewModel.TimerState.BREAK) {
+                totalMs = 5 * 60 * 1000L;
+            }
+            int progress = (int) ((ms * 100L) / totalMs);
+            binding.focusProgressIndicator.setProgress(progress);
         });
 
         vm.sessionsCompleted.observe(getViewLifecycleOwner(), count ->
