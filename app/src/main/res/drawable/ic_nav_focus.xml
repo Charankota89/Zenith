@@ -4,7 +4,16 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+    <!-- Outer circle -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M12,1C8.676,1 6,3.676 6,7c0,2.43 1.428,4.547 3.5,5.598V15h5v-2.402C16.572,11.547 18,9.43 18,7c0,-3.324 -2.676,-6 -6,-6zM9,17h6v2H9zM9,21h6v1H9z" />
+        android:pathData="M12,2A10,10 0,1 0,22 12,10 10,0 0,0 12,2ZM12,20A8,8 0,1 1,20 12,8 8,0 0,1 12,20Z"/>
+    <!-- Middle circle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,6A6,6 0,1 0,18 12,6 6,0 0,0 12,6ZM12,16A4,4 0,1 1,16 12,4 4,0 0,1 12,16Z"/>
+    <!-- Inner bullseye dot -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,10A2,2 0,1 0,14 12,2 2,0 0,0 12,10Z"/>
 </vector>
