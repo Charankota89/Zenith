@@ -44,6 +44,31 @@ public class WellbeingFragment extends Fragment {
                 vm.saveMood(score, null);  // Save to Room DB
             });
         }
+
+        startEyeBreakTimer();
+    }
+
+    private android.os.CountDownTimer eyeBreakCountDown;
+
+    private void startEyeBreakTimer() {
+        if (eyeBreakCountDown != null) {
+            eyeBreakCountDown.cancel();
+        }
+        eyeBreakCountDown = new android.os.CountDownTimer(1200000L, 1000L) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (binding != null && binding.tvEyeBreakTimer != null) {
+                    long mins = millisUntilFinished / 60000;
+                    long secs = (millisUntilFinished % 60000) / 1000;
+                    binding.tvEyeBreakTimer.setText(String.format("%02d:%02d", mins, secs));
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                startEyeBreakTimer(); // Loop back
+            }
+        }.start();
     }
 
     private void animateBounce(View view) {
@@ -70,5 +95,11 @@ public class WellbeingFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() { super.onDestroyView(); binding = null; }
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (eyeBreakCountDown != null) {
+            eyeBreakCountDown.cancel();
+        }
+        binding = null;
+    }
 }

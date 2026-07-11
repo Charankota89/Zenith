@@ -72,12 +72,35 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp" android:orientation="vertical"
                 android:background="@color/surface_card">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="👁️ 20-20-20 Rule" android:textSize="14sp" android:textStyle="bold"
-                    android:textColor="@color/text_primary"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Every 20 minutes, look 20 feet away for 20 seconds."
-                    android:textSize="13sp" android:textColor="@color/text_secondary"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@+id/tvEyeBreakTimer"
+                        android:layout_marginEnd="16dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="👁️ 20-20-20 Rule" android:textSize="14sp" android:textStyle="bold"
+                            android:textColor="@color/text_primary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Every 20 minutes, look 20 feet away for 20 seconds."
+                            android:textSize="13sp" android:textColor="@color/text_secondary"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tvEyeBreakTimer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="20:00"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/zenith_blue"/>
+                </RelativeLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

@@ -108,34 +108,52 @@ public class HomeFragment extends Fragment {
     private void checkSystemPermissions() {
         boolean accessEnabled = isAccessibilityServiceEnabled();
         boolean overlayEnabled = isOverlayPermissionEnabled();
+        boolean usageEnabled = isUsageAccessEnabled();
 
-        if (!accessEnabled || !overlayEnabled) {
+        if (!accessEnabled || !overlayEnabled || !usageEnabled) {
             binding.cardPermissionWarning.setVisibility(View.VISIBLE);
-            if (!accessEnabled && !overlayEnabled) {
-                binding.tvPermissionDesc.setText("Zenith needs Accessibility & Overlay permissions. Note: If greyed out in settings, go to Android Settings -> Apps -> Zenith, tap top-right 3-dots and tap 'Allow restricted settings'.");
-                binding.btnGrantPermissions.setOnClickListener(v -> {
+            
+            StringBuilder sb = new StringBuilder("Zenith needs system settings enabled to monitor screen time and protect focus. Please grant:\n");
+            if (!usageEnabled) {
+                sb.append("• Usage Access (Stats tracking)\n");
+            }
+            if (!overlayEnabled) {
+                sb.append("• Draw Over Other Apps (Overlay)\n");
+            }
+            if (!accessEnabled) {
+                sb.append("• Accessibility Service (App lock)\n");
+            }
+            sb.append("\nNote: If greyed out in settings, go to Android Settings -> Apps -> Zenith, tap top-right 3-dots and choose 'Allow restricted settings' to unlock it.");
+            binding.tvPermissionDesc.setText(sb.toString());
+
+            binding.btnGrantPermissions.setOnClickListener(v -> {
+                if (!usageEnabled) {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                    startActivity(intent);
+                    android.widget.Toast.makeText(getContext(), "Please enable Usage Access for Zenith.", android.widget.Toast.LENGTH_LONG).show();
+                } else if (!overlayEnabled) {
                     Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + requireContext().getPackageName()));
                     startActivity(intent);
-                    android.widget.Toast.makeText(getContext(), "Enable Draw Overlays. If settings are greyed out, choose 'Allow restricted settings' in Zenith App Info.", android.widget.Toast.LENGTH_LONG).show();
-                });
-            } else if (!accessEnabled) {
-                binding.tvPermissionDesc.setText("Accessibility is disabled. Note: If greyed out, go to Android Settings -> Apps -> Zenith, tap top-right 3-dots and select 'Allow restricted settings' to unlock it.");
-                binding.btnGrantPermissions.setOnClickListener(v -> {
+                    android.widget.Toast.makeText(getContext(), "Please enable Draw Overlays for Zenith.", android.widget.Toast.LENGTH_LONG).show();
+                } else {
                     Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
                     startActivity(intent);
-                });
-            } else {
-                binding.tvPermissionDesc.setText("Overlay permission is disabled. Note: If greyed out, go to Android Settings -> Apps -> Zenith, tap top-right 3-dots and choose 'Allow restricted settings'.");
-                binding.btnGrantPermissions.setOnClickListener(v -> {
-                    Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + requireContext().getPackageName()));
-                    startActivity(intent);
-                });
-            }
+                    android.widget.Toast.makeText(getContext(), "Please turn on Zenith Protector Accessibility Service.", android.widget.Toast.LENGTH_LONG).show();
+                }
+            });
         } else {
             binding.cardPermissionWarning.setVisibility(View.GONE);
         }
+    }
+
+    private boolean isUsageAccessEnabled() {
+        android.content.Context ctx = getContext();
+        if (ctx == null) return true;
+        android.app.AppOpsManager appOps = (android.app.AppOpsManager) ctx.getSystemService(android.content.Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS,
+            android.os.Process.myUid(), ctx.getPackageName());
+        return mode == android.app.AppOpsManager.MODE_ALLOWED;
     }
 
     private boolean isAccessibilityServiceEnabled() {
