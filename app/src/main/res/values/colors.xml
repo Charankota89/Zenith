@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- ── Brand Theme Colors ────────────────────────────────────────── -->
-    <color name="zenith_purple">#818CF8</color> <!-- Glowing Indigo/Purple -->
-    <color name="zenith_teal">#34D399</color> <!-- Soft Mint/Teal -->
-    <color name="zenith_blue">#38BDF8</color> <!-- Soft Sky Blue -->
-    <color name="zenith_amber">#FBBF24</color> <!-- Soft Sunset Amber -->
-    <color name="zenith_coral">#F87171</color> <!-- Soft Coral Red -->
+    <color name="zenith_purple">#6366F1</color> <!-- Beautiful solid Indigo/Purple -->
+    <color name="zenith_teal">#10B981</color> <!-- Teal -->
+    <color name="zenith_blue">#0EA5E9</color> <!-- Sky Blue -->
+    <color name="zenith_amber">#F59E0B</color> <!-- Amber -->
+    <color name="zenith_coral">#EF4444</color> <!-- Coral Red -->
  
     <!-- ── Base Screen & Card Tones ──────────────────────────────────── -->
-    <color name="zenith_lavender">#0B0F19</color> <!-- Midnight Black Background -->
-    <color name="bg_dark">#0B0F19</color>
-    <color name="zenith_dark">#0B0F19</color>
-    <color name="card_dark">#1E293B</color> <!-- Dark Slate Card Background -->
-    <color name="surface_card">#1E293B</color>
+    <color name="zenith_lavender">#F8FAFC</color> <!-- Light off-white slate background -->
+    <color name="bg_dark">#F8FAFC</color>
+    <color name="zenith_dark">#F8FAFC</color>
+    <color name="card_dark">#FFFFFF</color> <!-- Pure white Card Background -->
+    <color name="surface_card">#FFFFFF</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
  
     <!-- ── Typography Tones ────────────────────────────────────────── -->
-    <color name="text_primary">#F8FAFC</color> <!-- Off-White Slate 50 -->
-    <color name="text_secondary">#94A3B8</color> <!-- Light Grey Slate 400 -->
+    <color name="text_primary">#0F172A</color> <!-- Dark Slate 900 -->
+    <color name="text_secondary">#475569</color> <!-- Slate 600 -->
  
     <!-- ── Monitoring & Selection States ─────────────────────────────── -->
-    <color name="usage_high">#F87171</color>
-    <color name="usage_medium">#FBBF24</color>
-    <color name="usage_low">#34D399</color>
-    <color name="nav_unselected">#64748B</color> <!-- Grey Slate 500 -->
+    <color name="usage_high">#EF4444</color>
+    <color name="usage_medium">#F59E0B</color>
+    <color name="usage_low">#10B981</color>
+    <color name="nav_unselected">#94A3B8</color> <!-- Slate 400 -->
 </resources>

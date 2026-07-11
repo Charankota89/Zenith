@@ -112,21 +112,21 @@ public class HomeFragment extends Fragment {
         if (!accessEnabled || !overlayEnabled) {
             binding.cardPermissionWarning.setVisibility(View.VISIBLE);
             if (!accessEnabled && !overlayEnabled) {
-                binding.tvPermissionDesc.setText("Zenith needs Accessibility Service to track active apps and Overlay permission to display lock screens. Tap below to configure.");
+                binding.tvPermissionDesc.setText("Zenith needs Accessibility & Overlay permissions. Note: If greyed out in settings, go to Android Settings -> Apps -> Zenith, tap top-right 3-dots and tap 'Allow restricted settings'.");
                 binding.btnGrantPermissions.setOnClickListener(v -> {
                     Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + requireContext().getPackageName()));
                     startActivity(intent);
-                    android.widget.Toast.makeText(getContext(), "Please enable Draw Overlays for Zenith, then enable Accessibility.", android.widget.Toast.LENGTH_LONG).show();
+                    android.widget.Toast.makeText(getContext(), "Enable Draw Overlays. If settings are greyed out, choose 'Allow restricted settings' in Zenith App Info.", android.widget.Toast.LENGTH_LONG).show();
                 });
             } else if (!accessEnabled) {
-                binding.tvPermissionDesc.setText("Zenith Accessibility Service is disabled. Please enable it in Settings to track and lock apps.");
+                binding.tvPermissionDesc.setText("Accessibility is disabled. Note: If greyed out, go to Android Settings -> Apps -> Zenith, tap top-right 3-dots and select 'Allow restricted settings' to unlock it.");
                 binding.btnGrantPermissions.setOnClickListener(v -> {
                     Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
                     startActivity(intent);
                 });
             } else {
-                binding.tvPermissionDesc.setText("Zenith Overlay permission is disabled. Please allow drawing over other apps.");
+                binding.tvPermissionDesc.setText("Overlay permission is disabled. Note: If greyed out, go to Android Settings -> Apps -> Zenith, tap top-right 3-dots and choose 'Allow restricted settings'.");
                 binding.btnGrantPermissions.setOnClickListener(v -> {
                     Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + requireContext().getPackageName()));
