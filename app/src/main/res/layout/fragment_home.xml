@@ -45,10 +45,12 @@
                 android:layout_height="48dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@drawable/bg_settings_button"
                 android:src="@android:drawable/ic_menu_preferences"
                 android:contentDescription="Settings"
-                android:tint="@color/zenith_purple"/>
+                android:tint="@color/white"
+                android:padding="12dp"
+                android:elevation="4dp"/>
         </RelativeLayout>
 
         <!-- Permission warning card -->
@@ -110,23 +112,36 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp"
+                android:orientation="horizontal"
                 android:background="@color/surface_card">
-                <TextView
-                    android:layout_width="wrap_content"
+                <View
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/zenith_purple"/>
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="📱 Screen Time Today"
-                    android:textSize="13sp"
-                    android:textColor="@color/text_secondary"/>
-                <TextView
-                    android:id="@+id/tvScreenTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0h 0m"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/zenith_purple"/>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📱 SCREEN TIME TODAY"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_secondary"
+                        android:letterSpacing="0.05"/>
+                    <TextView
+                        android:id="@+id/tvScreenTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0h 0m"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -143,23 +158,36 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp"
+                android:orientation="horizontal"
                 android:background="@color/surface_card">
-                <TextView
-                    android:layout_width="wrap_content"
+                <View
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/zenith_teal"/>
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="✅ Habit Progress"
-                    android:textSize="13sp"
-                    android:textColor="@color/text_secondary"/>
-                <TextView
-                    android:id="@+id/tvHabitCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0 habits done"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/zenith_teal"/>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✅ HABIT PROGRESS"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_secondary"
+                        android:letterSpacing="0.05"/>
+                    <TextView
+                        android:id="@+id/tvHabitCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0 habits done"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/zenith_teal"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -176,23 +204,36 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp"
+                android:orientation="horizontal"
                 android:background="@color/surface_card">
-                <TextView
-                    android:layout_width="wrap_content"
+                <View
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/zenith_amber"/>
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="📚 Study Time"
-                    android:textSize="13sp"
-                    android:textColor="@color/text_secondary"/>
-                <TextView
-                    android:id="@+id/tvStudyTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0m studied"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/zenith_amber"/>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📚 STUDY TIME"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_secondary"
+                        android:letterSpacing="0.05"/>
+                    <TextView
+                        android:id="@+id/tvStudyTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0m studied"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/zenith_amber"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
