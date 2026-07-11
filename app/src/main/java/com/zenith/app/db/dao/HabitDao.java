@@ -23,6 +23,9 @@ public interface HabitDao {
     @Query("SELECT * FROM habits")
     LiveData<List<HabitEntity>> getAllHabits();
 
+    @Query("SELECT * FROM habits")
+    List<HabitEntity> getAllHabitsSync();
+
     @Query("SELECT * FROM habits WHERE id = :id LIMIT 1")
     HabitEntity getHabitById(int id);
 

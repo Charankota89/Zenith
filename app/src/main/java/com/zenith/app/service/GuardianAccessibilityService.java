@@ -35,6 +35,7 @@ public class GuardianAccessibilityService extends AccessibilityService {
     private boolean            isCapsuleExpanded = false;
     private final Handler      capsuleHandler = new Handler(Looper.getMainLooper());
     private final Runnable     collapseRunnable = this::collapseCapsule;
+    private String             lastToastAppPkg  = "";
     private String             lastNotifiedApp  = "";
     private int                lastNotifiedPct  = 0;
 
@@ -407,6 +408,7 @@ public class GuardianAccessibilityService extends AccessibilityService {
     private void checkAndIncrementUsage() {
         String pkg = currentPkg;
         if (pkg == null || pkg.isEmpty() || pkg.equals(getPackageName())) {
+            lastToastAppPkg = "";
             uiHandler.post(this::removeFloatingCapsule);
             return;
         }
@@ -446,6 +448,15 @@ public class GuardianAccessibilityService extends AccessibilityService {
 
                 e.usageTimeMillis += elapsed;
                 if (e.limitMillis > 0) {
+                    if (!pkg.equals(lastToastAppPkg)) {
+                        lastToastAppPkg = pkg;
+                        uiHandler.post(() -> {
+                            android.widget.Toast.makeText(getApplicationContext(),
+                                "You are under monitoring with Zenith",
+                                android.widget.Toast.LENGTH_SHORT).show();
+                        });
+                    }
+
                     long pct = (e.usageTimeMillis * 100L) / e.limitMillis;
                     if (pct >= 100) {
                         e.isLocked = true;
@@ -467,6 +478,7 @@ public class GuardianAccessibilityService extends AccessibilityService {
                         }
                     }
                 } else {
+                    lastToastAppPkg = "";
                     uiHandler.post(this::removeFloatingCapsule);
                 }
                 db.appUsageDao().update(e);
@@ -686,7 +698,39 @@ public class GuardianAccessibilityService extends AccessibilityService {
         if (tvDetail != null) {
             String limitStr = TimeUtils.formatDuration(limitMs);
             String usedStr = TimeUtils.formatDuration(usedMs);
-            tvDetail.setText("App: " + appName + "\nLimit: " + limitStr + " • Used: " + usedStr);
+            tvDetail.setText("App: " + appName + "\nLimit: " + limitStr + " • Used: " + usedStr + "\nLoading tasks...");
+
+            executor.execute(() -> {
+                AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+                java.util.List<com.zenith.app.db.entity.HabitEntity> habits = db.habitDao().getAllHabitsSync();
+
+                StringBuilder tasksBuilder = new StringBuilder();
+                int uncompletedCount = 0;
+                for (com.zenith.app.db.entity.HabitEntity habit : habits) {
+                    if (!habit.completedToday) {
+                        uncompletedCount++;
+                        if (tasksBuilder.length() > 0) {
+                            tasksBuilder.append(", ");
+                        }
+                        tasksBuilder.append(habit.habitName);
+                    }
+                }
+
+                final String tasksStr;
+                if (habits.isEmpty()) {
+                    tasksStr = "No tasks set in Career tab.";
+                } else if (uncompletedCount == 0) {
+                    tasksStr = "All tasks completed! 🎉";
+                } else {
+                    tasksStr = "Tasks left: " + tasksBuilder.toString();
+                }
+
+                uiHandler.post(() -> {
+                    if (lockerCapsule != null && isCapsuleExpanded) {
+                        tvDetail.setText("App: " + appName + "\nLimit: " + limitStr + " • Used: " + usedStr + "\n" + tasksStr);
+                    }
+                });
+            });
         }
 
         if (expandedLayout != null) {
@@ -695,7 +739,7 @@ public class GuardianAccessibilityService extends AccessibilityService {
             expandedLayout.animate().alpha(1f).setDuration(200).start();
         }
 
-        animateViewHeightAndWidth(container, dpToPx(160), dpToPx(240), dpToPx(36), dpToPx(76));
+        animateViewHeightAndWidth(container, dpToPx(160), dpToPx(240), dpToPx(36), dpToPx(96));
     }
 
     private void collapseCapsule() {
@@ -712,7 +756,7 @@ public class GuardianAccessibilityService extends AccessibilityService {
         }
 
         if (container != null) {
-            animateViewHeightAndWidth(container, dpToPx(240), dpToPx(160), dpToPx(76), dpToPx(36));
+            animateViewHeightAndWidth(container, dpToPx(240), dpToPx(160), dpToPx(96), dpToPx(36));
         }
     }
 
