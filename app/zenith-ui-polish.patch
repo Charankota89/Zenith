@@ -1,0 +1,1780 @@
+diff --git a/app/src/main/res/drawable/bg_chip_purple.xml b/app/src/main/res/drawable/bg_chip_purple.xml
+new file mode 100644
+index 0000000..ee170d4
+--- /dev/null
++++ b/app/src/main/res/drawable/bg_chip_purple.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<shape xmlns:android="http://schemas.android.com/apk/res/android"
++    android:shape="rectangle">
++    <corners android:radius="20dp" />
++    <solid android:color="#1F6366F1" />
++    <stroke android:width="1dp" android:color="#4D6366F1" />
++</shape>
+diff --git a/app/src/main/res/drawable/bg_floating_capsule.xml b/app/src/main/res/drawable/bg_floating_capsule.xml
+index 5b1d686..bac63d3 100644
+--- a/app/src/main/res/drawable/bg_floating_capsule.xml
++++ b/app/src/main/res/drawable/bg_floating_capsule.xml
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <shape xmlns:android="http://schemas.android.com/apk/res/android"
+     android:shape="rectangle">
+-    <corners android:radius="24dp" />
+-    <solid android:color="#CC0F172A" /> <!-- 80% Slate-900 -->
+-    <stroke android:width="1.5dp" android:color="#33818CF8" /> <!-- Glowing border -->
++    <corners android:radius="18dp" />
++    <solid android:color="#F20F172A" /> <!-- 95% Slate-900, matches preview mock -->
++    <stroke android:width="1.5dp" android:color="#40818CF8" /> <!-- Glowing indigo border -->
+ </shape>
+diff --git a/app/src/main/res/drawable/bg_glass_card.xml b/app/src/main/res/drawable/bg_glass_card.xml
+new file mode 100644
+index 0000000..3dd9256
+--- /dev/null
++++ b/app/src/main/res/drawable/bg_glass_card.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<shape xmlns:android="http://schemas.android.com/apk/res/android"
++    android:shape="rectangle">
++    <corners android:radius="20dp" />
++    <solid android:color="#E6FFFFFF" /> <!-- ~90% white, glass feel on the light bg -->
++    <stroke android:width="1dp" android:color="#14636AF1" /> <!-- 8% purple border -->
++</shape>
+diff --git a/app/src/main/res/font/outfit.xml b/app/src/main/res/font/outfit.xml
+new file mode 100644
+index 0000000..155bc89
+--- /dev/null
++++ b/app/src/main/res/font/outfit.xml
+@@ -0,0 +1,27 @@
++<?xml version="1.0" encoding="utf-8"?>
++<font-family xmlns:app="http://schemas.android.com/apk/res-auto">
++    <font
++        app:fontStyle="normal"
++        app:fontWeight="400"
++        app:font="@font/outfit_400" />
++    <font
++        app:fontStyle="normal"
++        app:fontWeight="500"
++        app:font="@font/outfit_500" />
++    <font
++        app:fontStyle="normal"
++        app:fontWeight="600"
++        app:font="@font/outfit_600" />
++    <font
++        app:fontStyle="normal"
++        app:fontWeight="700"
++        app:font="@font/outfit_700" />
++    <font
++        app:fontStyle="normal"
++        app:fontWeight="800"
++        app:font="@font/outfit_800" />
++    <font
++        app:fontStyle="normal"
++        app:fontWeight="900"
++        app:font="@font/outfit_900" />
++</font-family>
+diff --git a/app/src/main/res/font/outfit_400.ttf b/app/src/main/res/font/outfit_400.ttf
+new file mode 100644
+index 0000000..16c923b
+Binary files /dev/null and b/app/src/main/res/font/outfit_400.ttf differ
+diff --git a/app/src/main/res/font/outfit_500.ttf b/app/src/main/res/font/outfit_500.ttf
+new file mode 100644
+index 0000000..162c154
+Binary files /dev/null and b/app/src/main/res/font/outfit_500.ttf differ
+diff --git a/app/src/main/res/font/outfit_600.ttf b/app/src/main/res/font/outfit_600.ttf
+new file mode 100644
+index 0000000..83ee864
+Binary files /dev/null and b/app/src/main/res/font/outfit_600.ttf differ
+diff --git a/app/src/main/res/font/outfit_700.ttf b/app/src/main/res/font/outfit_700.ttf
+new file mode 100644
+index 0000000..787528c
+Binary files /dev/null and b/app/src/main/res/font/outfit_700.ttf differ
+diff --git a/app/src/main/res/font/outfit_800.ttf b/app/src/main/res/font/outfit_800.ttf
+new file mode 100644
+index 0000000..6091364
+Binary files /dev/null and b/app/src/main/res/font/outfit_800.ttf differ
+diff --git a/app/src/main/res/font/outfit_900.ttf b/app/src/main/res/font/outfit_900.ttf
+new file mode 100644
+index 0000000..41b35e3
+Binary files /dev/null and b/app/src/main/res/font/outfit_900.ttf differ
+diff --git a/app/src/main/res/layout/activity_onboarding.xml b/app/src/main/res/layout/activity_onboarding.xml
+index e0df2e2..78d5291 100644
+--- a/app/src/main/res/layout/activity_onboarding.xml
++++ b/app/src/main/res/layout/activity_onboarding.xml
+@@ -17,7 +17,7 @@
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:textSize="28sp"
+-            android:textStyle="bold"
++            android:fontFamily="@font/outfit_700"
+             android:textColor="@color/white"
+             android:gravity="center"
+             android:layout_marginBottom="20dp"/>
+diff --git a/app/src/main/res/layout/activity_pin_setup.xml b/app/src/main/res/layout/activity_pin_setup.xml
+index 36b0072..407145a 100644
+--- a/app/src/main/res/layout/activity_pin_setup.xml
++++ b/app/src/main/res/layout/activity_pin_setup.xml
+@@ -17,7 +17,7 @@
+             android:layout_height="wrap_content"
+             android:text="Set Your PIN"
+             android:textSize="26sp"
+-            android:textStyle="bold"
++            android:fontFamily="@font/outfit_700"
+             android:textColor="@color/text_primary"
+             android:layout_marginBottom="8dp"/>
+ 
+diff --git a/app/src/main/res/layout/activity_splash.xml b/app/src/main/res/layout/activity_splash.xml
+index 2f4dfef..a83f9b3 100644
+--- a/app/src/main/res/layout/activity_splash.xml
++++ b/app/src/main/res/layout/activity_splash.xml
+@@ -21,7 +21,7 @@
+         android:text="ZENITH"
+         android:textColor="@color/white"
+         android:textSize="40sp"
+-        android:textStyle="bold"
++        android:fontFamily="@font/outfit_700"
+         android:letterSpacing="0.25"/>
+ 
+     <TextView
+diff --git a/app/src/main/res/layout/fragment_career.xml b/app/src/main/res/layout/fragment_career.xml
+index c5e3b32..58d9c4d 100644
+--- a/app/src/main/res/layout/fragment_career.xml
++++ b/app/src/main/res/layout/fragment_career.xml
+@@ -1,54 +1,84 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:orientation="vertical"
+     android:background="@color/zenith_lavender">
+ 
+     <TextView
++        style="@style/Zenith.Text.ScreenTitle"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginStart="20dp"
+         android:layout_marginTop="20dp"
+-        android:text="Habits"
+-        android:textSize="22sp"
+-        android:textStyle="bold"
+-        android:textColor="@color/text_primary"
+-        android:layout_marginBottom="8dp"/>
++        android:layout_marginBottom="12dp"
++        android:text="Growth"/>
+ 
+     <!-- Add habit input -->
+-    <LinearLayout
++    <com.google.android.material.card.MaterialCardView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+-        android:orientation="horizontal"
+-        android:paddingStart="16dp"
+-        android:paddingEnd="16dp"
+-        android:layout_marginBottom="8dp">
++        android:layout_marginHorizontal="20dp"
++        android:layout_marginBottom="16dp"
++        app:cardCornerRadius="16dp"
++        app:cardElevation="1dp"
++        app:strokeWidth="1dp"
++        app:strokeColor="#14636AF1"
++        app:cardBackgroundColor="#E6FFFFFF">
+ 
+-        <com.google.android.material.textfield.TextInputEditText
+-            android:id="@+id/etHabitName"
+-            android:layout_width="0dp"
++        <LinearLayout
++            android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+-            android:layout_weight="1"
+-            android:hint="New habit name…"
+-            android:inputType="text"/>
++            android:orientation="horizontal"
++            android:gravity="center_vertical"
++            android:paddingStart="16dp"
++            android:paddingEnd="8dp"
++            android:paddingVertical="6dp">
+ 
+-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+-            android:id="@+id/fabAddHabit"
+-            android:layout_width="wrap_content"
+-            android:layout_height="wrap_content"
+-            android:layout_marginStart="12dp"
+-            android:layout_gravity="center_vertical"
+-            android:src="@android:drawable/ic_input_add"
+-            app:backgroundTint="@color/zenith_purple"
+-            xmlns:app="http://schemas.android.com/apk/res-auto"/>
+-    </LinearLayout>
++            <com.google.android.material.textfield.TextInputEditText
++                android:id="@+id/etHabitName"
++                android:layout_width="0dp"
++                android:layout_height="wrap_content"
++                android:layout_weight="1"
++                android:background="@null"
++                android:fontFamily="@font/outfit_500"
++                android:textSize="14sp"
++                android:textColorHint="@color/text_secondary"
++                android:hint="Add new habit…"
++                android:inputType="text"/>
++
++            <com.google.android.material.floatingactionbutton.FloatingActionButton
++                android:id="@+id/fabAddHabit"
++                android:layout_width="40dp"
++                android:layout_height="40dp"
++                android:src="@android:drawable/ic_input_add"
++                app:backgroundTint="@color/zenith_purple"
++                app:fabCustomSize="40dp"
++                app:maxImageSize="20dp"
++                app:elevation="0dp"
++                app:tint="@color/white"/>
++        </LinearLayout>
++    </com.google.android.material.card.MaterialCardView>
++
++    <TextView
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginStart="20dp"
++        android:layout_marginBottom="8dp"
++        android:text="YOUR HABITS"
++        android:textSize="10sp"
++        android:fontFamily="@font/outfit_700"
++        android:letterSpacing="0.12"
++        android:textColor="@color/text_secondary"/>
+ 
+     <androidx.recyclerview.widget.RecyclerView
+         android:id="@+id/rvHabits"
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="1"
+-        android:padding="8dp"
++        android:clipToPadding="false"
++        android:paddingHorizontal="12dp"
++        android:paddingBottom="16dp"
+         android:layoutAnimation="@anim/layout_fall_down"/>
+ </LinearLayout>
+diff --git a/app/src/main/res/layout/fragment_focus.xml b/app/src/main/res/layout/fragment_focus.xml
+index 8fa5718..f80179f 100644
+--- a/app/src/main/res/layout/fragment_focus.xml
++++ b/app/src/main/res/layout/fragment_focus.xml
+@@ -9,16 +9,14 @@
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+-        android:padding="24dp">
++        android:padding="20dp">
+ 
+         <!-- Header -->
+         <TextView
++            style="@style/Zenith.Text.ScreenTitle"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Focus Mode"
+-            android:textSize="26sp"
+-            android:textStyle="bold"
+-            android:textColor="@color/text_primary"
+             android:layout_marginBottom="4dp"/>
+ 
+         <TextView
+@@ -26,35 +24,34 @@
+             android:layout_height="wrap_content"
+             android:text="Deep work beats distraction. Always."
+             android:textSize="13sp"
++            android:fontFamily="@font/outfit_400"
+             android:textColor="@color/text_secondary"
+-            android:layout_marginBottom="24dp"/>
++            android:layout_marginBottom="20dp"/>
+ 
+         <!-- Pomodoro Timer Card -->
+-        <androidx.cardview.widget.CardView
++        <com.google.android.material.card.MaterialCardView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+-            android:layout_marginBottom="16dp"
++            android:layout_marginBottom="12dp"
+             app:cardCornerRadius="20dp"
+-            app:cardElevation="6dp"
+-            app:cardBackgroundColor="@color/surface_card">
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF">
+ 
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:orientation="vertical"
+                 android:gravity="center"
+-                android:padding="28dp"
+-                android:background="@color/surface_card">
++                android:padding="24dp">
+ 
+                 <TextView
+                     android:id="@+id/tvTimerLabel"
++                    style="@style/Zenith.Text.CardLabel"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+-                    android:text="Pomodoro Timer"
+-                    android:textSize="13sp"
+-                    android:textColor="@color/text_secondary"
+-                    android:textStyle="bold"
+-                    android:letterSpacing="0.1"
++                    android:text="POMODORO TIMER"
+                     android:layout_marginBottom="8dp"/>
+ 
+                 <!-- Subject tap to change -->
+@@ -64,6 +61,7 @@
+                     android:layout_height="wrap_content"
+                     android:text="Study"
+                     android:textSize="16sp"
++                    android:fontFamily="@font/outfit_600"
+                     android:textColor="@color/zenith_purple"
+                     android:background="?attr/selectableItemBackground"
+                     android:paddingStart="12dp"
+@@ -106,15 +104,15 @@
+                             android:layout_height="wrap_content"
+                             android:text="25:00"
+                             android:textSize="32sp"
+-                            android:textStyle="bold"
+-                            android:textColor="@color/text_primary"
+-                            android:fontFamily="monospace"/>
++                            android:fontFamily="@font/outfit_700"
++                            android:textColor="@color/text_primary"/>
+ 
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:text="remaining"
+                             android:textSize="10sp"
++                            android:fontFamily="@font/outfit_400"
+                             android:textColor="@color/text_secondary"
+                             android:layout_marginTop="2dp"/>
+                     </LinearLayout>
+@@ -126,6 +124,7 @@
+                     android:layout_height="wrap_content"
+                     android:text="0 sessions completed today"
+                     android:textSize="13sp"
++                    android:fontFamily="@font/outfit_400"
+                     android:textColor="@color/text_secondary"
+                     android:layout_marginBottom="24dp"/>
+ 
+@@ -142,6 +141,7 @@
+                         android:layout_height="wrap_content"
+                         android:text="▶ Start"
+                         android:textSize="15sp"
++                        android:fontFamily="@font/outfit_700"
+                         android:layout_marginEnd="12dp"
+                         app:backgroundTint="@color/zenith_purple"
+                         app:cornerRadius="12dp"/>
+@@ -152,29 +152,31 @@
+                         android:layout_height="wrap_content"
+                         android:text="■ Stop"
+                         android:textSize="15sp"
++                        android:fontFamily="@font/outfit_700"
+                         android:enabled="false"
+                         app:backgroundTint="@color/zenith_coral"
+                         app:cornerRadius="12dp"/>
+                 </LinearLayout>
+             </LinearLayout>
+-        </androidx.cardview.widget.CardView>
++        </com.google.android.material.card.MaterialCardView>
+ 
+         <!-- Focus Mode Toggle Card -->
+-        <androidx.cardview.widget.CardView
++        <com.google.android.material.card.MaterialCardView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+-            android:layout_marginBottom="16dp"
+-            app:cardCornerRadius="16dp"
+-            app:cardElevation="4dp"
+-            app:cardBackgroundColor="@color/surface_card">
++            android:layout_marginBottom="12dp"
++            app:cardCornerRadius="20dp"
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF">
+ 
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:orientation="horizontal"
+                 android:gravity="center_vertical"
+-                android:padding="20dp"
+-                android:background="@color/surface_card">
++                android:padding="18dp">
+ 
+                 <LinearLayout
+                     android:layout_width="0dp"
+@@ -187,7 +189,7 @@
+                         android:layout_height="wrap_content"
+                         android:text="🎯 App Block Mode"
+                         android:textSize="15sp"
+-                        android:textStyle="bold"
++                        android:fontFamily="@font/outfit_700"
+                         android:textColor="@color/text_primary"/>
+ 
+                     <TextView
+@@ -195,15 +197,18 @@
+                         android:layout_height="wrap_content"
+                         android:text="Blocks non-whitelisted apps"
+                         android:textSize="12sp"
++                        android:fontFamily="@font/outfit_400"
+                         android:textColor="@color/text_secondary"/>
+                 </LinearLayout>
+ 
+                 <com.google.android.material.switchmaterial.SwitchMaterial
+                     android:id="@+id/switchFocusMode"
+                     android:layout_width="wrap_content"
+-                    android:layout_height="wrap_content"/>
++                    android:layout_height="wrap_content"
++                    app:thumbTint="@color/white"
++                    app:trackTint="@color/zenith_purple"/>
+             </LinearLayout>
+-        </androidx.cardview.widget.CardView>
++        </com.google.android.material.card.MaterialCardView>
+ 
+     </LinearLayout>
+ </ScrollView>
+diff --git a/app/src/main/res/layout/fragment_home.xml b/app/src/main/res/layout/fragment_home.xml
+index 1e96eaa..85e081e 100644
+--- a/app/src/main/res/layout/fragment_home.xml
++++ b/app/src/main/res/layout/fragment_home.xml
+@@ -1,8 +1,10 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    android:background="@color/zenith_lavender">
++    android:background="@color/zenith_lavender"
++    android:clipToPadding="false">
+ 
+     <LinearLayout
+         android:layout_width="match_parent"
+@@ -10,6 +12,7 @@
+         android:orientation="vertical"
+         android:padding="20dp">
+ 
++        <!-- Header -->
+         <RelativeLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+@@ -26,216 +29,219 @@
+                     android:id="@+id/tvGreeting"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
++                    android:fontFamily="@font/outfit_500"
+                     android:textSize="14sp"
+                     android:textColor="@color/text_secondary"
+-                    android:layout_marginBottom="4dp"/>
++                    android:text="Good day — Monday" />
+ 
+                 <TextView
+                     android:id="@+id/tvTagline"
++                    style="@style/Zenith.Text.ScreenTitle"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+-                    android:textSize="22sp"
+-                    android:textStyle="bold"
+-                    android:textColor="@color/text_primary"/>
++                    android:layout_marginTop="4dp"
++                    android:text="Rise above. Stay focused." />
+             </LinearLayout>
+ 
+-            <ImageButton
++            <FrameLayout
+                 android:id="@+id/btnSettings"
+-                android:layout_width="48dp"
+-                android:layout_height="48dp"
++                android:layout_width="38dp"
++                android:layout_height="38dp"
+                 android:layout_alignParentEnd="true"
+                 android:layout_centerVertical="true"
+                 android:background="@drawable/bg_settings_button"
+-                android:src="@android:drawable/ic_menu_preferences"
+-                android:contentDescription="Settings"
+-                android:tint="@color/white"
+-                android:padding="12dp"
+-                android:elevation="4dp"/>
++                android:elevation="0dp">
++
++                <ImageView
++                    android:layout_width="18dp"
++                    android:layout_height="18dp"
++                    android:layout_gravity="center"
++                    android:src="@android:drawable/ic_menu_preferences"
++                    android:contentDescription="Settings"
++                    app:tint="@color/white" />
++            </FrameLayout>
+         </RelativeLayout>
+ 
+         <!-- Permission warning card -->
+-        <androidx.cardview.widget.CardView
++        <LinearLayout
+             android:id="@+id/cardPermissionWarning"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+-            android:layout_marginBottom="16dp"
+-            app:cardCornerRadius="16dp"
+-            app:cardElevation="4dp"
+-            app:cardBackgroundColor="#2D1F24"
+-            android:visibility="gone"
+-            xmlns:app="http://schemas.android.com/apk/res-auto">
+-            <LinearLayout
+-                android:layout_width="match_parent"
++            android:layout_marginBottom="12dp"
++            android:orientation="vertical"
++            android:background="@drawable/bg_warning_banner"
++            android:padding="18dp"
++            android:visibility="gone">
++
++            <TextView
++                android:id="@+id/tvPermissionTitle"
++                android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+-                android:orientation="vertical"
+-                android:padding="16dp">
+-                <TextView
+-                    android:id="@+id/tvPermissionTitle"
+-                    android:layout_width="wrap_content"
+-                    android:layout_height="wrap_content"
+-                    android:text="⚠️ System Permissions Required"
+-                    android:textColor="#FCA5A5"
+-                    android:textStyle="bold"
+-                    android:textSize="15sp"/>
+-                <TextView
+-                    android:id="@+id/tvPermissionDesc"
+-                    android:layout_width="wrap_content"
+-                    android:layout_height="wrap_content"
+-                    android:text="Zenith needs Accessibility Service to track active apps and Overlay permission to display lock screens. Tap below to configure."
+-                    android:textColor="#FECACA"
+-                    android:textSize="12sp"
+-                    android:layout_marginTop="4dp"
+-                    android:layout_marginBottom="12dp"/>
+-                <com.google.android.material.button.MaterialButton
+-                    android:id="@+id/btnGrantPermissions"
+-                    android:layout_width="wrap_content"
+-                    android:layout_height="wrap_content"
+-                    android:text="Enable Zenith Protector"
+-                    android:textSize="12sp"
+-                    app:backgroundTint="#EF4444"
+-                    app:cornerRadius="8dp"
+-                    android:insetTop="0dp"
+-                    android:insetBottom="0dp"/>
+-            </LinearLayout>
+-        </androidx.cardview.widget.CardView>
++                android:fontFamily="@font/outfit_700"
++                android:text="⚠️ System Permissions Required"
++                android:textColor="#FCA5A5"
++                android:textSize="14sp" />
++
++            <TextView
++                android:id="@+id/tvPermissionDesc"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:layout_marginTop="4dp"
++                android:layout_marginBottom="12dp"
++                android:fontFamily="@font/outfit_400"
++                android:text="Zenith needs Accessibility Service to track active apps and Overlay permission to display lock screens. Tap below to configure."
++                android:textColor="#FECACA"
++                android:textSize="12sp" />
++
++            <com.google.android.material.button.MaterialButton
++                android:id="@+id/btnGrantPermissions"
++                android:layout_width="wrap_content"
++                android:layout_height="36dp"
++                android:fontFamily="@font/outfit_700"
++                android:text="Enable Zenith Protector"
++                android:textSize="12sp"
++                android:insetTop="0dp"
++                android:insetBottom="0dp"
++                app:backgroundTint="#EF4444"
++                app:cornerRadius="8dp" />
++        </LinearLayout>
+ 
+         <!-- Screen Time Card -->
+-        <androidx.cardview.widget.CardView
++        <com.google.android.material.card.MaterialCardView
+             android:id="@+id/cardScreenTime"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginBottom="12dp"
+-            app:cardCornerRadius="16dp"
+-            app:cardElevation="4dp"
+-            app:cardBackgroundColor="@color/surface_card"
+-            xmlns:app="http://schemas.android.com/apk/res-auto">
+-            <LinearLayout
++            app:cardCornerRadius="20dp"
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF"
++            app:rippleColor="@color/zenith_purple">
++
++            <FrameLayout
+                 android:layout_width="match_parent"
+-                android:layout_height="wrap_content"
+-                android:orientation="horizontal"
+-                android:background="@color/surface_card">
++                android:layout_height="wrap_content">
++
+                 <View
+-                    android:layout_width="5dp"
++                    android:layout_width="3dp"
+                     android:layout_height="match_parent"
+-                    android:background="@color/zenith_purple"/>
++                    android:background="@color/zenith_purple" />
++
+                 <LinearLayout
+-                    android:layout_width="0dp"
++                    android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+-                    android:layout_weight="1"
+                     android:orientation="vertical"
+-                    android:padding="20dp">
++                    android:padding="18dp">
++
+                     <TextView
++                        style="@style/Zenith.Text.CardLabel"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+-                        android:text="📱 SCREEN TIME TODAY"
+-                        android:textSize="11sp"
+-                        android:textStyle="bold"
+-                        android:textColor="@color/text_secondary"
+-                        android:letterSpacing="0.05"/>
++                        android:text="📱 SCREEN TIME TODAY" />
++
+                     <TextView
+                         android:id="@+id/tvScreenTime"
++                        style="@style/Zenith.Text.CardValue"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+-                        android:text="0h 0m"
+-                        android:textSize="26sp"
+-                        android:textStyle="bold"
+-                        android:textColor="@color/text_primary"
+-                        android:layout_marginTop="4dp"/>
++                        android:layout_marginTop="6dp"
++                        android:text="0h 0m" />
+                 </LinearLayout>
+-            </LinearLayout>
+-        </androidx.cardview.widget.CardView>
++            </FrameLayout>
++        </com.google.android.material.card.MaterialCardView>
+ 
+         <!-- Habits Card -->
+-        <androidx.cardview.widget.CardView
++        <com.google.android.material.card.MaterialCardView
+             android:id="@+id/cardHabits"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginBottom="12dp"
+-            app:cardCornerRadius="16dp"
+-            app:cardElevation="4dp"
+-            app:cardBackgroundColor="@color/surface_card"
+-            xmlns:app="http://schemas.android.com/apk/res-auto">
+-            <LinearLayout
++            app:cardCornerRadius="20dp"
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF"
++            app:rippleColor="@color/zenith_teal">
++
++            <FrameLayout
+                 android:layout_width="match_parent"
+-                android:layout_height="wrap_content"
+-                android:orientation="horizontal"
+-                android:background="@color/surface_card">
++                android:layout_height="wrap_content">
++
+                 <View
+-                    android:layout_width="5dp"
++                    android:layout_width="3dp"
+                     android:layout_height="match_parent"
+-                    android:background="@color/zenith_teal"/>
++                    android:background="@color/zenith_teal" />
++
+                 <LinearLayout
+-                    android:layout_width="0dp"
++                    android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+-                    android:layout_weight="1"
+                     android:orientation="vertical"
+-                    android:padding="20dp">
++                    android:padding="18dp">
++
+                     <TextView
++                        style="@style/Zenith.Text.CardLabel"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+-                        android:text="✅ HABIT PROGRESS"
+-                        android:textSize="11sp"
+-                        android:textStyle="bold"
+-                        android:textColor="@color/text_secondary"
+-                        android:letterSpacing="0.05"/>
++                        android:text="✅ HABIT PROGRESS" />
++
+                     <TextView
+                         android:id="@+id/tvHabitCount"
++                        style="@style/Zenith.Text.CardValue"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
++                        android:layout_marginTop="6dp"
+                         android:text="0 habits done"
+-                        android:textSize="22sp"
+-                        android:textStyle="bold"
+-                        android:textColor="@color/zenith_teal"
+-                        android:layout_marginTop="4dp"/>
++                        android:textColor="@color/zenith_teal" />
+                 </LinearLayout>
+-            </LinearLayout>
+-        </androidx.cardview.widget.CardView>
++            </FrameLayout>
++        </com.google.android.material.card.MaterialCardView>
+ 
+         <!-- Study Time Card -->
+-        <androidx.cardview.widget.CardView
++        <com.google.android.material.card.MaterialCardView
+             android:id="@+id/cardStudyTime"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginBottom="12dp"
+-            app:cardCornerRadius="16dp"
+-            app:cardElevation="4dp"
+-            app:cardBackgroundColor="@color/surface_card"
+-            xmlns:app="http://schemas.android.com/apk/res-auto">
+-            <LinearLayout
++            app:cardCornerRadius="20dp"
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF"
++            app:rippleColor="@color/zenith_amber">
++
++            <FrameLayout
+                 android:layout_width="match_parent"
+-                android:layout_height="wrap_content"
+-                android:orientation="horizontal"
+-                android:background="@color/surface_card">
++                android:layout_height="wrap_content">
++
+                 <View
+-                    android:layout_width="5dp"
++                    android:layout_width="3dp"
+                     android:layout_height="match_parent"
+-                    android:background="@color/zenith_amber"/>
++                    android:background="@color/zenith_amber" />
++
+                 <LinearLayout
+-                    android:layout_width="0dp"
++                    android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+-                    android:layout_weight="1"
+                     android:orientation="vertical"
+-                    android:padding="20dp">
++                    android:padding="18dp">
++
+                     <TextView
++                        style="@style/Zenith.Text.CardLabel"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+-                        android:text="📚 STUDY TIME"
+-                        android:textSize="11sp"
+-                        android:textStyle="bold"
+-                        android:textColor="@color/text_secondary"
+-                        android:letterSpacing="0.05"/>
++                        android:text="📚 STUDY TIME" />
++
+                     <TextView
+                         android:id="@+id/tvStudyTime"
++                        style="@style/Zenith.Text.CardValue"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
++                        android:layout_marginTop="6dp"
+                         android:text="0m studied"
+-                        android:textSize="22sp"
+-                        android:textStyle="bold"
+-                        android:textColor="@color/zenith_amber"
+-                        android:layout_marginTop="4dp"/>
++                        android:textColor="@color/zenith_amber" />
+                 </LinearLayout>
+-            </LinearLayout>
+-        </androidx.cardview.widget.CardView>
++            </FrameLayout>
++        </com.google.android.material.card.MaterialCardView>
+ 
+     </LinearLayout>
+ </ScrollView>
+diff --git a/app/src/main/res/layout/fragment_screen.xml b/app/src/main/res/layout/fragment_screen.xml
+index c419b84..8a76a9b 100644
+--- a/app/src/main/res/layout/fragment_screen.xml
++++ b/app/src/main/res/layout/fragment_screen.xml
+@@ -1,8 +1,9 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    android:background="@color/zenith_dark"
++    android:background="@color/zenith_lavender"
+     android:fillViewport="true">
+ 
+     <LinearLayout
+@@ -21,64 +22,72 @@
+             android:layout_marginBottom="16dp">
+ 
+             <TextView
++                style="@style/Zenith.Text.ScreenTitle"
+                 android:layout_width="0dp"
+                 android:layout_height="wrap_content"
+                 android:layout_weight="1"
+-                android:text="Screen Time"
+-                android:textSize="22sp"
+-                android:textStyle="bold"
+-                android:textColor="@color/text_primary"/>
++                android:text="Screen Time"/>
+ 
+-            <Button
++            <TextView
+                 android:id="@+id/btnSync"
+                 android:layout_width="wrap_content"
+-                android:layout_height="36dp"
+-                android:text="↻ Sync"
++                android:layout_height="wrap_content"
++                android:background="@drawable/bg_chip_purple"
++                android:paddingHorizontal="12dp"
++                android:paddingVertical="4dp"
++                android:text="↻ Synced"
+                 android:textSize="11sp"
+-                android:backgroundTint="#1F1F40"
++                android:fontFamily="@font/outfit_700"
+                 android:textColor="@color/zenith_purple"
+-                android:insetTop="0dp"
+-                android:insetBottom="0dp"/>
++                android:clickable="true"
++                android:focusable="true"/>
+         </LinearLayout>
+ 
+         <!-- Today total card -->
+-        <LinearLayout
++        <com.google.android.material.card.MaterialCardView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+-            android:background="@color/surface_card"
+-            android:padding="20dp"
+-            android:orientation="vertical"
+-            android:gravity="center"
+-            android:layout_marginBottom="14dp">
+-
+-            <TextView
+-                android:layout_width="wrap_content"
+-                android:layout_height="wrap_content"
+-                android:text="TODAY'S SCREEN TIME"
+-                android:textSize="10sp"
+-                android:textStyle="bold"
+-                android:letterSpacing="0.15"
+-                android:textColor="@color/text_secondary"/>
+-
+-            <TextView
+-                android:id="@+id/tvTotalTime"
+-                android:layout_width="wrap_content"
++            android:layout_marginBottom="14dp"
++            app:cardCornerRadius="20dp"
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF">
++
++            <LinearLayout
++                android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+-                android:text="0h 0m"
+-                android:textSize="44sp"
+-                android:textStyle="bold"
+-                android:textColor="@color/text_primary"
+-                android:layout_marginTop="6dp"/>
+-
+-            <TextView
+-                android:id="@+id/tvAppCount"
+-                android:layout_width="wrap_content"
+-                android:layout_height="wrap_content"
+-                android:text="0 apps tracked"
+-                android:textSize="12sp"
+-                android:textColor="@color/text_secondary"
+-                android:layout_marginTop="4dp"/>
+-        </LinearLayout>
++                android:padding="20dp"
++                android:orientation="vertical"
++                android:gravity="center">
++
++                <TextView
++                    style="@style/Zenith.Text.CardLabel"
++                    android:layout_width="wrap_content"
++                    android:layout_height="wrap_content"
++                    android:text="TODAY'S TOTAL"/>
++
++                <TextView
++                    android:id="@+id/tvTotalTime"
++                    android:layout_width="wrap_content"
++                    android:layout_height="wrap_content"
++                    android:text="0h 0m"
++                    android:textSize="40sp"
++                    android:fontFamily="@font/outfit_900"
++                    android:textColor="@color/text_primary"
++                    android:layout_marginTop="6dp"/>
++
++                <TextView
++                    android:id="@+id/tvAppCount"
++                    android:layout_width="wrap_content"
++                    android:layout_height="wrap_content"
++                    android:text="0 apps tracked"
++                    android:textSize="12sp"
++                    android:fontFamily="@font/outfit_400"
++                    android:textColor="@color/text_secondary"
++                    android:layout_marginTop="4dp"/>
++            </LinearLayout>
++        </com.google.android.material.card.MaterialCardView>
+ 
+         <!-- App usage label -->
+         <TextView
+@@ -86,7 +95,7 @@
+             android:layout_height="wrap_content"
+             android:text="TODAY'S APPS"
+             android:textSize="10sp"
+-            android:textStyle="bold"
++            android:fontFamily="@font/outfit_700"
+             android:letterSpacing="0.12"
+             android:textColor="@color/text_secondary"
+             android:layout_marginBottom="8dp"/>
+@@ -121,7 +130,7 @@
+                 android:layout_weight="1"
+                 android:text="🌐  BROWSER HISTORY"
+                 android:textSize="10sp"
+-                android:textStyle="bold"
++                android:fontFamily="@font/outfit_700"
+                 android:letterSpacing="0.12"
+                 android:textColor="@color/text_secondary"/>
+ 
+diff --git a/app/src/main/res/layout/fragment_settings.xml b/app/src/main/res/layout/fragment_settings.xml
+index cef6824..9f983b9 100644
+--- a/app/src/main/res/layout/fragment_settings.xml
++++ b/app/src/main/res/layout/fragment_settings.xml
+@@ -13,12 +13,10 @@
+ 
+         <!-- Header -->
+         <TextView
++            style="@style/Zenith.Text.ScreenTitle"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Settings"
+-            android:textSize="26sp"
+-            android:textStyle="bold"
+-            android:textColor="@color/text_primary"
+             android:layout_marginBottom="4dp"/>
+ 
+         <TextView
+@@ -26,26 +24,28 @@
+             android:layout_height="wrap_content"
+             android:text="Customize your Zenith experience"
+             android:textSize="13sp"
++            android:fontFamily="@font/outfit_400"
+             android:textColor="@color/text_secondary"
+-            android:layout_marginBottom="24dp"/>
++            android:layout_marginBottom="20dp"/>
+ 
+         <!-- Growth Mode Card -->
+-        <androidx.cardview.widget.CardView
++        <com.google.android.material.card.MaterialCardView
+             android:id="@+id/cardGrowthMode"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginBottom="12dp"
+-            app:cardCornerRadius="16dp"
+-            app:cardElevation="4dp"
+-            app:cardBackgroundColor="@color/surface_card">
++            app:cardCornerRadius="20dp"
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF">
+ 
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:orientation="horizontal"
+                 android:gravity="center_vertical"
+-                android:padding="20dp"
+-                android:background="@color/surface_card">
++                android:padding="18dp">
+ 
+                 <LinearLayout
+                     android:layout_width="0dp"
+@@ -58,7 +58,7 @@
+                         android:layout_height="wrap_content"
+                         android:text="💼 Growth Mode"
+                         android:textSize="15sp"
+-                        android:textStyle="bold"
++                        android:fontFamily="@font/outfit_700"
+                         android:textColor="@color/text_primary"/>
+ 
+                     <TextView
+@@ -66,39 +66,42 @@
+                         android:layout_height="wrap_content"
+                         android:text="Prioritizes productivity apps over social media"
+                         android:textSize="12sp"
++                        android:fontFamily="@font/outfit_400"
+                         android:textColor="@color/text_secondary"/>
+                 </LinearLayout>
+ 
+                 <com.google.android.material.switchmaterial.SwitchMaterial
+                     android:id="@+id/switchCareerMode"
+                     android:layout_width="wrap_content"
+-                    android:layout_height="wrap_content"/>
++                    android:layout_height="wrap_content"
++                    app:trackTint="@color/zenith_purple"/>
+             </LinearLayout>
+-        </androidx.cardview.widget.CardView>
++        </com.google.android.material.card.MaterialCardView>
+ 
+         <!-- Daily Screen Goal Card -->
+-        <androidx.cardview.widget.CardView
++        <com.google.android.material.card.MaterialCardView
+             android:id="@+id/cardDailyGoal"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginBottom="12dp"
+-            app:cardCornerRadius="16dp"
+-            app:cardElevation="4dp"
+-            app:cardBackgroundColor="@color/surface_card">
++            app:cardCornerRadius="20dp"
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF">
+ 
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:orientation="vertical"
+-                android:padding="20dp"
+-                android:background="@color/surface_card">
++                android:padding="18dp">
+ 
+                 <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="📱 Daily Screen Time Goal"
+                     android:textSize="15sp"
+-                    android:textStyle="bold"
++                    android:fontFamily="@font/outfit_700"
+                     android:textColor="@color/text_primary"
+                     android:layout_marginBottom="12dp"/>
+ 
+@@ -114,6 +117,7 @@
+                         android:layout_height="44dp"
+                         android:text="−"
+                         android:textSize="20sp"
++                        android:fontFamily="@font/outfit_700"
+                         android:backgroundTint="@color/zenith_lavender"
+                         android:textColor="@color/zenith_purple"/>
+ 
+@@ -124,7 +128,7 @@
+                         android:layout_weight="1"
+                         android:gravity="center"
+                         android:textSize="22sp"
+-                        android:textStyle="bold"
++                        android:fontFamily="@font/outfit_800"
+                         android:textColor="@color/zenith_purple"
+                         android:text="120 min"/>
+ 
+@@ -134,71 +138,76 @@
+                         android:layout_height="44dp"
+                         android:text="+"
+                         android:textSize="20sp"
++                        android:fontFamily="@font/outfit_700"
+                         android:backgroundTint="@color/zenith_lavender"
+                         android:textColor="@color/zenith_purple"/>
+                 </LinearLayout>
+             </LinearLayout>
+-        </androidx.cardview.widget.CardView>
++        </com.google.android.material.card.MaterialCardView>
+ 
+         <!-- Security Card -->
+-        <androidx.cardview.widget.CardView
++        <com.google.android.material.card.MaterialCardView
+             android:id="@+id/cardSecurity"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginBottom="12dp"
+-            app:cardCornerRadius="16dp"
+-            app:cardElevation="4dp"
+-            app:cardBackgroundColor="@color/surface_card">
++            app:cardCornerRadius="20dp"
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF">
+ 
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:orientation="vertical"
+-                android:padding="20dp"
+-                android:background="@color/surface_card">
++                android:padding="18dp">
+ 
+                 <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="🔐 Security"
+                     android:textSize="15sp"
+-                    android:textStyle="bold"
++                    android:fontFamily="@font/outfit_700"
+                     android:textColor="@color/text_primary"
+                     android:layout_marginBottom="12dp"/>
+ 
+-                <Button
++                <com.google.android.material.button.MaterialButton
+                     android:id="@+id/btnSetPin"
+                     android:layout_width="match_parent"
+                     android:layout_height="48dp"
+                     android:text="Change PIN"
+-                    android:backgroundTint="@color/zenith_purple"
+-                    android:textColor="@color/white"/>
++                    android:fontFamily="@font/outfit_700"
++                    android:textColor="@color/white"
++                    app:backgroundTint="@color/zenith_purple"
++                    app:cornerRadius="12dp"/>
+             </LinearLayout>
+-        </androidx.cardview.widget.CardView>
++        </com.google.android.material.card.MaterialCardView>
+ 
+         <!-- Export Data Card -->
+-        <androidx.cardview.widget.CardView
++        <com.google.android.material.card.MaterialCardView
+             android:id="@+id/cardExport"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginBottom="12dp"
+-            app:cardCornerRadius="16dp"
+-            app:cardElevation="4dp"
+-            app:cardBackgroundColor="@color/surface_card">
++            app:cardCornerRadius="20dp"
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF">
+ 
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:orientation="vertical"
+-                android:padding="20dp"
+-                android:background="@color/surface_card">
++                android:padding="18dp">
+ 
+                 <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="📊 Export Activity Report"
+                     android:textSize="15sp"
+-                    android:textStyle="bold"
++                    android:fontFamily="@font/outfit_700"
+                     android:textColor="@color/text_primary"
+                     android:layout_marginBottom="12dp"/>
+ 
+@@ -225,6 +234,7 @@
+                             android:layout_height="wrap_content"
+                             android:text="Start Date"
+                             android:textSize="11sp"
++                            android:fontFamily="@font/outfit_400"
+                             android:textColor="@color/text_secondary"/>
+ 
+                         <TextView
+@@ -233,7 +243,7 @@
+                             android:layout_height="wrap_content"
+                             android:text="Select..."
+                             android:textSize="14sp"
+-                            android:textStyle="bold"
++                            android:fontFamily="@font/outfit_700"
+                             android:textColor="@color/zenith_purple"
+                             android:layout_marginTop="2dp"/>
+                     </LinearLayout>
+@@ -262,6 +272,7 @@
+                             android:layout_height="wrap_content"
+                             android:text="End Date"
+                             android:textSize="11sp"
++                            android:fontFamily="@font/outfit_400"
+                             android:textColor="@color/text_secondary"/>
+ 
+                         <TextView
+@@ -270,45 +281,48 @@
+                             android:layout_height="wrap_content"
+                             android:text="Select..."
+                             android:textSize="14sp"
+-                            android:textStyle="bold"
++                            android:fontFamily="@font/outfit_700"
+                             android:textColor="@color/zenith_purple"
+                             android:layout_marginTop="2dp"/>
+                     </LinearLayout>
+                 </LinearLayout>
+ 
+-                <Button
++                <com.google.android.material.button.MaterialButton
+                     android:id="@+id/btnExportReport"
+                     android:layout_width="match_parent"
+                     android:layout_height="48dp"
+                     android:text="Export Day-to-Day Report"
+-                    android:backgroundTint="@color/zenith_purple"
+-                    android:textColor="@color/white"/>
++                    android:fontFamily="@font/outfit_700"
++                    android:textColor="@color/white"
++                    app:backgroundTint="@color/zenith_purple"
++                    app:cornerRadius="12dp"/>
+             </LinearLayout>
+-        </androidx.cardview.widget.CardView>
++        </com.google.android.material.card.MaterialCardView>
+ 
+         <!-- Service Card -->
+-        <androidx.cardview.widget.CardView
++        <com.google.android.material.card.MaterialCardView
+             android:id="@+id/cardService"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+-            android:layout_marginBottom="24dp"
+-            app:cardCornerRadius="16dp"
+-            app:cardElevation="4dp"
+-            app:cardBackgroundColor="@color/surface_card">
++            android:layout_marginBottom="20dp"
++            app:cardCornerRadius="20dp"
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF">
+ 
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:orientation="vertical"
+-                android:padding="20dp"
+-                android:background="@color/surface_card">
++                android:padding="18dp">
+ 
+                 <TextView
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="⚙️ Background Service"
+                     android:textSize="15sp"
+-                    android:textStyle="bold"
++                    android:fontFamily="@font/outfit_700"
+                     android:textColor="@color/text_primary"
+                     android:layout_marginBottom="4dp"/>
+ 
+@@ -317,18 +331,21 @@
+                     android:layout_height="wrap_content"
+                     android:text="If tracking stops, restart the monitor service."
+                     android:textSize="12sp"
++                    android:fontFamily="@font/outfit_400"
+                     android:textColor="@color/text_secondary"
+                     android:layout_marginBottom="12dp"/>
+ 
+-                <Button
++                <com.google.android.material.button.MaterialButton
+                     android:id="@+id/btnRestartService"
+                     android:layout_width="match_parent"
+                     android:layout_height="48dp"
+                     android:text="Restart Monitor"
+-                    android:backgroundTint="@color/zenith_teal"
+-                    android:textColor="@color/white"/>
++                    android:fontFamily="@font/outfit_700"
++                    android:textColor="@color/white"
++                    app:backgroundTint="@color/zenith_teal"
++                    app:cornerRadius="12dp"/>
+             </LinearLayout>
+-        </androidx.cardview.widget.CardView>
++        </com.google.android.material.card.MaterialCardView>
+ 
+         <!-- Version info -->
+         <TextView
+@@ -337,6 +354,7 @@
+             android:layout_height="wrap_content"
+             android:text="Zenith v1.0  •  Focus. Control. Your Peak."
+             android:textSize="11sp"
++            android:fontFamily="@font/outfit_400"
+             android:textColor="@color/text_secondary"
+             android:gravity="center"/>
+ 
+diff --git a/app/src/main/res/layout/fragment_wellbeing.xml b/app/src/main/res/layout/fragment_wellbeing.xml
+index fc25086..65f4d11 100644
+--- a/app/src/main/res/layout/fragment_wellbeing.xml
++++ b/app/src/main/res/layout/fragment_wellbeing.xml
+@@ -1,5 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:background="@color/zenith_lavender">
+@@ -8,101 +9,122 @@
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+-        android:padding="24dp">
++        android:padding="20dp">
+ 
+         <TextView
++            style="@style/Zenith.Text.ScreenTitle"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="How are you feeling?"
+-            android:textSize="22sp"
+-            android:textStyle="bold"
+-            android:textColor="@color/text_primary"
+-            android:layout_marginBottom="24dp"/>
++            android:layout_marginBottom="20dp"/>
+ 
+         <!-- Mood buttons row -->
+-        <LinearLayout
++        <com.google.android.material.card.MaterialCardView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+-            android:orientation="horizontal"
+-            android:gravity="center"
+-            android:layout_marginBottom="16dp">
++            android:layout_marginBottom="8dp"
++            app:cardCornerRadius="20dp"
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF">
++
++            <LinearLayout
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:orientation="horizontal"
++                android:gravity="center"
++                android:padding="8dp">
+ 
+-            <Button android:id="@+id/btnMood1"
+-                android:layout_width="0dp" android:layout_height="56dp"
+-                android:layout_weight="1" android:text="😞"
+-                android:textSize="22sp" android:background="?attr/selectableItemBackground"/>
+-            <Button android:id="@+id/btnMood2"
+-                android:layout_width="0dp" android:layout_height="56dp"
+-                android:layout_weight="1" android:text="😕"
+-                android:textSize="22sp" android:background="?attr/selectableItemBackground"/>
+-            <Button android:id="@+id/btnMood3"
+-                android:layout_width="0dp" android:layout_height="56dp"
+-                android:layout_weight="1" android:text="😐"
+-                android:textSize="22sp" android:background="?attr/selectableItemBackground"/>
+-            <Button android:id="@+id/btnMood4"
+-                android:layout_width="0dp" android:layout_height="56dp"
+-                android:layout_weight="1" android:text="🙂"
+-                android:textSize="22sp" android:background="?attr/selectableItemBackground"/>
+-            <Button android:id="@+id/btnMood5"
+-                android:layout_width="0dp" android:layout_height="56dp"
+-                android:layout_weight="1" android:text="😄"
+-                android:textSize="22sp" android:background="?attr/selectableItemBackground"/>
+-        </LinearLayout>
++                <Button android:id="@+id/btnMood1"
++                    android:layout_width="0dp" android:layout_height="56dp"
++                    android:layout_weight="1" android:text="😞"
++                    android:textSize="22sp" android:background="?attr/selectableItemBackgroundBorderless"/>
++                <Button android:id="@+id/btnMood2"
++                    android:layout_width="0dp" android:layout_height="56dp"
++                    android:layout_weight="1" android:text="😕"
++                    android:textSize="22sp" android:background="?attr/selectableItemBackgroundBorderless"/>
++                <Button android:id="@+id/btnMood3"
++                    android:layout_width="0dp" android:layout_height="56dp"
++                    android:layout_weight="1" android:text="😐"
++                    android:textSize="22sp" android:background="?attr/selectableItemBackgroundBorderless"/>
++                <Button android:id="@+id/btnMood4"
++                    android:layout_width="0dp" android:layout_height="56dp"
++                    android:layout_weight="1" android:text="🙂"
++                    android:textSize="22sp" android:background="?attr/selectableItemBackgroundBorderless"/>
++                <Button android:id="@+id/btnMood5"
++                    android:layout_width="0dp" android:layout_height="56dp"
++                    android:layout_weight="1" android:text="😄"
++                    android:textSize="22sp" android:background="?attr/selectableItemBackgroundBorderless"/>
++            </LinearLayout>
++        </com.google.android.material.card.MaterialCardView>
+ 
+         <TextView
+             android:id="@+id/tvMoodFeedback"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:text=""
+-            android:textSize="15sp"
++            android:textSize="14sp"
++            android:fontFamily="@font/outfit_600"
+             android:textColor="@color/zenith_purple"
+             android:gravity="center"
+-            android:layout_marginBottom="24dp"/>
++            android:layout_marginTop="8dp"
++            android:layout_marginBottom="20dp"/>
+ 
+         <!-- Eye Break reminder -->
+-        <androidx.cardview.widget.CardView
++        <com.google.android.material.card.MaterialCardView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginBottom="12dp"
+-            app:cardCornerRadius="12dp"
+-            app:cardElevation="2dp"
+-            app:cardBackgroundColor="@color/surface_card"
+-            xmlns:app="http://schemas.android.com/apk/res-auto">
+-            <LinearLayout android:layout_width="match_parent"
++            app:cardCornerRadius="20dp"
++            app:cardElevation="1dp"
++            app:strokeWidth="1dp"
++            app:strokeColor="#14636AF1"
++            app:cardBackgroundColor="#E6FFFFFF">
++
++            <RelativeLayout
++                android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+-                android:padding="16dp" android:orientation="vertical"
+-                android:background="@color/surface_card">
+-                <RelativeLayout
+-                    android:layout_width="match_parent"
+-                    android:layout_height="wrap_content">
+-                    <LinearLayout
++                android:padding="18dp">
++
++                <LinearLayout
++                    android:layout_width="wrap_content"
++                    android:layout_height="wrap_content"
++                    android:orientation="vertical"
++                    android:layout_alignParentStart="true"
++                    android:layout_toStartOf="@+id/tvEyeBreakTimer"
++                    android:layout_marginEnd="16dp">
++
++                    <TextView
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+-                        android:orientation="vertical"
+-                        android:layout_alignParentStart="true"
+-                        android:layout_toStartOf="@+id/tvEyeBreakTimer"
+-                        android:layout_marginEnd="16dp">
+-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+-                            android:text="👁️ 20-20-20 Rule" android:textSize="14sp" android:textStyle="bold"
+-                            android:textColor="@color/text_primary"/>
+-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+-                            android:text="Every 20 minutes, look 20 feet away for 20 seconds."
+-                            android:textSize="13sp" android:textColor="@color/text_secondary"
+-                            android:layout_marginTop="4dp"/>
+-                    </LinearLayout>
++                        android:text="👁️ 20-20-20 Rule"
++                        android:textSize="14sp"
++                        android:fontFamily="@font/outfit_700"
++                        android:textColor="@color/text_primary"/>
++
+                     <TextView
+-                        android:id="@+id/tvEyeBreakTimer"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+-                        android:layout_alignParentEnd="true"
+-                        android:layout_centerVertical="true"
+-                        android:text="20:00"
+-                        android:textSize="18sp"
+-                        android:textStyle="bold"
+-                        android:textColor="@color/zenith_blue"/>
+-                </RelativeLayout>
+-            </LinearLayout>
+-        </androidx.cardview.widget.CardView>
++                        android:text="Every 20 minutes, look 20 feet away for 20 seconds."
++                        android:textSize="12sp"
++                        android:fontFamily="@font/outfit_400"
++                        android:textColor="@color/text_secondary"
++                        android:layout_marginTop="4dp"/>
++                </LinearLayout>
++
++                <TextView
++                    android:id="@+id/tvEyeBreakTimer"
++                    android:layout_width="wrap_content"
++                    android:layout_height="wrap_content"
++                    android:layout_alignParentEnd="true"
++                    android:layout_centerVertical="true"
++                    android:text="20:00"
++                    android:textSize="18sp"
++                    android:fontFamily="@font/outfit_800"
++                    android:textColor="@color/zenith_blue"/>
++            </RelativeLayout>
++        </com.google.android.material.card.MaterialCardView>
+ 
+     </LinearLayout>
+ </ScrollView>
+diff --git a/app/src/main/res/layout/item_app_usage.xml b/app/src/main/res/layout/item_app_usage.xml
+index 986881e..7ae4987 100644
+--- a/app/src/main/res/layout/item_app_usage.xml
++++ b/app/src/main/res/layout/item_app_usage.xml
+@@ -24,7 +24,7 @@
+             android:layout_height="32dp"
+             android:gravity="center"
+             android:textSize="13sp"
+-            android:textStyle="bold"
++            android:fontFamily="@font/outfit_700"
+             android:textColor="@color/zenith_purple"/>
+ 
+         <ImageView
+@@ -46,7 +46,7 @@
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:textSize="15sp"
+-                android:textStyle="bold"
++                android:fontFamily="@font/outfit_700"
+                 android:textColor="@color/text_primary"/>
+ 
+             <com.google.android.material.progressindicator.LinearProgressIndicator
+diff --git a/app/src/main/res/layout/item_browser_visit.xml b/app/src/main/res/layout/item_browser_visit.xml
+index f7e6cec..8570b58 100644
+--- a/app/src/main/res/layout/item_browser_visit.xml
++++ b/app/src/main/res/layout/item_browser_visit.xml
+@@ -26,7 +26,7 @@
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:textSize="13sp"
+-            android:textStyle="bold"
++            android:fontFamily="@font/outfit_700"
+             android:textColor="@color/text_primary"
+             android:maxLines="1"
+             android:ellipsize="end"/>
+diff --git a/app/src/main/res/layout/item_habit.xml b/app/src/main/res/layout/item_habit.xml
+index ce84747..e7ebf07 100644
+--- a/app/src/main/res/layout/item_habit.xml
++++ b/app/src/main/res/layout/item_habit.xml
+@@ -1,22 +1,23 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<androidx.cardview.widget.CardView
++<com.google.android.material.card.MaterialCardView
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+-    android:layout_marginHorizontal="12dp"
+-    android:layout_marginVertical="4dp"
+-    app:cardCornerRadius="12dp"
+-    app:cardElevation="2dp"
+-    app:cardBackgroundColor="@color/surface_card">
++    android:layout_marginHorizontal="8dp"
++    android:layout_marginVertical="6dp"
++    app:cardCornerRadius="18dp"
++    app:cardElevation="1dp"
++    app:strokeWidth="1dp"
++    app:strokeColor="#14636AF1"
++    app:cardBackgroundColor="#E6FFFFFF">
+ 
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="horizontal"
+         android:padding="16dp"
+-        android:gravity="center_vertical"
+-        android:background="@color/surface_card">
++        android:gravity="center_vertical">
+ 
+         <LinearLayout
+             android:layout_width="0dp"
+@@ -28,25 +29,32 @@
+                 android:id="@+id/tvHabitName"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+-                android:textSize="16sp"
+-                android:textStyle="bold"
++                android:textSize="15sp"
++                android:fontFamily="@font/outfit_700"
+                 android:textColor="@color/text_primary"/>
+ 
+             <TextView
+                 android:id="@+id/tvStreak"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+-                android:textSize="13sp"
++                android:textSize="12sp"
++                android:fontFamily="@font/outfit_600"
+                 android:textColor="@color/zenith_amber"
+-                android:layout_marginTop="2dp"/>
++                android:layout_marginTop="3dp"/>
+         </LinearLayout>
+ 
+-        <Button
++        <com.google.android.material.button.MaterialButton
+             android:id="@+id/btnComplete"
++            style="@style/Widget.MaterialComponents.Button"
+             android:layout_width="wrap_content"
+-            android:layout_height="wrap_content"
++            android:layout_height="36dp"
+             android:text="Complete"
+-            android:backgroundTint="@color/zenith_teal"
++            android:textSize="12sp"
++            android:fontFamily="@font/outfit_700"
++            android:insetTop="0dp"
++            android:insetBottom="0dp"
++            app:backgroundTint="@color/zenith_teal"
++            app:cornerRadius="10dp"
+             android:textColor="@color/white"/>
+     </LinearLayout>
+-</androidx.cardview.widget.CardView>
++</com.google.android.material.card.MaterialCardView>
+diff --git a/app/src/main/res/layout/overlay_app_locked.xml b/app/src/main/res/layout/overlay_app_locked.xml
+index 92740e7..44da78f 100644
+--- a/app/src/main/res/layout/overlay_app_locked.xml
++++ b/app/src/main/res/layout/overlay_app_locked.xml
+@@ -28,7 +28,7 @@
+             android:layout_height="wrap_content"
+             android:text="App is locked"
+             android:textSize="24sp"
+-            android:textStyle="bold"
++            android:fontFamily="@font/outfit_700"
+             android:textColor="#FFFFFF"
+             android:gravity="center"
+             android:layout_marginBottom="10dp"/>
+@@ -69,7 +69,7 @@
+                 android:text="Why do you need to unlock?"
+                 android:textColor="#FFFFFF"
+                 android:textSize="13sp"
+-                android:textStyle="bold"
++                android:fontFamily="@font/outfit_700"
+                 android:layout_marginBottom="6dp"/>
+ 
+             <EditText
+@@ -90,7 +90,7 @@
+                 android:text="Select unlock duration"
+                 android:textColor="#FFFFFF"
+                 android:textSize="13sp"
+-                android:textStyle="bold"
++                android:fontFamily="@font/outfit_700"
+                 android:layout_marginBottom="8dp"/>
+ 
+             <!-- Select duration radio items -->
+diff --git a/app/src/main/res/layout/overlay_browser_banner.xml b/app/src/main/res/layout/overlay_browser_banner.xml
+index 410ba50..2c84045 100644
+--- a/app/src/main/res/layout/overlay_browser_banner.xml
++++ b/app/src/main/res/layout/overlay_browser_banner.xml
+@@ -27,7 +27,7 @@
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textSize="13sp"
+-            android:textStyle="bold"
++            android:fontFamily="@font/outfit_700"
+             android:textColor="#FFFFFF"
+             android:maxLines="1"
+             android:ellipsize="end"/>
+diff --git a/app/src/main/res/layout/overlay_floating_capsule.xml b/app/src/main/res/layout/overlay_floating_capsule.xml
+index f8d8562..c858831 100644
+--- a/app/src/main/res/layout/overlay_floating_capsule.xml
++++ b/app/src/main/res/layout/overlay_floating_capsule.xml
+@@ -35,8 +35,8 @@
+             android:layout_weight="1"
+             android:text="15m left"
+             android:textColor="#FFFFFF"
+-            android:textSize="12sp"
+-            android:textStyle="bold"
++            android:textSize="11sp"
++            android:fontFamily="@font/outfit_700"
+             android:singleLine="true"
+             android:ellipsize="end"/>
+ 
+@@ -70,7 +70,9 @@
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:textColor="#CBD5E1"
+-            android:textSize="11sp"
++            android:textSize="9sp"
++            android:fontFamily="@font/outfit_400"
++            android:lineSpacingMultiplier="1.3"
+             android:text="Daily Limit: 30m\nTime Used: 15m"/>
+     </LinearLayout>
+ 
+diff --git a/app/src/main/res/layout/overlay_reel_popup.xml b/app/src/main/res/layout/overlay_reel_popup.xml
+index 94c6fd1..716b956 100644
+--- a/app/src/main/res/layout/overlay_reel_popup.xml
++++ b/app/src/main/res/layout/overlay_reel_popup.xml
+@@ -12,7 +12,7 @@
+         android:layout_height="wrap_content"
+         android:text="0 reels watched"
+         android:textSize="16sp"
+-        android:textStyle="bold"
++        android:fontFamily="@font/outfit_700"
+         android:textColor="@color/white"/>
+ 
+     <TextView
+diff --git a/app/src/main/res/layout/overlay_screen_on.xml b/app/src/main/res/layout/overlay_screen_on.xml
+index 3fe974b..58031e3 100644
+--- a/app/src/main/res/layout/overlay_screen_on.xml
++++ b/app/src/main/res/layout/overlay_screen_on.xml
+@@ -20,7 +20,7 @@
+             android:layout_weight="1"
+             android:text="ZENITH"
+             android:textSize="16sp"
+-            android:textStyle="bold"
++            android:fontFamily="@font/outfit_700"
+             android:letterSpacing="0.15"
+             android:textColor="#7C6FE0"/>
+ 
+@@ -71,7 +71,7 @@
+                 android:layout_height="wrap_content"
+                 android:text="0h 0m"
+                 android:textSize="18sp"
+-                android:textStyle="bold"
++                android:fontFamily="@font/outfit_700"
+                 android:textColor="#FFFFFF"
+                 android:layout_marginTop="4dp"/>
+ 
+@@ -113,7 +113,7 @@
+                 android:layout_height="wrap_content"
+                 android:text="0 / 0"
+                 android:textSize="18sp"
+-                android:textStyle="bold"
++                android:fontFamily="@font/outfit_700"
+                 android:textColor="#FFFFFF"
+                 android:layout_marginTop="4dp"/>
+ 
+@@ -155,7 +155,7 @@
+                 android:layout_height="wrap_content"
+                 android:text="0"
+                 android:textSize="18sp"
+-                android:textStyle="bold"
++                android:fontFamily="@font/outfit_700"
+                 android:textColor="#FFFFFF"
+                 android:layout_marginTop="4dp"/>
+ 
+diff --git a/app/src/main/res/values/themes.xml b/app/src/main/res/values/themes.xml
+index df15669..4024988 100644
+--- a/app/src/main/res/values/themes.xml
++++ b/app/src/main/res/values/themes.xml
+@@ -6,6 +6,33 @@
+         <item name="colorAccent">@color/zenith_teal</item>
+         <item name="android:colorBackground">@color/zenith_lavender</item>
+         <item name="android:windowBackground">@color/zenith_lavender</item>
++        <!-- Outfit is the brand font used everywhere in the preview design;
++             this single line changes the "feel" of every screen at once. -->
++        <item name="android:fontFamily">@font/outfit</item>
++        <item name="fontFamily">@font/outfit</item>
++        <item name="android:statusBarColor">@color/zenith_lavender</item>
++        <item name="android:windowLightStatusBar">true</item>
++    </style>
++
++    <!-- Text appearance presets matching the preview's type scale exactly -->
++    <style name="Zenith.Text.CardLabel">
++        <item name="android:fontFamily">@font/outfit_700</item>
++        <item name="android:textSize">10sp</item>
++        <item name="android:letterSpacing">0.12</item>
++        <item name="android:textAllCaps">true</item>
++        <item name="android:textColor">@color/text_secondary</item>
++    </style>
++
++    <style name="Zenith.Text.CardValue">
++        <item name="android:fontFamily">@font/outfit_900</item>
++        <item name="android:textSize">26sp</item>
++        <item name="android:textColor">@color/text_primary</item>
++    </style>
++
++    <style name="Zenith.Text.ScreenTitle">
++        <item name="android:fontFamily">@font/outfit_800</item>
++        <item name="android:textSize">22sp</item>
++        <item name="android:textColor">@color/text_primary</item>
+     </style>
+ 
+     <style name="Theme.Zenith.Splash" parent="Theme.Zenith">
