@@ -36,6 +36,10 @@ public class GuardianAccessibilityService extends AccessibilityService {
     private final Handler      capsuleHandler = new Handler(Looper.getMainLooper());
     private final Runnable     collapseRunnable = this::collapseCapsule;
     private String             lastToastAppPkg  = "";
+    private long               currentAppUsedMs  = 0;
+    private long               currentAppLimitMs = 0;
+    private String             currentAppName    = "";
+    private String             currentTasksStr   = "";
     private String             lastNotifiedApp  = "";
     private int                lastNotifiedPct  = 0;
 
@@ -105,9 +109,10 @@ public class GuardianAccessibilityService extends AccessibilityService {
         // ── App switch ──
         if (type == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             if (!pkg.equals(currentPkg)) {
-                checkAndIncrementUsage();
+                checkAndIncrementUsage(); // Save old app usage
                 currentPkg = pkg;
                 appOpenedTime = System.currentTimeMillis();
+                checkAndIncrementUsage(); // Trigger new app checks immediately
                 checkIfLocked(pkg);
                 checkFocusMode(pkg);
                 if (!isReelApp(pkg)) { reelCount = 0; reelSessionStart = 0; }
@@ -128,6 +133,21 @@ public class GuardianAccessibilityService extends AccessibilityService {
         // ── Reel counter ──
         if (type == AccessibilityEvent.TYPE_VIEW_SCROLLED && isReelApp(pkg)) {
             reelCount++;
+            
+            if (lockerCapsule != null && !currentAppName.isEmpty()) {
+                if (!isCapsuleExpanded) {
+                    updateCapsuleData(currentAppName, currentAppUsedMs, currentAppLimitMs);
+                } else {
+                    TextView tvDetail = lockerCapsule.findViewById(R.id.tvExpandedDetail);
+                    if (tvDetail != null) {
+                        String limitStr = TimeUtils.formatDuration(currentAppLimitMs);
+                        String usedStr = TimeUtils.formatDuration(currentAppUsedMs);
+                        String reelsStr = "\nReels Scrolled: " + reelCount;
+                        tvDetail.setText("App: " + currentAppName + "\nLimit: " + limitStr + " • Used: " + usedStr + reelsStr + "\n" + currentTasksStr);
+                    }
+                }
+            }
+            
             if (reelCount % 10 == 0) {
                 long sessionMs = System.currentTimeMillis() - reelSessionStart;
                 showReelPopup(reelCount, sessionMs);
@@ -418,16 +438,43 @@ public class GuardianAccessibilityService extends AccessibilityService {
         long elapsed = now - appOpenedTime;
         appOpenedTime = now;
 
-        if (elapsed <= 0) return;
-
         executor.execute(() -> {
             AppDatabase db = AppDatabase.getInstance(getApplicationContext());
             String today = TimeUtils.getTodayDate();
             AppUsageEntity e = db.appUsageDao().getUsageForApp(pkg, today);
+            
+            if (e == null) {
+                try {
+                    android.content.pm.PackageManager pm = getPackageManager();
+                    android.content.pm.ApplicationInfo info = pm.getApplicationInfo(pkg, 0);
+                    if ((info.flags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) {
+                        String appName = pm.getApplicationLabel(info).toString();
+                        e = new AppUsageEntity();
+                        e.packageName = pkg;
+                        e.appName = appName;
+                        e.usageTimeMillis = 0;
+                        e.limitMillis = 0;
+                        e.isLocked = false;
+                        e.isFocusWhitelisted = true;
+                        e.date = today;
+                        db.appUsageDao().insert(e);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+
             if (e != null) {
-                if (e.unlockExpiresAt > 0 && now < e.unlockExpiresAt) {
-                    e.usageTimeMillis += elapsed;
-                    db.appUsageDao().update(e);
+                final AppUsageEntity finalEntity = e;
+                currentAppName = finalEntity.appName;
+                if (elapsed > 0) {
+                    finalEntity.usageTimeMillis += elapsed;
+                }
+                currentAppUsedMs = finalEntity.usageTimeMillis;
+                currentAppLimitMs = finalEntity.limitMillis;
+
+                if (finalEntity.unlockExpiresAt > 0 && now < finalEntity.unlockExpiresAt) {
+                    if (elapsed > 0) db.appUsageDao().update(finalEntity);
                     uiHandler.post(() -> {
                         removeLocker();
                         removeFloatingCapsule();
@@ -435,19 +482,18 @@ public class GuardianAccessibilityService extends AccessibilityService {
                     return;
                 }
                 
-                if (e.unlockExpiresAt > 0 && now >= e.unlockExpiresAt) {
-                    e.isLocked = true;
-                    e.unlockExpiresAt = 0;
-                    db.appUsageDao().update(e);
+                if (finalEntity.unlockExpiresAt > 0 && now >= finalEntity.unlockExpiresAt) {
+                    finalEntity.isLocked = true;
+                    finalEntity.unlockExpiresAt = 0;
+                    db.appUsageDao().update(finalEntity);
                     uiHandler.post(() -> {
                         removeFloatingCapsule();
-                        showLockerOverlay(e.appName, false);
+                        showLockerOverlay(finalEntity.appName, false);
                     });
                     return;
                 }
 
-                e.usageTimeMillis += elapsed;
-                if (e.limitMillis > 0) {
+                if (finalEntity.limitMillis > 0) {
                     if (!pkg.equals(lastToastAppPkg)) {
                         lastToastAppPkg = pkg;
                         uiHandler.post(() -> {
@@ -457,31 +503,32 @@ public class GuardianAccessibilityService extends AccessibilityService {
                         });
                     }
 
-                    long pct = (e.usageTimeMillis * 100L) / e.limitMillis;
+                    long pct = (finalEntity.usageTimeMillis * 100L) / finalEntity.limitMillis;
                     if (pct >= 100) {
-                        e.isLocked = true;
-                        db.appUsageDao().update(e);
+                        finalEntity.isLocked = true;
+                        db.appUsageDao().update(finalEntity);
                         uiHandler.post(() -> {
                             removeFloatingCapsule();
-                            showLockerOverlay(e.appName, false);
+                            showLockerOverlay(finalEntity.appName, false);
                         });
                     } else {
-                        final long usedVal = e.usageTimeMillis;
-                        final long limitVal = e.limitMillis;
-                        final String nameVal = e.appName;
+                        final long usedVal = finalEntity.usageTimeMillis;
+                        final long limitVal = finalEntity.limitMillis;
+                        final String nameVal = finalEntity.appName;
                         uiHandler.post(() -> showFloatingCapsule(nameVal, usedVal, limitVal));
 
                         if (pct >= 80) {
-                            uiHandler.post(() -> showLimitWarningBanner(e.appName, 80, e.limitMillis - e.usageTimeMillis));
+                            uiHandler.post(() -> showLimitWarningBanner(finalEntity.appName, 80, finalEntity.limitMillis - finalEntity.usageTimeMillis));
                         } else if (pct >= 50) {
-                            uiHandler.post(() -> showLimitWarningBanner(e.appName, 50, e.limitMillis - e.usageTimeMillis));
+                            uiHandler.post(() -> showLimitWarningBanner(finalEntity.appName, 50, finalEntity.limitMillis - finalEntity.usageTimeMillis));
                         }
                     }
                 } else {
-                    lastToastAppPkg = "";
                     uiHandler.post(this::removeFloatingCapsule);
                 }
-                db.appUsageDao().update(e);
+                if (elapsed > 0) {
+                    db.appUsageDao().update(finalEntity);
+                }
             }
         });
     }
@@ -657,15 +704,19 @@ public class GuardianAccessibilityService extends AccessibilityService {
 
     private void updateCapsuleData(String appName, long usedMs, long limitMs) {
         if (lockerCapsule == null) return;
-
+ 
         long remainingMs = limitMs - usedMs;
         long remainingMins = Math.max(0, remainingMs / 60000);
-
+ 
         TextView tvText = lockerCapsule.findViewById(R.id.tvCapsuleText);
         View dot = lockerCapsule.findViewById(R.id.viewStatusDot);
-
+ 
         if (tvText != null) {
-            tvText.setText(appName + ": " + remainingMins + "m left");
+            String reelsStr = "";
+            if (isReelApp(currentPkg) && reelCount > 0) {
+                reelsStr = " • " + reelCount + " reels";
+            }
+            tvText.setText(appName + ": " + remainingMins + "m left" + reelsStr);
         }
 
         if (dot != null) {

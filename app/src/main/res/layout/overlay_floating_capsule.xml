@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="15m left"
-            android:textColor="#FFFFFF"
+            android:textColor="#0F172A"
             android:textSize="12sp"
             android:textStyle="bold"
             android:singleLine="true"
@@ -62,14 +62,14 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#22FFFFFF"
+            android:background="#E2E8F0"
             android:layout_marginBottom="6dp"/>
 
         <TextView
             android:id="@+id/tvExpandedDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#CBD5E1"
+            android:textColor="#475569"
             android:textSize="11sp"
             android:text="Daily Limit: 30m\nTime Used: 15m"/>
     </LinearLayout>
