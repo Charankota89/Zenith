@@ -30,14 +30,16 @@
             android:layout_marginBottom="24dp"/>
 
         <!-- Growth Mode Card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardGrowthMode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/surface_card">
+            app:cardBackgroundColor="#E6FFFFFF"
+            app:strokeWidth="1dp"
+            app:strokeColor="#14636AF1">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -74,17 +76,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Daily Screen Goal Card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardDailyGoal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/surface_card">
+            app:cardBackgroundColor="#E6FFFFFF"
+            app:strokeWidth="1dp"
+            app:strokeColor="#14636AF1">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -138,17 +142,19 @@
                         android:textColor="@color/zenith_purple"/>
                 </LinearLayout>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Security Card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardSecurity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/surface_card">
+            app:cardBackgroundColor="#E6FFFFFF"
+            app:strokeWidth="1dp"
+            app:strokeColor="#14636AF1">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -174,17 +180,19 @@
                     android:backgroundTint="@color/zenith_purple"
                     android:textColor="@color/white"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Export Data Card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardExport"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/surface_card">
+            app:cardBackgroundColor="#E6FFFFFF"
+            app:strokeWidth="1dp"
+            app:strokeColor="#14636AF1">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -284,17 +292,19 @@
                     android:backgroundTint="@color/zenith_purple"
                     android:textColor="@color/white"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Service Card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardService"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/surface_card">
+            app:cardBackgroundColor="#E6FFFFFF"
+            app:strokeWidth="1dp"
+            app:strokeColor="#14636AF1">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -328,7 +338,7 @@
                     android:backgroundTint="@color/zenith_teal"
                     android:textColor="@color/white"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Version info -->
         <TextView

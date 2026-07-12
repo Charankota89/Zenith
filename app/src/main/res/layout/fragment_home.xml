@@ -54,12 +54,12 @@
         </RelativeLayout>
 
         <!-- Permission warning card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardPermissionWarning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="4dp"
             app:cardBackgroundColor="#2D1F24"
             android:visibility="gone"
@@ -97,17 +97,19 @@
                     android:insetTop="0dp"
                     android:insetBottom="0dp"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Screen Time Card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardScreenTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/surface_card"
+            app:cardBackgroundColor="#E6FFFFFF"
+            app:strokeWidth="1dp"
+            app:strokeColor="#14636AF1"
             xmlns:app="http://schemas.android.com/apk/res-auto">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -143,17 +145,19 @@
                         android:layout_marginTop="4dp"/>
                 </LinearLayout>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Habits Card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardHabits"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/surface_card"
+            app:cardBackgroundColor="#E6FFFFFF"
+            app:strokeWidth="1dp"
+            app:strokeColor="#14636AF1"
             xmlns:app="http://schemas.android.com/apk/res-auto">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -189,17 +193,19 @@
                         android:layout_marginTop="4dp"/>
                 </LinearLayout>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Study Time Card -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardStudyTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/surface_card"
+            app:cardBackgroundColor="#E6FFFFFF"
+            app:strokeWidth="1dp"
+            app:strokeColor="#14636AF1"
             xmlns:app="http://schemas.android.com/apk/res-auto">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -235,7 +241,7 @@
                         android:layout_marginTop="4dp"/>
                 </LinearLayout>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </ScrollView>
