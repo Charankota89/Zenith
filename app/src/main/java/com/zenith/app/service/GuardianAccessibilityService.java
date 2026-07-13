@@ -324,7 +324,7 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 layoutEmailSent.setVisibility(View.GONE);
                 
                 SharedPreferences pr = getSharedPreferences(AppConstants.PREF_NAME, Context.MODE_PRIVATE);
-                String email = pr.getString("user_email", "ramcharan@gmail.com");
+                String email = pr.getString("user_email", "");
 
                 lockerOverlay.findViewById(R.id.btnSendEmail).setOnClickListener(v -> {
                     android.widget.EditText etReason = lockerOverlay.findViewById(R.id.etUnlockReason);

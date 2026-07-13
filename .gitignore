@@ -22,9 +22,13 @@ captures/
 .externalNativeBuild/
 .cxx/
 
-# Keystore (never commit signing keys)
+# Keystore (never commit *release* signing keys)
 *.jks
 *.keystore
+# Exception: the fixed debug keystore is intentionally committed so CI/local
+# builds share a stable SHA-1 for Google Sign-In. It uses Android's standard
+# public debug password ("android") — it is not a secret.
+!app/debug.keystore
 
 # OS files
 .DS_Store

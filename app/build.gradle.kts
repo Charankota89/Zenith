@@ -6,6 +6,19 @@ android {
     namespace = "com.zenith.app"
     compileSdk = 36
 
+    signingConfigs {
+        getByName("debug") {
+            // Fixed debug keystore (checked into the repo) so the SHA-1 fingerprint
+            // never changes between local builds, teammates' machines, or GitHub
+            // Actions runs. Without this, every fresh CI run generates a brand new
+            // random keystore, which silently breaks Google Sign-In every time.
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     defaultConfig {
         applicationId = "com.zenith.app"
         minSdk = 29
@@ -16,6 +29,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
