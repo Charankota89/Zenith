@@ -35,6 +35,11 @@ public interface HabitDao {
     @Query("SELECT COUNT(*) FROM habits WHERE completedToday = 1")
     int countCompletedToday();
 
+    // Reactive variant for the Home dashboard, so the habit count updates
+    // live as habits are checked off elsewhere in the app.
+    @Query("SELECT COUNT(*) FROM habits WHERE completedToday = 1")
+    LiveData<Integer> observeCompletedCountToday();
+
     @Query("SELECT COUNT(*) FROM habits WHERE completedToday = 1 AND :date IS NOT NULL")
     int getCompletedCountForDate(String date);
 

@@ -1,7 +1,10 @@
 package com.zenith.app.service;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Handler;
@@ -54,10 +57,44 @@ public class GuardianAccessibilityService extends AccessibilityService {
 
     private long appOpenedTime = 0;
 
+    // ── Screen on/off tracking ──────────────────────────────────────
+    // Without this, usage time keeps accumulating while the phone is
+    // locked in your pocket with an app still technically "foreground"
+    // from Android's point of view. This was the main accuracy bug.
+    private boolean screenIsOn = true;
+
+    private final BroadcastReceiver screenStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent == null || intent.getAction() == null) return;
+            switch (intent.getAction()) {
+                case Intent.ACTION_SCREEN_OFF:
+                    // Flush whatever time was genuinely accrued right up until
+                    // the screen turned off, then pause the tracker entirely.
+                    checkAndIncrementUsage();
+                    screenIsOn = false;
+                    uiHandler.removeCallbacks(limitCheckerRunnable);
+                    uiHandler.post(GuardianAccessibilityService.this::removeFloatingCapsule);
+                    break;
+                case Intent.ACTION_SCREEN_ON:
+                    // Resume tracking, but reset the checkpoint so the locked
+                    // period itself is never counted as usage of whatever app
+                    // happened to be in the foreground when the screen died.
+                    screenIsOn = true;
+                    appOpenedTime = System.currentTimeMillis();
+                    uiHandler.removeCallbacks(limitCheckerRunnable);
+                    uiHandler.post(limitCheckerRunnable);
+                    break;
+            }
+        }
+    };
+
     private final Runnable limitCheckerRunnable = new Runnable() {
         @Override
         public void run() {
-            checkAndIncrementUsage();
+            if (screenIsOn) {
+                checkAndIncrementUsage();
+            }
             uiHandler.postDelayed(this, 5000);
         }
     };
@@ -66,6 +103,17 @@ public class GuardianAccessibilityService extends AccessibilityService {
     protected void onServiceConnected() {
         super.onServiceConnected();
         appOpenedTime = System.currentTimeMillis();
+        android.os.PowerManager pm = (android.os.PowerManager) getSystemService(Context.POWER_SERVICE);
+        screenIsOn = pm == null || pm.isInteractive();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        // API 33+ requires an explicit export flag for dynamically registered
+        // receivers or this throws SecurityException at runtime. This is a
+        // system-only protected broadcast, so NOT_EXPORTED is correct.
+        androidx.core.content.ContextCompat.registerReceiver(
+            this, screenStateReceiver, filter,
+            androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
         uiHandler.post(limitCheckerRunnable);
     }
 
@@ -100,6 +148,32 @@ public class GuardianAccessibilityService extends AccessibilityService {
         "com.duckduckgo.mobile.android:id/omnibarTextInput"
     );
 
+    /**
+     * True while the current browser tab is on a checkout/payment-gateway
+     * page. Used to suppress the browser banner and skip logging the URL
+     * to browser-visit history for privacy.
+     */
+    private boolean isSensitiveFinancialContext(String pkg) {
+        if (AppConstants.FINANCIAL_APP_PACKAGES.contains(pkg)) return true;
+        if (BROWSER_PKGS.contains(pkg) && currentUrl != null) {
+            String lowerUrl = currentUrl.toLowerCase(java.util.Locale.ROOT);
+            for (String keyword : AppConstants.PAYMENT_URL_KEYWORDS) {
+                if (lowerUrl.contains(keyword)) return true;
+            }
+        }
+        return false;
+    }
+
+    /** Immediately tears down every Zenith overlay — used the instant a
+     *  financial context is detected, so nothing lingers on top of it. */
+    private void suppressAllOverlaysForSensitiveContext() {
+        uiHandler.post(() -> {
+            removeFloatingCapsule();
+            removeBrowserBanner();
+            removeReelPopup();
+        });
+    }
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event == null) return;
@@ -113,6 +187,15 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 checkAndIncrementUsage(); // Save old app usage
                 currentPkg = pkg;
                 appOpenedTime = System.currentTimeMillis();
+
+                if (AppConstants.FINANCIAL_APP_PACKAGES.contains(pkg)) {
+                    // Entering a banking/payment app directly (not a browser
+                    // checkout page) — tear down overlays immediately and
+                    // skip the rest of this switch's bookkeeping.
+                    suppressAllOverlaysForSensitiveContext();
+                    return;
+                }
+
                 checkAndIncrementUsage(); // Trigger new app checks immediately
                 checkIfLocked(pkg);
                 checkFocusMode(pkg);
@@ -126,8 +209,14 @@ public class GuardianAccessibilityService extends AccessibilityService {
             String url = extractBrowserUrl(event, pkg);
             if (url != null && !url.isEmpty() && !url.equals(currentUrl)) {
                 currentUrl = url;
-                saveBrowserVisit(pkg, url);
-                showBrowserBanner(pkg, url);
+                if (isSensitiveFinancialContext(pkg)) {
+                    // On a checkout/payment page: don't log it to browser
+                    // history, and don't draw the banner on top of it.
+                    suppressAllOverlaysForSensitiveContext();
+                } else {
+                    saveBrowserVisit(pkg, url);
+                    showBrowserBanner(pkg, url);
+                }
             }
         }
 
@@ -433,6 +522,19 @@ public class GuardianAccessibilityService extends AccessibilityService {
             uiHandler.post(this::removeFloatingCapsule);
             return;
         }
+        if (AppConstants.FINANCIAL_APP_PACKAGES.contains(pkg)) {
+            // Never track time, check limits, or draw any overlay while a
+            // banking/payment app is open — still advance the checkpoint so
+            // no backlog of time gets dumped onto whatever app opens next.
+            appOpenedTime = System.currentTimeMillis();
+            uiHandler.post(this::removeFloatingCapsule);
+            return;
+        }
+        if (!screenIsOn) {
+            // Defense-in-depth: even if some OEM fires a stray window event
+            // while the screen is off, never count that time as usage.
+            return;
+        }
 
         long now = System.currentTimeMillis();
         if (appOpenedTime == 0) appOpenedTime = now;
@@ -468,6 +570,20 @@ public class GuardianAccessibilityService extends AccessibilityService {
             if (e != null) {
                 final AppUsageEntity finalEntity = e;
                 currentAppName = finalEntity.appName;
+
+                // Once an app is locked, the locker overlay sits on top of it but
+                // the underlying app is still technically "foreground" from
+                // Android's point of view — without this guard, usage time would
+                // keep climbing forever every 5 seconds even though the user can't
+                // actually interact with the app anymore.
+                if (finalEntity.isLocked) {
+                    uiHandler.post(() -> {
+                        removeFloatingCapsule();
+                        showLockerOverlay(finalEntity.appName, false);
+                    });
+                    return;
+                }
+
                 if (elapsed > 0) {
                     finalEntity.usageTimeMillis += elapsed;
                 }
@@ -919,6 +1035,7 @@ public class GuardianAccessibilityService extends AccessibilityService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        try { unregisterReceiver(screenStateReceiver); } catch (Exception ignored) {}
         uiHandler.removeCallbacks(limitCheckerRunnable);
         capsuleHandler.removeCallbacks(collapseRunnable);
         executor.shutdown();

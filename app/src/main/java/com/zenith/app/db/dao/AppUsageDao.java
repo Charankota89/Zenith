@@ -32,6 +32,12 @@ public interface AppUsageDao {
     @Query("SELECT SUM(usageTimeMillis) FROM app_usage WHERE date = :date")
     long getTotalUsageForDate(String date);
 
+    // Reactive variant used by the Home dashboard so totals update live as
+    // the accessibility service records new usage, instead of only showing
+    // whatever the total was at the moment the screen was first opened.
+    @Query("SELECT SUM(usageTimeMillis) FROM app_usage WHERE date = :date")
+    LiveData<Long> observeTotalUsageForDate(String date);
+
     @Query("SELECT * FROM app_usage WHERE date = :date AND isCareerApp = 1")
     List<AppUsageEntity> getCareerAppsForDate(String date);
 

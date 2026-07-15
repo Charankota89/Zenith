@@ -18,6 +18,10 @@ public interface StudySessionDao {
     @Query("SELECT SUM(durationMillis) FROM study_sessions WHERE date = :date")
     long getTotalStudyTimeForDate(String date);
 
+    // Reactive variant for the Home dashboard, so study time updates live.
+    @Query("SELECT SUM(durationMillis) FROM study_sessions WHERE date = :date")
+    LiveData<Long> observeTotalStudyTimeForDate(String date);
+
     @Query("SELECT * FROM study_sessions ORDER BY startTime DESC LIMIT 30")
     LiveData<List<StudySessionEntity>> getRecentSessions();
 
