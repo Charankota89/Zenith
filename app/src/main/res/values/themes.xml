@@ -16,7 +16,7 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="Zenith.Text.CardLabel">
+    <style name="Zenith.Text.CardLabel" parent="">
         <item name="android:fontFamily">@font/outfit_700</item>
         <item name="android:textSize">10sp</item>
         <item name="android:letterSpacing">0.12</item>
@@ -24,13 +24,13 @@
         <item name="android:textColor">@color/text_secondary</item>
     </style>
 
-    <style name="Zenith.Text.CardValue">
+    <style name="Zenith.Text.CardValue" parent="">
         <item name="android:fontFamily">@font/outfit_900</item>
         <item name="android:textSize">26sp</item>
         <item name="android:textColor">@color/text_primary</item>
     </style>
 
-    <style name="Zenith.Text.ScreenTitle">
+    <style name="Zenith.Text.ScreenTitle" parent="">
         <item name="android:fontFamily">@font/outfit_800</item>
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">@color/text_primary</item>
