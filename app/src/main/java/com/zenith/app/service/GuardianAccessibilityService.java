@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.zenith.app.R;
 import com.zenith.app.db.AppDatabase;
@@ -694,6 +695,21 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 View container = lockerCapsule.findViewById(R.id.capsule_container);
                 View expandedLayout = lockerCapsule.findViewById(R.id.layoutExpandedDetails);
                 container.setOnClickListener(v -> toggleCapsule(container, expandedLayout, appName, usedMs, limitMs));
+
+                // Load the real app icon on a background thread, then apply it
+                ImageView ivIcon = lockerCapsule.findViewById(R.id.ivCapsuleAppIcon);
+                if (ivIcon != null) {
+                    final String pkgForIcon = currentPkg;
+                    executor.execute(() -> {
+                        try {
+                            android.graphics.drawable.Drawable icon =
+                                getPackageManager().getApplicationIcon(pkgForIcon);
+                            uiHandler.post(() -> {
+                                if (lockerCapsule != null) ivIcon.setImageDrawable(icon);
+                            });
+                        } catch (Exception ignored) {}
+                    });
+                }
             }
 
             if (!isCapsuleExpanded) {
@@ -710,6 +726,8 @@ public class GuardianAccessibilityService extends AccessibilityService {
  
         TextView tvText = lockerCapsule.findViewById(R.id.tvCapsuleText);
         View dot = lockerCapsule.findViewById(R.id.viewStatusDot);
+        android.widget.ProgressBar progressBar = lockerCapsule.findViewById(R.id.progressCapsuleUsage);
+        View container = lockerCapsule.findViewById(R.id.capsule_container);
  
         if (tvText != null) {
             String reelsStr = "";
@@ -719,8 +737,13 @@ public class GuardianAccessibilityService extends AccessibilityService {
             tvText.setText(appName + ": " + remainingMins + "m left" + reelsStr);
         }
 
+        long pct = limitMs > 0 ? (usedMs * 100L) / limitMs : 0;
+
+        if (progressBar != null) {
+            progressBar.setProgress((int) Math.min(100, pct));
+        }
+ 
         if (dot != null) {
-            long pct = (usedMs * 100L) / limitMs;
             String colorHex = "#34D399"; // Green
             if (pct >= 80) {
                 colorHex = "#F87171"; // Red
@@ -729,6 +752,39 @@ public class GuardianAccessibilityService extends AccessibilityService {
             }
             dot.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor(colorHex)));
         }
+
+        // Urgency pulse: once usage crosses 80%, gently pulse the whole capsule
+        // to draw the eye, without being obnoxious about it. Stops automatically
+        // once usage drops back below the threshold (e.g. after a reset).
+        if (container != null) {
+            boolean shouldPulse = pct >= 80;
+            boolean isPulsing = container.getTag(R.id.tag_is_pulsing) != null
+                && (boolean) container.getTag(R.id.tag_is_pulsing);
+            if (shouldPulse && !isPulsing) {
+                startCapsulePulse(container);
+            } else if (!shouldPulse && isPulsing) {
+                stopCapsulePulse(container);
+            }
+        }
+    }
+
+    private void startCapsulePulse(View container) {
+        container.setTag(R.id.tag_is_pulsing, true);
+        android.animation.ObjectAnimator pulse = android.animation.ObjectAnimator.ofFloat(
+            container, "alpha", 1f, 0.65f, 1f);
+        pulse.setDuration(1100);
+        pulse.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+        container.setTag(R.id.tag_pulse_animator_ref, pulse);
+        pulse.start();
+    }
+
+    private void stopCapsulePulse(View container) {
+        container.setTag(R.id.tag_is_pulsing, false);
+        Object animObj = container.getTag(R.id.tag_pulse_animator_ref);
+        if (animObj instanceof android.animation.ObjectAnimator) {
+            ((android.animation.ObjectAnimator) animObj).cancel();
+        }
+        container.setAlpha(1f);
     }
 
     private void toggleCapsule(View container, View expandedLayout, String appName, long usedMs, long limitMs) {
@@ -838,11 +894,24 @@ public class GuardianAccessibilityService extends AccessibilityService {
     private void removeFloatingCapsule() {
         uiHandler.post(() -> {
             if (lockerCapsule != null && windowManager != null) {
-                try {
-                    windowManager.removeView(lockerCapsule);
-                } catch (Exception ignored) {}
-                lockerCapsule = null;
+                final View capsuleToRemove = lockerCapsule;
+                View container = capsuleToRemove.findViewById(R.id.capsule_container);
+                if (container != null) {
+                    stopCapsulePulse(container);
+                }
+                lockerCapsule = null; // clear reference immediately so re-entrant calls don't double-animate
                 isCapsuleExpanded = false;
+
+                capsuleToRemove.animate()
+                    .scaleX(0f).scaleY(0f).alpha(0f)
+                    .setDuration(200)
+                    .setInterpolator(new android.view.animation.AccelerateInterpolator())
+                    .withEndAction(() -> {
+                        try {
+                            windowManager.removeView(capsuleToRemove);
+                        } catch (Exception ignored) {}
+                    })
+                    .start();
             }
         });
     }

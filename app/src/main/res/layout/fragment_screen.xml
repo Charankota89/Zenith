@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/zenith_dark"
+    android:background="@color/zenith_lavender"
     android:fillViewport="true">
 
     <LinearLayout
@@ -13,12 +14,25 @@
         android:paddingBottom="80dp">
 
         <!-- Header row -->
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:clipChildren="false"
             android:layout_marginBottom="16dp">
+
+            <View
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="-35dp"
+                android:layout_marginEnd="-20dp"
+                android:background="@drawable/grad_header_blob"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="0dp"
@@ -39,7 +53,8 @@
                 android:textColor="@color/zenith_purple"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"/>
-        </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
 
         <!-- Today total card -->
         <LinearLayout

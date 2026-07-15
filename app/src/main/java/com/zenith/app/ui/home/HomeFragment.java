@@ -1,6 +1,7 @@
 package com.zenith.app.ui.home;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.zenith.app.R;
 import com.zenith.app.ui.MainActivity;
 import com.zenith.app.ui.settings.SettingsFragment;
 import com.zenith.app.util.TimeUtils;
+import com.zenith.app.util.GradientTextUtil;
 
 public class HomeFragment extends Fragment {
 
@@ -90,13 +92,21 @@ public class HomeFragment extends Fragment {
             long hours   = millis / 3600000;
             long minutes = (millis % 3600000) / 60000;
             binding.tvScreenTime.setText(hours + "h " + minutes + "m");
+            GradientTextUtil.applyGradient(binding.tvScreenTime,
+                Color.parseColor("#818CF8"), Color.parseColor("#4F46E5"));
         });
 
-        vm.habitsDoneToday.observe(getViewLifecycleOwner(), count ->
-            binding.tvHabitCount.setText(count + " habits done today"));
+        vm.habitsDoneToday.observe(getViewLifecycleOwner(), count -> {
+            binding.tvHabitCount.setText(count + " habits done today");
+            GradientTextUtil.applyGradient(binding.tvHabitCount,
+                Color.parseColor("#34D399"), Color.parseColor("#059669"));
+        });
 
-        vm.studyTimeToday.observe(getViewLifecycleOwner(), millis ->
-            binding.tvStudyTime.setText(TimeUtils.formatDuration(millis) + " studied"));
+        vm.studyTimeToday.observe(getViewLifecycleOwner(), millis -> {
+            binding.tvStudyTime.setText(TimeUtils.formatDuration(millis) + " studied");
+            GradientTextUtil.applyGradient(binding.tvStudyTime,
+                Color.parseColor("#FBBF24"), Color.parseColor("#D97706"));
+        });
     }
 
     @Override

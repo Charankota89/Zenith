@@ -6,10 +6,10 @@
     android:viewportHeight="24">
     <!-- Handle -->
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="@color/zenith_coral"
         android:pathData="M15,4V2H9V4H4C2.9,4 2,4.9 2,6V18C2,19.1 2.9,20 4,20H20C21.1,20 22,19.1 22,18V6C22,4.9 21.1,4 20,4H15ZM10,3H14V4H10V3Z"/>
     <!-- Lock details/seams -->
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="@color/zenith_coral"
         android:pathData="M12,11A2,2 0,1 0,14 13,2 2,0 0,0 12,11Z"/>
 </vector>

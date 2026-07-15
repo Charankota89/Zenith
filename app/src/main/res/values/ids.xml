@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Used as View.setTag(int, Object) keys for the Dynamic Island's
+         urgency-pulse animation state; not tied to any actual view. -->
+    <item name="tag_is_pulsing" type="id" />
+    <item name="tag_pulse_animator_ref" type="id" />
+</resources>

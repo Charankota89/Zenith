@@ -13,7 +13,17 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="24dp"
+            android:clipChildren="false">
+
+            <!-- Soft decorative gradient blob, purely visual, sits behind the text -->
+            <View
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="-40dp"
+                android:layout_marginEnd="-30dp"
+                android:background="@drawable/grad_header_blob"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -92,7 +102,8 @@
                     android:layout_height="wrap_content"
                     android:text="Enable Zenith Protector"
                     android:textSize="12sp"
-                    app:backgroundTint="#EF4444"
+                    android:background="@drawable/grad_button_coral"
+                    app:backgroundTint="@null"
                     app:cornerRadius="8dp"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"/>
@@ -119,7 +130,7 @@
                 <View
                     android:layout_width="5dp"
                     android:layout_height="match_parent"
-                    android:background="@color/zenith_purple"/>
+                    android:background="@drawable/grad_accent_purple"/>
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -167,7 +178,7 @@
                 <View
                     android:layout_width="5dp"
                     android:layout_height="match_parent"
-                    android:background="@color/zenith_teal"/>
+                    android:background="@drawable/grad_accent_teal"/>
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -215,7 +226,7 @@
                 <View
                     android:layout_width="5dp"
                     android:layout_height="match_parent"
-                    android:background="@color/zenith_amber"/>
+                    android:background="@drawable/grad_accent_amber"/>
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

@@ -3,7 +3,7 @@
     <!-- ── Brand Theme Colors ────────────────────────────────────────── -->
     <color name="zenith_purple">#6366F1</color> <!-- Beautiful solid Indigo/Purple -->
     <color name="zenith_teal">#10B981</color> <!-- Teal -->
-    <color name="zenith_blue">#0EA5E9</color> <!-- Sky Blue -->
+    <color name="zenith_blue">#008B8B</color> <!-- DarkCyan -->
     <color name="zenith_amber">#F59E0B</color> <!-- Amber -->
     <color name="zenith_coral">#EF4444</color> <!-- Coral Red -->
  

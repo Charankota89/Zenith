@@ -19,6 +19,14 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
+        <!-- Real app icon (set programmatically) -->
+        <ImageView
+            android:id="@+id/ivCapsuleAppIcon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="6dp"
+            android:contentDescription="App icon"/>
+
         <!-- Status Dot Indicator -->
         <View
             android:id="@+id/viewStatusDot"
@@ -49,6 +57,17 @@
             android:textSize="12sp"
             android:layout_marginStart="4dp"/>
     </LinearLayout>
+
+    <!-- Thin usage progress bar, sits right below the row -->
+    <ProgressBar
+        android:id="@+id/progressCapsuleUsage"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginTop="4dp"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/bg_capsule_progress"/>
 
     <!-- Expanded content -->
     <LinearLayout

@@ -6,11 +6,33 @@
         <item name="colorAccent">@color/zenith_teal</item>
         <item name="android:colorBackground">@color/zenith_lavender</item>
         <item name="android:windowBackground">@color/zenith_lavender</item>
+        <item name="android:fontFamily">@font/outfit</item>
+        <item name="fontFamily">@font/outfit</item>
     </style>
 
     <style name="Theme.Zenith.Splash" parent="Theme.Zenith">
         <item name="android:colorBackground">@color/zenith_dark</item>
         <item name="android:windowBackground">@color/zenith_dark</item>
         <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="Zenith.Text.CardLabel">
+        <item name="android:fontFamily">@font/outfit_700</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:letterSpacing">0.12</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <style name="Zenith.Text.CardValue">
+        <item name="android:fontFamily">@font/outfit_900</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="Zenith.Text.ScreenTitle">
+        <item name="android:fontFamily">@font/outfit_800</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/text_primary</item>
     </style>
 </resources>
