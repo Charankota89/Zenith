@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- ── Brand Theme Colors ────────────────────────────────────────── -->
-    <color name="zenith_purple">#6366F1</color> <!-- Beautiful solid Indigo/Purple -->
-    <color name="zenith_teal">#10B981</color> <!-- Teal -->
-    <color name="zenith_blue">#008B8B</color> <!-- DarkCyan -->
-    <color name="zenith_amber">#F59E0B</color> <!-- Amber -->
-    <color name="zenith_coral">#EF4444</color> <!-- Coral Red -->
- 
-    <!-- ── Base Screen & Card Tones ──────────────────────────────────── -->
-    <color name="zenith_lavender">#F8FAFC</color> <!-- Light off-white slate background -->
-    <color name="bg_dark">#F8FAFC</color>
-    <color name="zenith_dark">#F8FAFC</color>
-    <color name="card_dark">#FFFFFF</color> <!-- Pure white Card Background -->
-    <color name="surface_card">#FFFFFF</color>
+    <!-- ── Brand Theme Colors — deep jewel tones ───────────────────────
+         Same variable names kept everywhere they were before (so every
+         layout that already references @color/zenith_purple etc. picks
+         up the new look automatically), just deepened into rich jewel
+         tones instead of the previous bright pastel-adjacent hues. -->
+    <color name="zenith_purple">#7C3AED</color> <!-- Deep violet/amethyst — primary brand color -->
+    <color name="zenith_teal">#059669</color>   <!-- Deep emerald -->
+    <color name="zenith_blue">#1E40AF</color>   <!-- Deep sapphire blue -->
+    <color name="zenith_amber">#B45309</color>  <!-- Deep amber/bronze -->
+    <color name="zenith_coral">#9F1239</color>  <!-- Deep burgundy/wine -->
+
+    <!-- ── Base Screen & Card Tones — deep navy dark theme ───────────── -->
+    <color name="zenith_lavender">#0F1225</color> <!-- Deep navy-indigo background (was light lavender) -->
+    <color name="bg_dark">#0A0C1B</color>          <!-- Near-black navy, for splash -->
+    <color name="zenith_dark">#0A0C1B</color>
+    <color name="card_dark">#1A1B2E</color>        <!-- Slightly-lighter navy card surface -->
+    <color name="surface_card">#1A1B2E</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
- 
-    <!-- ── Typography Tones ────────────────────────────────────────── -->
-    <color name="text_primary">#0F172A</color> <!-- Dark Slate 900 -->
-    <color name="text_secondary">#475569</color> <!-- Slate 600 -->
- 
+
+    <!-- ── Typography Tones — light-on-dark ──────────────────────────── -->
+    <color name="text_primary">#F1F5F9</color>   <!-- Warm off-white -->
+    <color name="text_secondary">#94A3B8</color> <!-- Muted lavender-gray -->
+
     <!-- ── Monitoring & Selection States ─────────────────────────────── -->
-    <color name="usage_high">#EF4444</color>
-    <color name="usage_medium">#F59E0B</color>
-    <color name="usage_low">#10B981</color>
-    <color name="nav_unselected">#94A3B8</color> <!-- Slate 400 -->
+    <color name="usage_high">#9F1239</color>   <!-- Burgundy, matches zenith_coral -->
+    <color name="usage_medium">#B45309</color> <!-- Amber/bronze, matches zenith_amber -->
+    <color name="usage_low">#059669</color>    <!-- Emerald, matches zenith_teal -->
+    <color name="nav_unselected">#6B7280</color> <!-- Cool gray, legible on dark background -->
 </resources>

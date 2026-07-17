@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Zenith" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.Zenith" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/zenith_purple</item>
         <item name="colorPrimaryVariant">@color/zenith_dark</item>
         <item name="colorAccent">@color/zenith_teal</item>
@@ -8,12 +8,16 @@
         <item name="android:windowBackground">@color/zenith_lavender</item>
         <item name="android:fontFamily">@font/outfit</item>
         <item name="fontFamily">@font/outfit</item>
+        <item name="android:statusBarColor">@color/zenith_lavender</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/zenith_lavender</item>
     </style>
 
     <style name="Theme.Zenith.Splash" parent="Theme.Zenith">
         <item name="android:colorBackground">@color/zenith_dark</item>
         <item name="android:windowBackground">@color/zenith_dark</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="android:statusBarColor">@color/zenith_dark</item>
     </style>
 
     <style name="Zenith.Text.CardLabel" parent="">

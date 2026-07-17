@@ -11,7 +11,7 @@ import com.zenith.app.service.MidnightResetWorker;
 import com.zenith.app.service.PostureWorker;
 import com.zenith.app.service.TimerCheckWorker;
 import com.zenith.app.util.AppConstants;
-import java.util.Calendar;
+import com.zenith.app.util.MidnightScheduler;
 import java.util.concurrent.TimeUnit;
 
 public class ZenithApp extends Application {
@@ -60,18 +60,7 @@ public class ZenithApp extends Application {
         wm.enqueueUniquePeriodicWork("timer_check",
             ExistingPeriodicWorkPolicy.KEEP, timerCheck);
 
-        Calendar midnight = Calendar.getInstance();
-        midnight.add(Calendar.DAY_OF_YEAR, 1);
-        midnight.set(Calendar.HOUR_OF_DAY, 0);
-        midnight.set(Calendar.MINUTE, 1);
-        midnight.set(Calendar.SECOND, 0);
-        long delay = midnight.getTimeInMillis() - System.currentTimeMillis();
-
-        PeriodicWorkRequest midnightReset = new PeriodicWorkRequest.Builder(
-            MidnightResetWorker.class, 24, TimeUnit.HOURS)
-            .setInitialDelay(delay, TimeUnit.MILLISECONDS).build();
-        wm.enqueueUniquePeriodicWork("midnight_reset",
-            ExistingPeriodicWorkPolicy.KEEP, midnightReset);
+        MidnightScheduler.scheduleNext(this);
 
         PeriodicWorkRequest eyeBreak = new PeriodicWorkRequest.Builder(
             EyeBreakWorker.class, 20, TimeUnit.MINUTES).build();

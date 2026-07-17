@@ -3,5 +3,5 @@
     android:shape="rectangle">
     <corners android:radius="18dp" />
     <solid android:color="#F20F172A" /> <!-- 95% Slate-900, matches preview's dynamic island mock -->
-    <stroke android:width="1.5dp" android:color="#40818CF8" /> <!-- Glowing indigo border -->
+    <stroke android:width="1.5dp" android:color="#40A78BFA" /> <!-- Glowing violet border, matches jewel palette -->
 </shape>

@@ -1,12 +1,16 @@
 package com.zenith.app.ui.home;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,6 +26,22 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private HomeViewModel       vm;
+
+    // ── Guided one-tap permission setup ─────────────────────────────
+    // Android will never let an app silently grant Accessibility, Usage
+    // Access, or "Draw over other apps" — those legally require the user
+    // to flip a toggle themselves in Settings, every time, for every app.
+    // What we CAN do is chain the requests: one tap starts the flow, and
+    // each time the user comes back from granting one, we immediately
+    // advance to the next missing one automatically instead of making
+    // them hunt for the button again.
+    private boolean guidedFlowActive  = false;
+    private String  lastRequestedStep = "";
+
+    private final ActivityResultLauncher<String> notificationPermissionLauncher =
+        registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+            if (guidedFlowActive) requestNextMissingPermission();
+        });
 
     @Nullable
     @Override
@@ -93,7 +113,7 @@ public class HomeFragment extends Fragment {
             long minutes = (millis % 3600000) / 60000;
             binding.tvScreenTime.setText(hours + "h " + minutes + "m");
             GradientTextUtil.applyGradient(binding.tvScreenTime,
-                Color.parseColor("#818CF8"), Color.parseColor("#4F46E5"));
+                Color.parseColor("#A78BFA"), Color.parseColor("#5B21B6"));
         });
 
         vm.habitsDoneToday.observe(getViewLifecycleOwner(), count -> {
@@ -105,7 +125,7 @@ public class HomeFragment extends Fragment {
         vm.studyTimeToday.observe(getViewLifecycleOwner(), millis -> {
             binding.tvStudyTime.setText(TimeUtils.formatDuration(millis) + " studied");
             GradientTextUtil.applyGradient(binding.tvStudyTime,
-                Color.parseColor("#FBBF24"), Color.parseColor("#D97706"));
+                Color.parseColor("#D97706"), Color.parseColor("#92400E"));
         });
     }
 
@@ -116,45 +136,112 @@ public class HomeFragment extends Fragment {
     }
 
     private void checkSystemPermissions() {
-        boolean accessEnabled = isAccessibilityServiceEnabled();
-        boolean overlayEnabled = isOverlayPermissionEnabled();
-        boolean usageEnabled = isUsageAccessEnabled();
+        boolean accessEnabled      = isAccessibilityServiceEnabled();
+        boolean overlayEnabled     = isOverlayPermissionEnabled();
+        boolean usageEnabled       = isUsageAccessEnabled();
+        boolean notificationsOk    = isNotificationPermissionGranted();
 
-        if (!accessEnabled || !overlayEnabled || !usageEnabled) {
+        int totalSteps   = 4;
+        int missingCount = (accessEnabled ? 0 : 1) + (overlayEnabled ? 0 : 1)
+                          + (usageEnabled ? 0 : 1) + (notificationsOk ? 0 : 1);
+
+        if (missingCount > 0) {
             binding.cardPermissionWarning.setVisibility(View.VISIBLE);
-            
-            StringBuilder sb = new StringBuilder("Zenith needs system settings enabled to monitor screen time and protect focus. Please grant:\n");
-            if (!usageEnabled) {
-                sb.append("• Usage Access (Stats tracking)\n");
-            }
-            if (!overlayEnabled) {
-                sb.append("• Draw Over Other Apps (Overlay)\n");
-            }
-            if (!accessEnabled) {
-                sb.append("• Accessibility Service (App lock)\n");
-            }
+
+            StringBuilder sb = new StringBuilder(
+                "Zenith needs a few system settings enabled to monitor screen time and protect focus. " +
+                "Tap below once — we'll guide you through each one automatically:\n");
+            if (!notificationsOk)  sb.append("• Notifications\n");
+            if (!usageEnabled)     sb.append("• Usage Access (Stats tracking)\n");
+            if (!overlayEnabled)   sb.append("• Draw Over Other Apps (Overlay)\n");
+            if (!accessEnabled)    sb.append("• Accessibility Service (App lock)\n");
             sb.append("\nNote: If greyed out in settings, go to Android Settings -> Apps -> Zenith, tap top-right 3-dots and choose 'Allow restricted settings' to unlock it.");
             binding.tvPermissionDesc.setText(sb.toString());
 
+            int stepsDone = totalSteps - missingCount;
+            binding.btnGrantPermissions.setText(
+                guidedFlowActive
+                    ? "Continue Setup (" + stepsDone + "/" + totalSteps + ")"
+                    : "Set Up Zenith Protector");
+
             binding.btnGrantPermissions.setOnClickListener(v -> {
-                if (!usageEnabled) {
-                    Intent intent = new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS);
-                    startActivity(intent);
-                    android.widget.Toast.makeText(getContext(), "Please enable Usage Access for Zenith.", android.widget.Toast.LENGTH_LONG).show();
-                } else if (!overlayEnabled) {
-                    Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + requireContext().getPackageName()));
-                    startActivity(intent);
-                    android.widget.Toast.makeText(getContext(), "Please enable Draw Overlays for Zenith.", android.widget.Toast.LENGTH_LONG).show();
-                } else {
-                    Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                    startActivity(intent);
-                    android.widget.Toast.makeText(getContext(), "Please turn on Zenith Protector Accessibility Service.", android.widget.Toast.LENGTH_LONG).show();
-                }
+                guidedFlowActive = true;
+                requestNextMissingPermission();
             });
+
+            // Auto-advance: if we're mid-flow and the step we just sent the
+            // user to settings for is now granted, immediately continue to
+            // the next one without waiting for another tap. If it's still
+            // missing, they backed out without toggling it — stop the
+            // auto-chain so we don't trap them in a settings-screen loop.
+            if (guidedFlowActive && !lastRequestedStep.isEmpty()) {
+                boolean lastStepNowGranted =
+                    ("notifications".equals(lastRequestedStep) && notificationsOk) ||
+                    ("usage".equals(lastRequestedStep) && usageEnabled) ||
+                    ("overlay".equals(lastRequestedStep) && overlayEnabled) ||
+                    ("accessibility".equals(lastRequestedStep) && accessEnabled);
+
+                if (lastStepNowGranted) {
+                    requestNextMissingPermission();
+                } else {
+                    guidedFlowActive = false;
+                }
+            }
         } else {
             binding.cardPermissionWarning.setVisibility(View.GONE);
+            guidedFlowActive  = false;
+            lastRequestedStep = "";
         }
+    }
+
+    /** Requests whichever permission is next in priority order, one step
+     *  of the guided flow. Called once from the button tap, then again
+     *  automatically from onResume/the notification callback each time a
+     *  step completes, until everything is granted. */
+    private void requestNextMissingPermission() {
+        if (!isNotificationPermissionGranted()) {
+            lastRequestedStep = "notifications";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+            // Below API 33 notifications don't need a runtime prompt at
+            // all — fall through immediately to the next missing step.
+            else {
+                requestNextMissingPermission();
+            }
+            return;
+        }
+        if (!isUsageAccessEnabled()) {
+            lastRequestedStep = "usage";
+            startActivity(new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS));
+            android.widget.Toast.makeText(getContext(), "Step: enable Usage Access for Zenith, then come back.", android.widget.Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!isOverlayPermissionEnabled()) {
+            lastRequestedStep = "overlay";
+            startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + requireContext().getPackageName())));
+            android.widget.Toast.makeText(getContext(), "Step: enable Draw Overlays for Zenith, then come back.", android.widget.Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!isAccessibilityServiceEnabled()) {
+            lastRequestedStep = "accessibility";
+            startActivity(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS));
+            android.widget.Toast.makeText(getContext(), "Last step: turn on Zenith Protector under Accessibility, then come back.", android.widget.Toast.LENGTH_LONG).show();
+            return;
+        }
+        // Everything granted.
+        guidedFlowActive  = false;
+        lastRequestedStep = "";
+        android.widget.Toast.makeText(getContext(), "All set! Zenith is fully protected. 🎉", android.widget.Toast.LENGTH_LONG).show();
+    }
+
+    private boolean isNotificationPermissionGranted() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true;
+        android.content.Context ctx = getContext();
+        if (ctx == null) return true;
+        return androidx.core.content.ContextCompat.checkSelfPermission(ctx, Manifest.permission.POST_NOTIFICATIONS)
+            == android.content.pm.PackageManager.PERMISSION_GRANTED;
     }
 
     private boolean isUsageAccessEnabled() {

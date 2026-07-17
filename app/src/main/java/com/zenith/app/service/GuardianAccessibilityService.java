@@ -476,9 +476,14 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
                 PixelFormat.TRANSLUCENT);
+            // Unlike the other overlays (capsule, banner), this one contains
+            // a real text field for the unlock reason — it must be able to
+            // receive focus or the keyboard can never appear. FLAG_NOT_FOCUSABLE
+            // (used everywhere else in this file) was the entire bug here.
+            p.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE;
             windowManager.addView(lockerOverlay, p);
         });
     }

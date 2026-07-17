@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import com.zenith.app.db.AppDatabase;
+import com.zenith.app.util.MidnightScheduler;
 import com.zenith.app.util.TimeUtils;
 
 public class MidnightResetWorker extends Worker {
@@ -20,6 +21,12 @@ public class MidnightResetWorker extends Worker {
         String      today = TimeUtils.getTodayDate();
         db.appUsageDao().unlockAllExceptToday(today);
         db.habitDao().resetDailyCompletion();
+
+        // Schedule tomorrow's reset now, computed fresh from the actual
+        // current time — this is what keeps the reset locked to real
+        // midnight indefinitely instead of drifting further every day.
+        MidnightScheduler.scheduleNext(getApplicationContext());
+
         return Result.success();
     }
 }
