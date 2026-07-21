@@ -1,34 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="280dp"
+    android:id="@+id/reel_popup_container"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#E6000000"
-    android:padding="16dp">
+    android:minWidth="210dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/bg_floating_capsule"
+    android:paddingStart="14dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:clickable="true"
+    android:focusable="false">
 
     <TextView
-        android:id="@+id/tvReelCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0 reels watched"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"/>
+        android:text="🎬"
+        android:textSize="15sp"
+        android:layout_marginEnd="10dp"/>
 
-    <TextView
-        android:id="@+id/tvReelTime"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0 min on reels — still worth it?"
-        android:textSize="13sp"
-        android:textColor="#CCCCCC"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="12dp"/>
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btnReelDismiss"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dismiss"
-        android:backgroundTint="@color/zenith_purple"/>
+        <TextView
+            android:id="@+id/tvReelCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 reels watched"
+            android:textSize="12sp"
+            android:fontFamily="@font/outfit_700"
+            android:textColor="#FFFFFF"/>
+
+        <TextView
+            android:id="@+id/tvReelTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 min on reels — still worth it?"
+            android:textSize="10sp"
+            android:fontFamily="@font/outfit_400"
+            android:textColor="#CBD5E1"
+            android:layout_marginTop="1dp"/>
+    </LinearLayout>
 </LinearLayout>

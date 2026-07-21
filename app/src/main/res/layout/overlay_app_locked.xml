@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -28,7 +29,7 @@
             android:layout_height="wrap_content"
             android:text="App is locked"
             android:textSize="24sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/outfit_800"
             android:textColor="#FFFFFF"
             android:gravity="center"
             android:layout_marginBottom="10dp"/>
@@ -39,18 +40,21 @@
             android:layout_height="wrap_content"
             android:text="You set this limit — keep going."
             android:textSize="15sp"
-            android:textColor="#B0B4CC"
+            android:fontFamily="@font/outfit_400"
+            android:textColor="#94A3B8"
             android:gravity="center"
             android:lineSpacingMultiplier="1.4"
             android:layout_marginBottom="48dp"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGoHome"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:text="🏠  Go to Home Screen"
-            android:backgroundTint="#7C6FE0"
+            android:background="@drawable/grad_button_purple"
+            app:backgroundTint="@null"
             android:textColor="#FFFFFF"
+            android:fontFamily="@font/outfit_700"
             android:textSize="15sp"
             android:layout_marginBottom="12dp"/>
 
@@ -69,19 +73,22 @@
                 android:text="Why do you need to unlock?"
                 android:textColor="#FFFFFF"
                 android:textSize="13sp"
-                android:textStyle="bold"
+                android:fontFamily="@font/outfit_700"
                 android:layout_marginBottom="6dp"/>
 
             <EditText
                 android:id="@+id/etUnlockReason"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="50dp"
                 android:hint="e.g., Quick check on messages"
                 android:textColor="#FFFFFF"
-                android:textColorHint="#B0B4CC"
-                android:backgroundTint="#0D9488"
+                android:textColorHint="#94A3B8"
+                android:background="@drawable/bg_lock_input"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:fontFamily="@font/outfit_400"
                 android:textSize="14sp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="14dp"
                 android:inputType="text"/>
 
             <TextView
@@ -90,7 +97,7 @@
                 android:text="Select unlock duration"
                 android:textColor="#FFFFFF"
                 android:textSize="13sp"
-                android:textStyle="bold"
+                android:fontFamily="@font/outfit_700"
                 android:layout_marginBottom="8dp"/>
 
             <!-- Select duration radio items -->
@@ -107,7 +114,8 @@
                     android:layout_height="wrap_content"
                     android:text="5 min"
                     android:textColor="#FFFFFF"
-                    android:buttonTint="#0D9488"
+                    android:fontFamily="@font/outfit_500"
+                    android:buttonTint="@color/zenith_teal"
                     android:checked="true"/>
                 <RadioButton
                     android:id="@+id/rb15"
@@ -115,7 +123,8 @@
                     android:layout_height="wrap_content"
                     android:text="15 min"
                     android:textColor="#FFFFFF"
-                    android:buttonTint="#0D9488"
+                    android:fontFamily="@font/outfit_500"
+                    android:buttonTint="@color/zenith_teal"
                     android:layout_marginStart="8dp"/>
                 <RadioButton
                     android:id="@+id/rb30"
@@ -123,17 +132,20 @@
                     android:layout_height="wrap_content"
                     android:text="30 min"
                     android:textColor="#FFFFFF"
-                    android:buttonTint="#0D9488"
+                    android:fontFamily="@font/outfit_500"
+                    android:buttonTint="@color/zenith_teal"
                     android:layout_marginStart="8dp"/>
             </RadioGroup>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSendEmail"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:text="📧 Send Verification Email"
-                android:backgroundTint="#0D9488"
+                android:background="@drawable/grad_button_teal"
+                app:backgroundTint="@null"
                 android:textColor="#FFFFFF"
+                android:fontFamily="@font/outfit_700"
                 android:textSize="15sp"/>
         </LinearLayout>
 
@@ -159,6 +171,7 @@
                 android:layout_height="wrap_content"
                 android:text="Verification link sent to your registered email! Please click the link inside the email (or click the notification banner) to unlock the app."
                 android:textColor="#FFFFFF"
+                android:fontFamily="@font/outfit_400"
                 android:textSize="13sp"
                 android:gravity="center"
                 android:layout_marginBottom="16dp"/>
@@ -167,25 +180,28 @@
                 android:id="@+id/pbEmailWaiting"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:indeterminateTint="#0D9488"
+                android:indeterminateTint="@color/zenith_teal"
                 android:layout_marginBottom="8dp"
                 style="?android:attr/progressBarStyleSmall"/>
-                
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Waiting for email verification link click..."
-                android:textColor="#AAAACC"
+                android:textColor="#94A3B8"
+                android:fontFamily="@font/outfit_400"
                 android:textSize="12sp"
                 android:textStyle="italic"/>
         </LinearLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGoBack"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:text="← Go Back"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:textColor="#B0B4CC"/>
+            android:textColor="#94A3B8"
+            android:fontFamily="@font/outfit_600"
+            app:strokeColor="#94A3B8"/>
     </LinearLayout>
 </ScrollView>

@@ -222,6 +222,16 @@ public class GuardianAccessibilityService extends AccessibilityService {
 
         // ── Reel counter ──
         if (type == AccessibilityEvent.TYPE_VIEW_SCROLLED && isReelApp(pkg)) {
+            // Defensive init: this normally gets set when we detect the app
+            // switch INTO a reel app (see above), but if the accessibility
+            // service starts/restarts while a reel app is already open —
+            // e.g. after a reboot, or right after the user just enabled the
+            // permission — no switch event ever fires, and this stayed 0
+            // forever. That meant "elapsed session time" was computed as
+            // (now - 0), i.e. the raw Unix epoch timestamp itself, which is
+            // why the popup showed something like "29736979 min on reels".
+            if (reelSessionStart == 0) reelSessionStart = System.currentTimeMillis();
+
             reelCount++;
             
             if (lockerCapsule != null && !currentAppName.isEmpty()) {
@@ -497,13 +507,17 @@ public class GuardianAccessibilityService extends AccessibilityService {
             removeReelPopup();
             LayoutInflater inf = LayoutInflater.from(this);
             reelPopup = inf.inflate(R.layout.overlay_reel_popup, null);
-            String mins = String.valueOf(sessionMs / 60000);
+            String mins = String.valueOf(Math.max(0, sessionMs / 60000));
             ((TextView) reelPopup.findViewById(R.id.tvReelCount))
                 .setText(count + " reels watched");
             ((TextView) reelPopup.findViewById(R.id.tvReelTime))
                 .setText(mins + " min on reels — still worth it?");
-            reelPopup.findViewById(R.id.btnReelDismiss)
+            // Compact pill now — tap anywhere on it to dismiss early,
+            // matching the Dynamic Island's interaction style instead of a
+            // separate Dismiss button.
+            reelPopup.findViewById(R.id.reel_popup_container)
                 .setOnClickListener(v -> removeReelPopup());
+
             WindowManager.LayoutParams p = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -512,6 +526,14 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 PixelFormat.TRANSLUCENT);
             p.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
             p.y = 80;
+
+            // Same bounce-in entrance as the Dynamic Island, so both feel
+            // like one consistent, polished overlay system.
+            reelPopup.setScaleX(0f);
+            reelPopup.setScaleY(0f);
+            reelPopup.animate().scaleX(1f).scaleY(1f).setDuration(300)
+                .setInterpolator(new android.view.animation.OvershootInterpolator()).start();
+
             windowManager.addView(reelPopup, p);
             uiHandler.postDelayed(this::removeReelPopup, 5000);
         });

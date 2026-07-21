@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
@@ -126,8 +127,18 @@ public class UsageMonitorService extends Service {
             // Get study sessions count (use as focus session count)
             int  studySessions  = db.studySessionDao().getSessionCountForDate(today);
 
+            // Real daily goal, same value the Settings screen's +/- control
+            // reads and writes — this is what makes the "goal" line accurate
+            // instead of just displaying a raw total with no target context.
+            SharedPreferences prefs = getSharedPreferences(AppConstants.PREF_NAME, MODE_PRIVATE);
+            int goalMins  = prefs.getInt(AppConstants.PREF_DAILY_GOAL_MIN, 120);
+            long goalMs   = goalMins * 60_000L;
+            int  pct      = goalMs > 0 ? (int) Math.min(100, (totalMs * 100L) / goalMs) : 0;
+
             String screenTime   = TimeUtils.formatDuration(totalMs);
-            String habitsText   = habitsDone + " / " + habitsTotal;
+            String goalTime     = TimeUtils.formatDuration(goalMs);
+            String goalLine     = screenTime + " of " + goalTime + " goal";
+            String secondary    = "✅ " + habitsDone + "/" + habitsTotal + " habits   ·   🧠 " + studySessions + " sessions";
             String message      = MESSAGES.get(messageIndex % MESSAGES.size());
             messageIndex++;
 
@@ -141,31 +152,46 @@ public class UsageMonitorService extends Service {
 
                 ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnTime))
                     .setText(clockStr);
-                ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnScreenTime))
-                    .setText(screenTime);
-                ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnHabits))
-                    .setText(habitsText);
-                ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnFocus))
-                    .setText(String.valueOf(studySessions));
+                ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnGoalLine))
+                    .setText(goalLine);
+                ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnGoalPct))
+                    .setText(pct + "%");
+                ((android.widget.ProgressBar) screenOnOverlay.findViewById(R.id.progressScreenOnGoal))
+                    .setProgress(pct);
+                ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnSecondary))
+                    .setText(secondary);
                 ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnMessage))
                     .setText(message);
 
                 screenOnOverlay.findViewById(R.id.btnScreenOnClose)
                     .setOnClickListener(v -> removeScreenOnOverlay());
+                screenOnOverlay.findViewById(R.id.screen_on_container)
+                    .setOnClickListener(v -> {}); // absorb taps, don't dismiss on accidental tap
 
+                // Small compact pill, top-center — matches every other
+                // Zenith overlay instead of the old full-width dashboard
+                // banner that used to cover a big chunk of the screen on
+                // every single unlock, regardless of which app you opened.
                 WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                         | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
                     PixelFormat.TRANSLUCENT);
-                params.gravity = Gravity.TOP;
-                params.y = 0;
+                params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+                params.y = 40;
+
+                screenOnOverlay.setScaleX(0f);
+                screenOnOverlay.setScaleY(0f);
+                screenOnOverlay.animate().scaleX(1f).scaleY(1f).setDuration(300)
+                    .setInterpolator(new android.view.animation.OvershootInterpolator()).start();
+
                 windowManager.addView(screenOnOverlay, params);
 
-                // Auto-dismiss after 8 seconds
-                uiHandler.postDelayed(this::removeScreenOnOverlay, 8000);
+                // Auto-dismiss after 5 seconds — it's a small glanceable
+                // pill now, doesn't need 8 seconds to read.
+                uiHandler.postDelayed(this::removeScreenOnOverlay, 5000);
             });
         });
     }
