@@ -140,10 +140,12 @@ public class HomeFragment extends Fragment {
         boolean overlayEnabled     = isOverlayPermissionEnabled();
         boolean usageEnabled       = isUsageAccessEnabled();
         boolean notificationsOk    = isNotificationPermissionGranted();
+        boolean batteryOk          = isBatteryOptimizationDisabled();
 
-        int totalSteps   = 4;
+        int totalSteps   = 5;
         int missingCount = (accessEnabled ? 0 : 1) + (overlayEnabled ? 0 : 1)
-                          + (usageEnabled ? 0 : 1) + (notificationsOk ? 0 : 1);
+                          + (usageEnabled ? 0 : 1) + (notificationsOk ? 0 : 1)
+                          + (batteryOk ? 0 : 1);
 
         if (missingCount > 0) {
             binding.cardPermissionWarning.setVisibility(View.VISIBLE);
@@ -155,6 +157,7 @@ public class HomeFragment extends Fragment {
             if (!usageEnabled)     sb.append("• Usage Access (Stats tracking)\n");
             if (!overlayEnabled)   sb.append("• Draw Over Other Apps (Overlay)\n");
             if (!accessEnabled)    sb.append("• Accessibility Service (App lock)\n");
+            if (!batteryOk)        sb.append("• Unrestricted Battery Usage (keeps tracking accurate in the background)\n");
             sb.append("\nNote: If greyed out in settings, go to Android Settings -> Apps -> Zenith, tap top-right 3-dots and choose 'Allow restricted settings' to unlock it.");
             binding.tvPermissionDesc.setText(sb.toString());
 
@@ -179,7 +182,8 @@ public class HomeFragment extends Fragment {
                     ("notifications".equals(lastRequestedStep) && notificationsOk) ||
                     ("usage".equals(lastRequestedStep) && usageEnabled) ||
                     ("overlay".equals(lastRequestedStep) && overlayEnabled) ||
-                    ("accessibility".equals(lastRequestedStep) && accessEnabled);
+                    ("accessibility".equals(lastRequestedStep) && accessEnabled) ||
+                    ("battery".equals(lastRequestedStep) && batteryOk);
 
                 if (lastStepNowGranted) {
                     requestNextMissingPermission();
@@ -227,7 +231,22 @@ public class HomeFragment extends Fragment {
         if (!isAccessibilityServiceEnabled()) {
             lastRequestedStep = "accessibility";
             startActivity(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS));
-            android.widget.Toast.makeText(getContext(), "Last step: turn on Zenith Protector under Accessibility, then come back.", android.widget.Toast.LENGTH_LONG).show();
+            android.widget.Toast.makeText(getContext(), "Next step: turn on Zenith Protector under Accessibility, then come back.", android.widget.Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!isBatteryOptimizationDisabled()) {
+            lastRequestedStep = "battery";
+            try {
+                Intent intent = new Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                    Uri.parse("package:" + requireContext().getPackageName()));
+                startActivity(intent);
+            } catch (Exception e) {
+                // Some OEMs (especially heavily customized ones) don't support
+                // this intent directly — fall back to the general battery
+                // optimization list where the user can find Zenith manually.
+                startActivity(new Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
+            }
+            android.widget.Toast.makeText(getContext(), "Last step: choose 'Allow' or 'Don't optimize' for Zenith, then come back.", android.widget.Toast.LENGTH_LONG).show();
             return;
         }
         // Everything granted.
@@ -290,6 +309,20 @@ public class HomeFragment extends Fragment {
             return android.provider.Settings.canDrawOverlays(ctx);
         }
         return true;
+    }
+
+    /** Without this, Doze mode and OEM battery managers (especially
+     *  Xiaomi/Samsung/Oppo/Vivo) routinely suspend or throttle the
+     *  accessibility service in the background — the tracking loop and
+     *  screen-on/off receiver can silently stop running for stretches at a
+     *  time, producing exactly the kind of gaps and "not working
+     *  efficiently" behavior this step is meant to prevent. */
+    private boolean isBatteryOptimizationDisabled() {
+        android.content.Context ctx = getContext();
+        if (ctx == null) return true;
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) return true;
+        android.os.PowerManager pm = (android.os.PowerManager) ctx.getSystemService(android.content.Context.POWER_SERVICE);
+        return pm != null && pm.isIgnoringBatteryOptimizations(ctx.getPackageName());
     }
 
     private void applyClickBounce(View view, Runnable action) {

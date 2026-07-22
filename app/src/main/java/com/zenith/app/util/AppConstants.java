@@ -30,6 +30,15 @@ public class AppConstants {
     public static final String INSTAGRAM_PKG = "com.instagram.android";
     public static final String YOUTUBE_PKG   = "com.google.android.youtube";
     public static final String TIKTOK_PKG    = "com.zhiliaoapp.musically";
+    public static final String FACEBOOK_PKG  = "com.facebook.katana";
+    public static final String SNAPCHAT_PKG  = "com.snapchat.android";
+
+    // Every app with a short-form vertical video feed worth counting
+    // swipes on — kept as a set so isReelApp() and future additions don't
+    // need to grow a long OR chain.
+    public static final java.util.Set<String> REEL_APP_PACKAGES = new java.util.HashSet<>(Arrays.asList(
+        INSTAGRAM_PKG, YOUTUBE_PKG, TIKTOK_PKG, FACEBOOK_PKG, SNAPCHAT_PKG
+    ));
 
     // ── Financial / payment apps ──────────────────────────────────
     // Zenith suppresses all of its own overlays (Dynamic Island, browser
