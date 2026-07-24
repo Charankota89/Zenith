@@ -13,9 +13,17 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.zenith.app.databinding.FragmentScreenBinding;
 import com.zenith.app.db.entity.AppUsageEntity;
 import com.zenith.app.util.TimeUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScreenFragment extends Fragment {
 
@@ -37,6 +45,9 @@ public class ScreenFragment extends Fragment {
         vm = new ViewModelProvider(this,
             new ScreenViewModelFactory(requireContext()))
             .get(ScreenViewModel.class);
+
+        setupWeeklyTrendChart();
+        vm.weeklyTrend.observe(getViewLifecycleOwner(), this::renderWeeklyTrend);
 
         // App usage RecyclerView
         usageAdapter = new AppUsageAdapter();
@@ -132,6 +143,109 @@ public class ScreenFragment extends Fragment {
 
         // Sync button
         b.btnSync.setOnClickListener(v -> vm.syncUsage());
+    }
+
+    private void setupWeeklyTrendChart() {
+        BarChart chart = b.weeklyTrendChart;
+        chart.getDescription().setEnabled(false);
+        chart.getLegend().setEnabled(false);
+        chart.setTouchEnabled(true);
+        chart.setDragEnabled(false);
+        chart.setScaleEnabled(false);
+        chart.setPinchZoom(false);
+        chart.setDrawGridBackground(false);
+        chart.setDrawValueAboveBar(true);
+        chart.setExtraBottomOffset(4f);
+        chart.setNoDataText("Not enough data yet");
+
+        chart.getAxisLeft().setDrawGridLines(true);
+        chart.getAxisLeft().setGridColor(android.graphics.Color.parseColor("#14636AF1"));
+        chart.getAxisLeft().setAxisMinimum(0f);
+        chart.getAxisLeft().setTextColor(android.graphics.Color.parseColor("#94A3B8"));
+        chart.getAxisLeft().setTextSize(9f);
+        chart.getAxisLeft().setValueFormatter(new com.github.mikephil.charting.formatter.ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return TimeUtils.millisToMinutes((long) value) + "m";
+            }
+        });
+
+        chart.getAxisRight().setEnabled(false);
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        chart.getXAxis().setDrawGridLines(false);
+        chart.getXAxis().setTextColor(android.graphics.Color.parseColor("#94A3B8"));
+        chart.getXAxis().setTextSize(10f);
+        chart.getXAxis().setGranularity(1f);
+    }
+
+    private void renderWeeklyTrend(List<ScreenViewModel.DayUsagePoint> points) {
+        if (points == null || points.isEmpty()) return;
+
+        List<BarEntry> entries = new ArrayList<>();
+        List<String>   labels  = new ArrayList<>();
+        long total = 0;
+        long max   = 0;
+        int  maxIndex = 0;
+
+        for (int i = 0; i < points.size(); i++) {
+            ScreenViewModel.DayUsagePoint p = points.get(i);
+            float minutes = p.millis / 60000f;
+            entries.add(new BarEntry(i, minutes));
+            labels.add(p.label);
+            total += p.millis;
+            if (p.millis > max) { max = p.millis; maxIndex = i; }
+        }
+
+        BarDataSet dataSet = new BarDataSet(entries, "Screen Time");
+        dataSet.setColor(android.graphics.Color.parseColor("#6366F1"));
+        dataSet.setHighLightColor(android.graphics.Color.parseColor("#4F46E5"));
+        dataSet.setValueTextSize(9f);
+        dataSet.setValueTextColor(android.graphics.Color.parseColor("#64748B"));
+        dataSet.setValueFormatter(new com.github.mikephil.charting.formatter.ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return value < 1 ? "" : Math.round(value) + "m";
+            }
+        });
+
+        BarData data = new BarData(dataSet);
+        data.setBarWidth(0.55f);
+
+        b.weeklyTrendChart.setData(data);
+        b.weeklyTrendChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
+        b.weeklyTrendChart.animateY(500);
+        b.weeklyTrendChart.invalidate();
+
+        b.tvTrendInsight.setText(buildWeeklyInsight(points, total, maxIndex));
+    }
+
+    /** A short, human insight about the week's pattern — the kind of thing
+     *  that makes the data feel like it's actually telling you something,
+     *  not just a chart for its own sake. */
+    private String buildWeeklyInsight(List<ScreenViewModel.DayUsagePoint> points, long totalMillis, int maxIndex) {
+        int daysWithData = 0;
+        for (ScreenViewModel.DayUsagePoint p : points) if (p.millis > 0) daysWithData++;
+        if (daysWithData == 0) return "Start using your phone to see your weekly trend here.";
+
+        long avgMillis = totalMillis / points.size();
+        ScreenViewModel.DayUsagePoint today = points.get(points.size() - 1);
+
+        if (points.size() >= 2 && today.millis > 0) {
+            ScreenViewModel.DayUsagePoint yesterday = points.get(points.size() - 2);
+            if (yesterday.millis > 0) {
+                long diffPct = ((today.millis - yesterday.millis) * 100) / yesterday.millis;
+                if (diffPct <= -10) {
+                    return "📉 Down " + Math.abs(diffPct) + "% from yesterday — nice work.";
+                } else if (diffPct >= 10) {
+                    return "📈 Up " + diffPct + "% from yesterday.";
+                }
+            }
+        }
+
+        if (avgMillis > 0) {
+            return "Averaging " + TimeUtils.formatDuration(avgMillis) + "/day this week • Highest: " + points.get(maxIndex).label;
+        }
+        return "";
     }
 
     @Override

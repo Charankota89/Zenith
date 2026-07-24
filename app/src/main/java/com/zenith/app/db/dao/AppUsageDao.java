@@ -43,4 +43,16 @@ public interface AppUsageDao {
 
     @Query("SELECT * FROM app_usage WHERE date = :date ORDER BY usageTimeMillis DESC")
     List<AppUsageEntity> getUsageForDateSync(String date);
+
+    // Weekly trend: total screen time per day, for the last N days starting
+    // at :startDate. GROUP BY only returns rows for days that actually have
+    // data, so the ViewModel fills in zeros for any missing days.
+    @Query("SELECT date, SUM(usageTimeMillis) as totalMillis FROM app_usage " +
+           "WHERE date >= :startDate GROUP BY date ORDER BY date ASC")
+    LiveData<List<DailyUsageTotal>> observeWeeklyTrend(String startDate);
+
+    public class DailyUsageTotal {
+        public String date;
+        public long totalMillis;
+    }
 }

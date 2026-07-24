@@ -33,7 +33,7 @@ public class FocusFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        vm = new ViewModelProvider(this,
+        vm = new ViewModelProvider(requireActivity(),
             new FocusViewModelFactory(requireContext())).get(FocusViewModel.class);
 
         // Focus mode switch

@@ -37,6 +37,18 @@ public class FocusViewModel extends ViewModel {
     public FocusViewModel(Context context) {
         db         = AppDatabase.getInstance(context);
         appContext  = context.getApplicationContext();
+
+        // Without this, "X sessions completed today" always showed 0 on a
+        // fresh app open/ViewModel recreation, even if you'd already done
+        // several Pomodoros earlier today — the DB record was correct, the
+        // UI just never read it back.
+        executor.execute(() -> {
+            com.zenith.app.db.entity.PomodoroEntity pomo =
+                db.pomodoroDao().getPomodoroForDate(TimeUtils.getTodayDate());
+            if (pomo != null) {
+                sessionsCompleted.postValue(pomo.sessionsCompleted);
+            }
+        });
     }
 
     public void startTimer() {
@@ -70,7 +82,10 @@ public class FocusViewModel extends ViewModel {
         pausedMillisLeft = WORK_MILLIS;
         timeLeftMillis.setValue(WORK_MILLIS);
         timerState.setValue(TimerState.IDLE);
-        sessionsCompleted.setValue(0);
+        // Note: sessionsCompleted is intentionally left untouched here — it
+        // reflects sessions actually finished today (persisted in the DB),
+        // not the in-progress one being abandoned. Resetting it to 0 would
+        // have wiped a legitimate earlier session's count off the screen.
     }
 
     public void setSubject(String subject) {

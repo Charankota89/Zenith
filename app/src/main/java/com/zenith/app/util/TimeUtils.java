@@ -27,4 +27,21 @@ public class TimeUtils {
     public static String getDayOfWeek() {
         return new SimpleDateFormat("EEEE", Locale.getDefault()).format(new Date());
     }
+
+    /** Returns yyyy-MM-dd for N days before today (0 = today). */
+    public static String getDateDaysAgo(int daysAgo) {
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.add(java.util.Calendar.DAY_OF_YEAR, -daysAgo);
+        return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(cal.getTime());
+    }
+
+    /** Short day label ("Mon", "Tue"...) for a yyyy-MM-dd date string. */
+    public static String getShortDayLabel(String yyyyMMdd) {
+        try {
+            Date d = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(yyyyMMdd);
+            return new SimpleDateFormat("EEE", Locale.getDefault()).format(d);
+        } catch (Exception e) {
+            return "";
+        }
+    }
 }

@@ -57,43 +57,96 @@
         </FrameLayout>
 
         <!-- Today total card -->
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/surface_card"
-            android:padding="20dp"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginBottom="14dp">
+            android:layout_marginBottom="14dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#14636AF1"
+            app:cardBackgroundColor="#E6FFFFFF">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TODAY'S SCREEN TIME"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.15"
-                android:textColor="@color/text_secondary"/>
+                android:padding="20dp"
+                android:orientation="vertical"
+                android:gravity="center">
 
-            <TextView
-                android:id="@+id/tvTotalTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0h 0m"
-                android:textSize="44sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginTop="6dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TODAY'S SCREEN TIME"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.15"
+                    android:textColor="@color/text_secondary"/>
 
-            <TextView
-                android:id="@+id/tvAppCount"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tvTotalTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0h 0m"
+                    android:textSize="44sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/zenith_purple"
+                    android:layout_marginTop="6dp"/>
+
+                <TextView
+                    android:id="@+id/tvAppCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 apps tracked"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Weekly trend chart -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#14636AF1"
+            app:cardBackgroundColor="#E6FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="0 apps tracked"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LAST 7 DAYS"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.12"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="12dp"/>
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/weeklyTrendChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"/>
+
+                <TextView
+                    android:id="@+id/tvTrendInsight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text=""
+                    android:textSize="12sp"
+                    android:textColor="@color/zenith_purple"
+                    android:gravity="center"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- App usage label -->
         <TextView
