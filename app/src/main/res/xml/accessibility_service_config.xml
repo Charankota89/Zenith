@@ -5,7 +5,6 @@
     android:accessibilityEventTypes="
         typeWindowStateChanged|
         typeWindowContentChanged|
-        typeViewScrolled|
         typeViewClicked|
         typeViewFocused"
     android:accessibilityFeedbackType="feedbackGeneric"

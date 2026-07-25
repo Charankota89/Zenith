@@ -82,7 +82,6 @@
         <!-- ══ GUARDIAN ACCESSIBILITY SERVICE ══
              Capabilities:
              - TYPE_WINDOW_STATE_CHANGED → detect app switches
-             - TYPE_VIEW_SCROLLED → reel counter
              - TYPE_WINDOW_CONTENT_CHANGED → browser URL reading
              - retrieveInteractiveWindows → full window traversal
         -->

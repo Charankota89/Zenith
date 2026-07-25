@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Zenith</string>
     <string name="tagline">Focus. Control. Your Peak.</string>
-    <string name="accessibility_description">Zenith needs accessibility access to detect which app is open, lock blocked apps, and count reels watched.</string>
+    <string name="accessibility_description">Zenith needs accessibility access to detect which app is open and lock blocked apps.</string>
     <string name="accessibility_service_label">Zenith Guardian</string>
 
     <!-- Navigation -->

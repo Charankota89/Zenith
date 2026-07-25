@@ -32,7 +32,6 @@ public class GuardianAccessibilityService extends AccessibilityService {
 
     private WindowManager      windowManager;
     private View               lockerOverlay;
-    private View               reelPopup;
     private View               browserBanner;
     private View               limitWarningOverlay;
     private View               lockerCapsule;
@@ -49,9 +48,6 @@ public class GuardianAccessibilityService extends AccessibilityService {
 
     private String  currentPkg       = "";
     private String  currentUrl       = "";
-    private int     reelCount        = 0;
-    private long    reelSessionStart = 0;
-    private long    lastReelEventTime = 0;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler         uiHandler = new Handler(Looper.getMainLooper());
@@ -187,7 +183,6 @@ public class GuardianAccessibilityService extends AccessibilityService {
         uiHandler.post(() -> {
             removeFloatingCapsule();
             removeBrowserBanner();
-            removeReelPopup();
         });
     }
 
@@ -197,7 +192,7 @@ public class GuardianAccessibilityService extends AccessibilityService {
         // trees (which can go stale mid-traversal), and frequent database
         // access — any single unexpected exception here would otherwise
         // propagate up and crash the whole service, silently disabling
-        // ALL monitoring (screen time, locks, reels, everything) until the
+        // ALL monitoring (screen time, locks, everything) until the
         // user manually re-enables it in Settings. This service fires on
         // essentially every UI event system-wide, so it needs to be able
         // to shrug off one bad event and keep running for the next one.
@@ -232,8 +227,6 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 checkAndIncrementUsage(); // Trigger new app checks immediately
                 checkIfLocked(pkg);
                 checkFocusMode(pkg);
-                if (!isReelApp(pkg)) { reelCount = 0; reelSessionStart = 0; }
-                else if (reelSessionStart == 0) reelSessionStart = System.currentTimeMillis();
             }
         }
 
@@ -251,68 +244,6 @@ public class GuardianAccessibilityService extends AccessibilityService {
                     showBrowserBanner(pkg, url);
                 }
             }
-        }
-
-        // ── Reel counter ──
-        // Instagram/YouTube/TikTok/Facebook/Snapchat's full-screen reels
-        // feed doesn't consistently fire TYPE_VIEW_SCROLLED — newer
-        // versions of these apps (especially Compose-based UI) often only
-        // emit TYPE_WINDOW_CONTENT_CHANGED when the feed advances to the
-        // next video. Relying on scroll events alone meant reel counting
-        // simply never incremented on those versions. Both event types
-        // now feed the same debounced counter, so whichever one the app
-        // actually fires still gets caught, without double-counting a
-        // single swipe if both events happen to fire for it.
-        if (isReelApp(pkg) && (type == AccessibilityEvent.TYPE_VIEW_SCROLLED
-                             || type == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)) {
-            registerReelEngagement();
-        }
-    }
-
-    // A real reel swipe can't physically happen faster than this, so
-    // anything closer together is almost certainly the SAME swipe firing
-    // both a scroll event and a content-changed event, not two distinct
-    // swipes. Tuned low enough that fast scrollers still get every swipe
-    // counted, high enough to filter duplicate signals for one swipe.
-    private static final long REEL_DEBOUNCE_MS = 400;
-
-    /** Counts one reel-feed advance, debounced so a single swipe doesn't
-     *  get double-counted if both a scroll event and a content-changed
-     *  event fire for it (common — the two signals overlap in time). */
-    private void registerReelEngagement() {
-        long now = System.currentTimeMillis();
-        if (now - lastReelEventTime < REEL_DEBOUNCE_MS) return;
-        lastReelEventTime = now;
-
-        // Defensive init: this normally gets set when we detect the app
-        // switch INTO a reel app (see above), but if the accessibility
-        // service starts/restarts while a reel app is already open —
-        // e.g. after a reboot, or right after the user just enabled the
-        // permission — no switch event ever fires, and this stayed 0
-        // forever. That meant "elapsed session time" was computed as
-        // (now - 0), i.e. the raw Unix epoch timestamp itself, which is
-        // why the popup showed something like "29736979 min on reels".
-        if (reelSessionStart == 0) reelSessionStart = now;
-
-        reelCount++;
-
-        if (lockerCapsule != null && !currentAppName.isEmpty()) {
-            if (!isCapsuleExpanded) {
-                updateCapsuleData(currentAppName, currentAppUsedMs, currentAppLimitMs);
-            } else {
-                TextView tvDetail = lockerCapsule.findViewById(R.id.tvExpandedDetail);
-                if (tvDetail != null) {
-                    String limitStr = TimeUtils.formatDuration(currentAppLimitMs);
-                    String usedStr = TimeUtils.formatDuration(currentAppUsedMs);
-                    String reelsStr = "\nReels Scrolled: " + reelCount;
-                    tvDetail.setText("App: " + currentAppName + "\nLimit: " + limitStr + " • Used: " + usedStr + reelsStr + "\n" + currentTasksStr);
-                }
-            }
-        }
-
-        if (reelCount % 10 == 0) {
-            long sessionMs = now - reelSessionStart;
-            showReelPopup(reelCount, sessionMs);
         }
     }
 
@@ -560,47 +491,6 @@ public class GuardianAccessibilityService extends AccessibilityService {
     }
 
     // ─────────────────────────────────────────────
-    //  Reel counter popup
-    // ─────────────────────────────────────────────
-    private void showReelPopup(int count, long sessionMs) {
-        uiHandler.post(() -> {
-            ensureWindowManager();
-            removeReelPopup();
-            LayoutInflater inf = LayoutInflater.from(this);
-            reelPopup = inf.inflate(R.layout.overlay_reel_popup, null);
-            String mins = String.valueOf(Math.max(0, sessionMs / 60000));
-            ((TextView) reelPopup.findViewById(R.id.tvReelCount))
-                .setText(count + " reels watched");
-            ((TextView) reelPopup.findViewById(R.id.tvReelTime))
-                .setText(mins + " min on reels — still worth it?");
-            // Compact pill now — tap anywhere on it to dismiss early,
-            // matching the Dynamic Island's interaction style instead of a
-            // separate Dismiss button.
-            reelPopup.findViewById(R.id.reel_popup_container)
-                .setOnClickListener(v -> removeReelPopup());
-
-            WindowManager.LayoutParams p = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
-            p.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-            p.y = 80;
-
-            // Same bounce-in entrance as the Dynamic Island, so both feel
-            // like one consistent, polished overlay system.
-            reelPopup.setScaleX(0f);
-            reelPopup.setScaleY(0f);
-            reelPopup.animate().scaleX(1f).scaleY(1f).setDuration(300)
-                .setInterpolator(new android.view.animation.OvershootInterpolator()).start();
-
-            windowManager.addView(reelPopup, p);
-            uiHandler.postDelayed(this::removeReelPopup, 5000);
-        });
-    }
-
-    // ─────────────────────────────────────────────
     //  Real-time screen usage checking & warning
     // ─────────────────────────────────────────────
     private void checkAndIncrementUsage() {
@@ -830,9 +720,6 @@ public class GuardianAccessibilityService extends AccessibilityService {
 
         nm.notify(999, notification);
     }
-    private boolean isReelApp(String pkg) {
-        return AppConstants.REEL_APP_PACKAGES.contains(pkg);
-    }
 
     private void ensureWindowManager() {
         if (windowManager == null)
@@ -846,13 +733,6 @@ public class GuardianAccessibilityService extends AccessibilityService {
         }
     }
 
-    private void removeReelPopup() {
-        if (reelPopup != null && windowManager != null) {
-            try { windowManager.removeView(reelPopup); } catch (Exception ignored) {}
-            reelPopup = null;
-        }
-    }
-
     private void removeBrowserBanner() {
         if (browserBanner != null && windowManager != null) {
             try { windowManager.removeView(browserBanner); } catch (Exception ignored) {}
@@ -863,7 +743,6 @@ public class GuardianAccessibilityService extends AccessibilityService {
     @Override 
     public void onInterrupt() { 
         removeLocker(); 
-        removeReelPopup(); 
         removeBrowserBanner(); 
         removeFloatingCapsule();
     }
@@ -932,11 +811,7 @@ public class GuardianAccessibilityService extends AccessibilityService {
         View container = lockerCapsule.findViewById(R.id.capsule_container);
  
         if (tvText != null) {
-            String reelsStr = "";
-            if (isReelApp(currentPkg) && reelCount > 0) {
-                reelsStr = " • " + reelCount + " reels";
-            }
-            tvText.setText(appName + ": " + remainingMins + "m left" + reelsStr);
+            tvText.setText(appName + ": " + remainingMins + "m left");
         }
 
         long pct = limitMs > 0 ? (usedMs * 100L) / limitMs : 0;
@@ -1128,7 +1003,6 @@ public class GuardianAccessibilityService extends AccessibilityService {
         uiHandler.removeCallbacksAndMessages(null);
         capsuleHandler.removeCallbacksAndMessages(null);
         removeLocker(); 
-        removeReelPopup(); 
         removeBrowserBanner();
         removeFloatingCapsule();
         if (limitWarningOverlay != null && windowManager != null) {
