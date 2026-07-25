@@ -42,9 +42,16 @@ public class SplashActivity extends AppCompatActivity {
             SharedPreferences prefs =
                 getSharedPreferences(AppConstants.PREF_NAME, MODE_PRIVATE);
             boolean onboarded = prefs.getBoolean(AppConstants.PREF_ONBOARDED, false);
-            Intent target = onboarded
-                ? new Intent(SplashActivity.this, MainActivity.class)
-                : new Intent(SplashActivity.this, OnboardingActivity.class);
+            boolean hasPinSet = prefs.getString(AppConstants.PREF_PIN, null) != null;
+
+            Intent target;
+            if (!onboarded) {
+                target = new Intent(SplashActivity.this, OnboardingActivity.class);
+            } else if (hasPinSet) {
+                target = new Intent(SplashActivity.this, AppLockActivity.class);
+            } else {
+                target = new Intent(SplashActivity.this, MainActivity.class);
+            }
             startActivity(target);
             finish();
         }, 2000);

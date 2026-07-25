@@ -159,7 +159,7 @@ public class ScreenFragment extends Fragment {
         chart.setNoDataText("Not enough data yet");
 
         chart.getAxisLeft().setDrawGridLines(true);
-        chart.getAxisLeft().setGridColor(android.graphics.Color.parseColor("#14636AF1"));
+        chart.getAxisLeft().setGridColor(android.graphics.Color.parseColor("#147C3AED"));
         chart.getAxisLeft().setAxisMinimum(0f);
         chart.getAxisLeft().setTextColor(android.graphics.Color.parseColor("#94A3B8"));
         chart.getAxisLeft().setTextSize(9f);
@@ -197,8 +197,8 @@ public class ScreenFragment extends Fragment {
         }
 
         BarDataSet dataSet = new BarDataSet(entries, "Screen Time");
-        dataSet.setColor(android.graphics.Color.parseColor("#6366F1"));
-        dataSet.setHighLightColor(android.graphics.Color.parseColor("#4F46E5"));
+        dataSet.setColor(android.graphics.Color.parseColor("#7C3AED"));
+        dataSet.setHighLightColor(android.graphics.Color.parseColor("#5B21B6"));
         dataSet.setValueTextSize(9f);
         dataSet.setValueTextColor(android.graphics.Color.parseColor("#64748B"));
         dataSet.setValueFormatter(new com.github.mikephil.charting.formatter.ValueFormatter() {

@@ -75,6 +75,7 @@
 
         <!-- Onboarding -->
         <activity android:name=".ui.onboarding.OnboardingActivity" android:exported="false"/>
+        <activity android:name=".ui.AppLockActivity" android:exported="false"/>
 
         <!-- PIN Setup -->
         <activity android:name=".ui.settings.PinSetupActivity" android:exported="false"/>

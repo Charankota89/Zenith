@@ -30,7 +30,7 @@ public class PinSetupActivity extends AppCompatActivity {
             }
 
             getSharedPreferences(AppConstants.PREF_NAME, MODE_PRIVATE)
-                .edit().putString(AppConstants.PREF_PIN, pin).apply();
+                .edit().putString(AppConstants.PREF_PIN, com.zenith.app.util.PinSecurityUtil.hash(pin)).apply();
             Toast.makeText(this, "PIN saved!", Toast.LENGTH_SHORT).show();
             finish();
         });

@@ -27,7 +27,7 @@ public class WellbeingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        vm = new ViewModelProvider(this,
+        vm = new ViewModelProvider(requireActivity(),
             new WellbeingViewModelFactory(requireContext())).get(WellbeingViewModel.class);
 
         // Mood selector (1–5 emoji) — save to DB on tap
@@ -45,30 +45,12 @@ public class WellbeingFragment extends Fragment {
             });
         }
 
-        startEyeBreakTimer();
-    }
-
-    private android.os.CountDownTimer eyeBreakCountDown;
-
-    private void startEyeBreakTimer() {
-        if (eyeBreakCountDown != null) {
-            eyeBreakCountDown.cancel();
-        }
-        eyeBreakCountDown = new android.os.CountDownTimer(1200000L, 1000L) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                if (binding != null && binding.tvEyeBreakTimer != null) {
-                    long mins = millisUntilFinished / 60000;
-                    long secs = (millisUntilFinished % 60000) / 1000;
-                    binding.tvEyeBreakTimer.setText(String.format("%02d:%02d", mins, secs));
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                startEyeBreakTimer(); // Loop back
-            }
-        }.start();
+        vm.eyeBreakMillisRemaining.observe(getViewLifecycleOwner(), millisRemaining -> {
+            if (binding == null || millisRemaining == null) return;
+            long mins = millisRemaining / 60000;
+            long secs = (millisRemaining % 60000) / 1000;
+            binding.tvEyeBreakTimer.setText(String.format("%02d:%02d", mins, secs));
+        });
     }
 
     private void animateBounce(View view) {
@@ -97,9 +79,6 @@ public class WellbeingFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (eyeBreakCountDown != null) {
-            eyeBreakCountDown.cancel();
-        }
         binding = null;
     }
 }

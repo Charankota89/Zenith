@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 import com.zenith.app.db.entity.MoodEntity;
 import java.util.List;
 
@@ -11,6 +12,9 @@ import java.util.List;
 public interface MoodDao {
     @Insert
     void insert(MoodEntity mood);
+
+    @Update
+    void update(MoodEntity mood);
 
     @Query("SELECT * FROM mood_log WHERE date = :date LIMIT 1")
     MoodEntity getMoodForDate(String date);

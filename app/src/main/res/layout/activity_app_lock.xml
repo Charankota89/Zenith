@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/zenith_dark"
+    android:padding="32dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🔒"
+        android:textSize="48sp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter your PIN"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_marginBottom="24dp"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/etPinEntry"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:inputType="numberPassword"
+        android:maxLength="8"
+        android:textSize="24sp"
+        android:letterSpacing="0.5"
+        android:textColor="@color/white"
+        android:textColorHint="#64748B"
+        android:hint="••••"
+        android:background="@null"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvLockError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="@color/zenith_coral"
+        android:textSize="13sp"
+        android:layout_marginBottom="20dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnUnlock"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:text="Unlock"
+        app:backgroundTint="@color/zenith_purple"
+        app:cornerRadius="12dp"
+        android:layout_marginBottom="12dp"/>
+
+    <TextView
+        android:id="@+id/tvUseBiometric"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="👆 Use fingerprint instead"
+        android:textColor="@color/zenith_teal"
+        android:textSize="13sp"
+        android:padding="8dp"
+        android:visibility="gone"/>
+
+</LinearLayout>
