@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.zenith.app.R;
 import com.zenith.app.databinding.FragmentScreenBinding;
 import com.zenith.app.db.entity.AppUsageEntity;
 import com.zenith.app.util.TimeUtils;
@@ -31,6 +33,7 @@ public class ScreenFragment extends Fragment {
     private ScreenViewModel       vm;
     private AppUsageAdapter       usageAdapter;
     private BrowserVisitAdapter   browserAdapter;
+    private List<ScreenViewModel.DayUsagePoint> currentTrendPoints = new ArrayList<>();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inf, ViewGroup parent, Bundle saved) {
@@ -48,6 +51,15 @@ public class ScreenFragment extends Fragment {
 
         setupWeeklyTrendChart();
         vm.weeklyTrend.observe(getViewLifecycleOwner(), this::renderWeeklyTrend);
+
+        // Shows the bottom sheet once the tapped day's data comes back.
+        // Both LiveData fields get set together by loadDayDetail(), and
+        // observing the app list (which always fires after the label,
+        // since they're posted in that order) is enough to trigger it.
+        vm.selectedDayDetail.observe(getViewLifecycleOwner(), apps -> {
+            String label = vm.selectedDayLabel.getValue();
+            if (label != null) showDayDetailSheet(label, apps);
+        });
 
         // App usage RecyclerView
         usageAdapter = new AppUsageAdapter();
@@ -176,10 +188,74 @@ public class ScreenFragment extends Fragment {
         chart.getXAxis().setTextColor(android.graphics.Color.parseColor("#94A3B8"));
         chart.getXAxis().setTextSize(10f);
         chart.getXAxis().setGranularity(1f);
+
+        // Tapping a bar previously did nothing at all — this is the fix for
+        // that. Maps the tapped bar's X position back to that day's actual
+        // date, then asks the ViewModel to load its per-app breakdown.
+        chart.setOnChartValueSelectedListener(new com.github.mikephil.charting.listener.OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(com.github.mikephil.charting.data.Entry e,
+                                         com.github.mikephil.charting.highlight.Highlight h) {
+                int index = Math.round(e.getX());
+                if (index < 0 || index >= currentTrendPoints.size()) return;
+                ScreenViewModel.DayUsagePoint point = currentTrendPoints.get(index);
+                String humanLabel = formatHumanDate(point.date);
+                vm.loadDayDetail(point.date, humanLabel);
+            }
+            @Override
+            public void onNothingSelected() { }
+        });
+    }
+
+    /** "2026-07-23" → "Wednesday, Jul 23" */
+    private String formatHumanDate(String yyyyMMdd) {
+        try {
+            java.util.Date d = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).parse(yyyyMMdd);
+            return new java.text.SimpleDateFormat("EEEE, MMM d", java.util.Locale.getDefault()).format(d);
+        } catch (Exception ex) {
+            return yyyyMMdd;
+        }
+    }
+
+    private void showDayDetailSheet(String humanLabel, List<AppUsageEntity> apps) {
+        com.google.android.material.bottomsheet.BottomSheetDialog dialog =
+            new com.google.android.material.bottomsheet.BottomSheetDialog(requireContext());
+        View sheetView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.bottomsheet_day_detail, null);
+        dialog.setContentView(sheetView);
+
+        TextView tvTitle = sheetView.findViewById(R.id.tvDayDetailTitle);
+        TextView tvTotal = sheetView.findViewById(R.id.tvDayDetailTotal);
+        TextView tvEmpty = sheetView.findViewById(R.id.tvDayDetailEmpty);
+        androidx.recyclerview.widget.RecyclerView rv = sheetView.findViewById(R.id.rvDayDetailApps);
+
+        tvTitle.setText(humanLabel);
+
+        if (apps == null || apps.isEmpty()) {
+            tvTotal.setVisibility(View.GONE);
+            rv.setVisibility(View.GONE);
+            tvEmpty.setVisibility(View.VISIBLE);
+        } else {
+            long total = 0;
+            for (AppUsageEntity a : apps) total += a.usageTimeMillis;
+            tvTotal.setText(TimeUtils.formatDuration(total) + " total");
+
+            AppUsageAdapter dayAdapter = new AppUsageAdapter();
+            dayAdapter.setOnItemClickListener(new AppUsageAdapter.OnItemClickListener() {
+                @Override public void onItemClick(AppUsageEntity entity) { }
+                @Override public void onFocusBlockToggle(AppUsageEntity entity, boolean isBlocked) { }
+            });
+            rv.setLayoutManager(new LinearLayoutManager(requireContext()));
+            rv.setAdapter(dayAdapter);
+            dayAdapter.submitList(apps);
+        }
+
+        dialog.show();
     }
 
     private void renderWeeklyTrend(List<ScreenViewModel.DayUsagePoint> points) {
         if (points == null || points.isEmpty()) return;
+        currentTrendPoints = points;
 
         List<BarEntry> entries = new ArrayList<>();
         List<String>   labels  = new ArrayList<>();

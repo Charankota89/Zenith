@@ -51,27 +51,37 @@ public class UsageRepository {
                     if ((info.flags & ApplicationInfo.FLAG_SYSTEM) != 0) continue;
                 } catch (PackageManager.NameNotFoundException e) { continue; }
 
+                AppUsageEntity existing = db.appUsageDao().getUsageForApp(pkg, today);
+
+                // GuardianAccessibilityService is the single source of truth
+                // for usageTimeMillis once an app has been seen today — it
+                // accounts for screen-off periods, frozen time while an app
+                // is locked, and excludes financial apps entirely. This
+                // UsageStatsManager-based number measures foreground time
+                // completely differently (and without any of those rules),
+                // so overwriting an existing entry with it here caused the
+                // displayed screen time to visibly jump around every 5
+                // minutes, disconnected from what was actually happening on
+                // screen. This sync now only ever creates a starting entry
+                // for an app the accessibility tracker hasn't seen yet today;
+                // it never touches a value that tracker already owns.
+                if (existing != null) continue;
+
                 String appName;
                 try {
                     appName = pm.getApplicationLabel(
                         pm.getApplicationInfo(pkg, 0)).toString();
                 } catch (PackageManager.NameNotFoundException e) { appName = pkg; }
 
-                AppUsageEntity existing = db.appUsageDao().getUsageForApp(pkg, today);
-                if (existing != null) {
-                    existing.usageTimeMillis = usageTime;
-                    db.appUsageDao().update(existing);
-                } else {
-                    AppUsageEntity entity  = new AppUsageEntity();
-                    entity.packageName     = pkg;
-                    entity.appName         = appName;
-                    entity.usageTimeMillis = usageTime;
-                    entity.limitMillis     = 0;
-                    entity.isLocked        = false;
-                    entity.isFocusWhitelisted = true;
-                    entity.date            = today;
-                    db.appUsageDao().insert(entity);
-                }
+                AppUsageEntity entity  = new AppUsageEntity();
+                entity.packageName     = pkg;
+                entity.appName         = appName;
+                entity.usageTimeMillis = usageTime;
+                entity.limitMillis     = 0;
+                entity.isLocked        = false;
+                entity.isFocusWhitelisted = true;
+                entity.date            = today;
+                db.appUsageDao().insert(entity);
             }
         });
     }

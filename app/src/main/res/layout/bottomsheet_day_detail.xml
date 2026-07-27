@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/card_dark"
+    android:paddingTop="8dp"
+    android:paddingBottom="24dp">
+
+    <!-- Drag handle -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="#334155"/>
+
+    <TextView
+        android:id="@+id/tvDayDetailTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Wednesday, Jul 23"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"/>
+
+    <TextView
+        android:id="@+id/tvDayDetailTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="16dp"
+        android:text="2h 14m total"
+        android:textSize="13sp"
+        android:textColor="@color/zenith_purple"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDayDetailApps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="360dp"
+        android:paddingHorizontal="8dp"
+        android:clipToPadding="false"/>
+
+    <TextView
+        android:id="@+id/tvDayDetailEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No usage recorded for this day."
+        android:textSize="13sp"
+        android:textColor="@color/text_secondary"
+        android:gravity="center"
+        android:padding="24dp"
+        android:visibility="gone"/>
+
+</LinearLayout>
