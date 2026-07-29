@@ -606,6 +606,7 @@ public class GuardianAccessibilityService extends AccessibilityService {
                             removeFloatingCapsule();
                             showLockerOverlay(finalEntity.appName, false);
                         });
+                        return; // already saved above — skip the write below
                     } else {
                         final long usedVal = finalEntity.usageTimeMillis;
                         final long limitVal = finalEntity.limitMillis;

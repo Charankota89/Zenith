@@ -158,7 +158,14 @@ public class ScreenFragment extends Fragment {
         });
 
         // Sync button
-        b.btnSync.setOnClickListener(v -> vm.syncUsage());
+        // Tracking is now fully automatic and live (handled entirely by
+        // the accessibility service in the background), so there's
+        // nothing left to manually sync. This button used to trigger a
+        // system-stats-based sync that was actually the source of the
+        // "fake time" bug — rather than leave it silently doing nothing
+        // when tapped, it now says so directly.
+        b.btnSync.setOnClickListener(v ->
+            Toast.makeText(requireContext(), "Tracking is automatic — you're always up to date ✓", Toast.LENGTH_SHORT).show());
     }
 
     private void setupWeeklyTrendChart() {
