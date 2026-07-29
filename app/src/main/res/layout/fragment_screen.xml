@@ -167,6 +167,17 @@
             android:nestedScrollingEnabled="false"
             android:layoutAnimation="@anim/layout_fall_down"/>
 
+        <TextView
+            android:id="@+id/tvAppUsageEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📱  No apps tracked yet today — go use your phone!"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            android:gravity="center"
+            android:padding="20dp"
+            android:visibility="gone"/>
+
         <!-- Divider -->
         <View
             android:layout_width="match_parent"

@@ -142,6 +142,10 @@ public class ScreenFragment extends Fragment {
             }
             b.tvTotalTime.setText(TimeUtils.formatDuration(totalMs));
             b.tvAppCount.setText((list == null ? 0 : list.size()) + " apps tracked");
+
+            boolean isEmpty = list == null || list.isEmpty();
+            b.tvAppUsageEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+            b.rvAppUsage.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
         });
 
         // Observe browser history

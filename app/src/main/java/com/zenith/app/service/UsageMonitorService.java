@@ -29,8 +29,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -47,7 +45,6 @@ public class UsageMonitorService extends Service {
         "Deep work beats distraction. Always. 🧠"
     );
 
-    private Timer             syncTimer;
     private UsageRepository   repo;
     private WindowManager     windowManager;
     private View              screenOnOverlay;
@@ -62,19 +59,8 @@ public class UsageMonitorService extends Service {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         startForeground(AppConstants.NOTIF_ID_USAGE_MONITOR, buildNotification());
-        startSyncLoop();
         registerScreenReceiver();
         return START_STICKY;
-    }
-
-    // ──────────────────────────────────────────────────
-    //  Sync usage every 5 minutes
-    // ──────────────────────────────────────────────────
-    private void startSyncLoop() {
-        syncTimer = new Timer();
-        syncTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override public void run() { repo.syncTodayUsage(); }
-        }, 0, 5 * 60 * 1000L);
     }
 
     // ──────────────────────────────────────────────────
@@ -89,8 +75,8 @@ public class UsageMonitorService extends Service {
                 if (action == null) return;
                 switch (action) {
                     case Intent.ACTION_SCREEN_ON:
-                        // Screen lit up — immediately sync usage
-                        repo.syncTodayUsage();
+                        // No sync needed here anymore — GuardianAccessibilityService
+                        // handles everything reactively while the screen is on.
                         break;
                     case Intent.ACTION_USER_PRESENT:
                         // Screen fully unlocked — show summary overlay
@@ -223,7 +209,6 @@ public class UsageMonitorService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (syncTimer        != null) syncTimer.cancel();
         if (screenStateReceiver != null) {
             try { unregisterReceiver(screenStateReceiver); } catch (Exception ignored) {}
         }

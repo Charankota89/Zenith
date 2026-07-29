@@ -1,15 +1,9 @@
 package com.zenith.app.repository;
 
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import com.zenith.app.db.AppDatabase;
 import com.zenith.app.db.entity.AppUsageEntity;
 import com.zenith.app.util.TimeUtils;
-import java.util.Calendar;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,66 +18,29 @@ public class UsageRepository {
         this.db      = AppDatabase.getInstance(context);
     }
 
+    /**
+     * Deliberately a no-op now. This used to seed app usage entries from
+     * Android's UsageStatsManager — a system API that measures "foreground
+     * time" completely differently from, and independently of, the
+     * accessibility-service-based tracker that owns this data everywhere
+     * else in the app. Two real bugs traced back to this method:
+     *   1. It would periodically overwrite the accessibility tracker's
+     *      carefully-accumulated (screen-off-aware, lock-aware) numbers
+     *      with its own differently-measured total, making the displayed
+     *      screen time visibly jump every 5 minutes.
+     *   2. Worse: UsageStatsManager can report non-zero "foreground time"
+     *      for an app on a brand new day before you've opened anything at
+     *      all — a known quirk of how Android buckets usage stats near
+     *      day boundaries — which is exactly what showed up as "fake time
+     *      at the start of the day."
+     * GuardianAccessibilityService already creates a fresh, zeroed entry
+     * itself the moment an app is genuinely opened while the screen is on,
+     * so there's nothing left for this method to usefully do. Kept as a
+     * no-op (rather than deleted outright) so the Settings "Sync" button
+     * and UsageMonitorService's screen-on hook don't need to be rewired.
+     */
     public void syncTodayUsage() {
-        executor.execute(() -> {
-            UsageStatsManager usm = (UsageStatsManager)
-                context.getSystemService(Context.USAGE_STATS_SERVICE);
-
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.HOUR_OF_DAY, 0);
-            cal.set(Calendar.MINUTE, 0);
-            cal.set(Calendar.SECOND, 0);
-            long startOfDay = cal.getTimeInMillis();
-            long now        = System.currentTimeMillis();
-
-            Map<String, UsageStats> statsMap =
-                usm.queryAndAggregateUsageStats(startOfDay, now);
-            PackageManager pm  = context.getPackageManager();
-            String         today = TimeUtils.getTodayDate();
-
-            for (Map.Entry<String, UsageStats> entry : statsMap.entrySet()) {
-                String pkg       = entry.getKey();
-                long   usageTime = entry.getValue().getTotalTimeInForeground();
-                if (usageTime < 1000) continue;
-
-                try {
-                    ApplicationInfo info = pm.getApplicationInfo(pkg, 0);
-                    if ((info.flags & ApplicationInfo.FLAG_SYSTEM) != 0) continue;
-                } catch (PackageManager.NameNotFoundException e) { continue; }
-
-                AppUsageEntity existing = db.appUsageDao().getUsageForApp(pkg, today);
-
-                // GuardianAccessibilityService is the single source of truth
-                // for usageTimeMillis once an app has been seen today — it
-                // accounts for screen-off periods, frozen time while an app
-                // is locked, and excludes financial apps entirely. This
-                // UsageStatsManager-based number measures foreground time
-                // completely differently (and without any of those rules),
-                // so overwriting an existing entry with it here caused the
-                // displayed screen time to visibly jump around every 5
-                // minutes, disconnected from what was actually happening on
-                // screen. This sync now only ever creates a starting entry
-                // for an app the accessibility tracker hasn't seen yet today;
-                // it never touches a value that tracker already owns.
-                if (existing != null) continue;
-
-                String appName;
-                try {
-                    appName = pm.getApplicationLabel(
-                        pm.getApplicationInfo(pkg, 0)).toString();
-                } catch (PackageManager.NameNotFoundException e) { appName = pkg; }
-
-                AppUsageEntity entity  = new AppUsageEntity();
-                entity.packageName     = pkg;
-                entity.appName         = appName;
-                entity.usageTimeMillis = usageTime;
-                entity.limitMillis     = 0;
-                entity.isLocked        = false;
-                entity.isFocusWhitelisted = true;
-                entity.date            = today;
-                db.appUsageDao().insert(entity);
-            }
-        });
+        // Intentionally empty.
     }
 
     public void setAppLimit(String packageName, long limitMillis) {

@@ -35,7 +35,11 @@ public class CareerFragment extends Fragment {
         binding.rvHabits.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvHabits.setAdapter(adapter);
 
-        vm.habits.observe(getViewLifecycleOwner(), adapter::submitList);
+        vm.habits.observe(getViewLifecycleOwner(), habits -> {
+            adapter.submitList(habits);
+            boolean isEmpty = habits == null || habits.isEmpty();
+            binding.emptyHabitsState.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        });
 
         binding.fabAddHabit.setOnClickListener(v -> {
             String name = binding.etHabitName.getText().toString().trim();
