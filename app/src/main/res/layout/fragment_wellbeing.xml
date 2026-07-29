@@ -71,9 +71,26 @@
             android:textSize="15sp"
             android:textColor="@color/zenith_purple"
             android:gravity="center"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="12dp"/>
 
-        <!-- Eye Break reminder -->
+        <!-- Optional mood note -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMoodNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Write a note… (optional)"
+                android:inputType="textMultiLine"
+                android:maxLines="3"
+                android:imeOptions="actionDone"
+                android:textSize="13sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

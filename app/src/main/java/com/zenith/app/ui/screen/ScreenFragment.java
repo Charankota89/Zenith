@@ -90,7 +90,7 @@ public class ScreenFragment extends Fragment {
                     long totalMins = (hour * 60L) + minute;
                     long newLimitMillis = totalMins * 60000;
 
-                    java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+                    vm.runOnExecutor(() -> {
                         com.zenith.app.db.AppDatabase db = com.zenith.app.db.AppDatabase.getInstance(requireContext().getApplicationContext());
                         entity.limitMillis = newLimitMillis;
                         if (entity.usageTimeMillis < newLimitMillis || newLimitMillis == 0) {
@@ -98,7 +98,7 @@ public class ScreenFragment extends Fragment {
                             entity.unlockExpiresAt = 0;
                         }
                         db.appUsageDao().update(entity);
-                        
+
                         if (isAdded()) {
                             requireActivity().runOnUiThread(() -> {
                                 vm.syncUsage();
@@ -113,11 +113,11 @@ public class ScreenFragment extends Fragment {
 
             @Override
             public void onFocusBlockToggle(AppUsageEntity entity, boolean isBlocked) {
-                java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+                vm.runOnExecutor(() -> {
                     com.zenith.app.db.AppDatabase db = com.zenith.app.db.AppDatabase.getInstance(requireContext().getApplicationContext());
                     entity.isFocusWhitelisted = !isBlocked;
                     db.appUsageDao().update(entity);
-                    
+
                     if (isAdded()) {
                         requireActivity().runOnUiThread(() -> {
                             String status = isBlocked ? "restricted" : "allowed";

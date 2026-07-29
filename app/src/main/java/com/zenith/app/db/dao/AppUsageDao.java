@@ -29,6 +29,24 @@ public interface AppUsageDao {
     @Query("UPDATE app_usage SET isLocked = 0 WHERE date != :today")
     void unlockAllExceptToday(String today);
 
+    /**
+     * Called by MidnightResetWorker at the start of every new day.
+     * Zeroes each app's accumulated usage, clears the lock flag, and
+     * clears any temporary unlock window — so the new day starts fresh
+     * with 0 ms used rather than carrying yesterday's total forward.
+     */
+    @Query("UPDATE app_usage SET usageTimeMillis = 0, isLocked = 0, unlockExpiresAt = 0 WHERE date = :today")
+    void resetUsageForNewDay(String today);
+
+    /**
+     * Returns all rows from the most recent date BEFORE :today that had a
+     * non-zero limit set. Used by MidnightResetWorker to copy limits forward
+     * into the new day's rows so the user's configured limits persist across
+     * midnight instead of vanishing every morning.
+     */
+    @Query("SELECT * FROM app_usage WHERE date = :yesterday AND limitMillis > 0")
+    List<AppUsageEntity> getAppsWithLimitsOnDate(String yesterday);
+
     @Query("SELECT SUM(usageTimeMillis) FROM app_usage WHERE date = :date")
     long getTotalUsageForDate(String date);
 

@@ -3,6 +3,7 @@ package com.zenith.app.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
@@ -26,6 +27,16 @@ public class AppLockActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityAppLockBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Deliberately block back navigation — you can't exit the lock
+        // screen without the correct PIN or biometric. Using the modern
+        // OnBackPressedCallback instead of the deprecated onBackPressed().
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Do nothing — intentional block.
+            }
+        });
 
         SharedPreferences prefs = getSharedPreferences(AppConstants.PREF_NAME, MODE_PRIVATE);
         storedPinHash = prefs.getString(AppConstants.PREF_PIN, null);
@@ -96,11 +107,5 @@ public class AppLockActivity extends AppCompatActivity {
     private void proceedToMain() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        // Deliberately does nothing — you can't back out of the lock
-        // screen without entering the correct PIN or biometric.
     }
 }

@@ -66,8 +66,4 @@ public class AppConstants {
         "netbanking", "cardpayment", "pay.google.com", "paytm.com/pay",
         "phonepe.com/pay"
     ));
-
-    public static final String GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
-    public static final String GEMINI_URL     =
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
 }

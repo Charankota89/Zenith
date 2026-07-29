@@ -1,9 +1,7 @@
 package com.zenith.app.ui.focus;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.CountDownTimer;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.zenith.app.db.AppDatabase;
@@ -11,7 +9,6 @@ import com.zenith.app.db.entity.PomodoroEntity;
 import com.zenith.app.db.entity.StudySessionEntity;
 import com.zenith.app.util.NotificationHelper;
 import com.zenith.app.util.TimeUtils;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,8 +25,15 @@ public class FocusViewModel extends ViewModel {
     public final MutableLiveData<String>      currentSubject    = new MutableLiveData<>("Study");
 
     private CountDownTimer     countDownTimer;
-    private long               pausedMillisLeft = WORK_MILLIS;
-    private long               sessionStartTime = 0;
+    private long               pausedMillisLeft  = WORK_MILLIS;
+    private long               sessionStartTime  = 0;
+    // Track total time spent paused during a session so it can be
+    // subtracted from the final durationMs. Without this, a 25-minute
+    // work session where you pause for 5 minutes gets logged as 25 minutes
+    // of focus — inflating real study time.
+    private long               pauseStartTime    = 0;
+    private long               totalPausedMillis = 0;
+
     private final AppDatabase  db;
     private final Context      appContext;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -43,7 +47,7 @@ public class FocusViewModel extends ViewModel {
         // several Pomodoros earlier today — the DB record was correct, the
         // UI just never read it back.
         executor.execute(() -> {
-            com.zenith.app.db.entity.PomodoroEntity pomo =
+            PomodoroEntity pomo =
                 db.pomodoroDao().getPomodoroForDate(TimeUtils.getTodayDate());
             if (pomo != null) {
                 sessionsCompleted.postValue(pomo.sessionsCompleted);
@@ -55,9 +59,21 @@ public class FocusViewModel extends ViewModel {
         TimerState state = timerState.getValue();
         if (state == TimerState.RUNNING) return;
 
-        long duration = (state == TimerState.PAUSED) ? pausedMillisLeft : WORK_MILLIS;
-        if (state != TimerState.PAUSED) sessionStartTime = System.currentTimeMillis();
+        if (state == TimerState.PAUSED) {
+            // Resuming from pause — accumulate the paused duration so it can
+            // be subtracted from the total when the session completes.
+            if (pauseStartTime > 0) {
+                totalPausedMillis += System.currentTimeMillis() - pauseStartTime;
+                pauseStartTime = 0;
+            }
+        } else {
+            // Fresh start — reset all tracking state.
+            sessionStartTime  = System.currentTimeMillis();
+            totalPausedMillis = 0;
+            pauseStartTime    = 0;
+        }
 
+        long duration = (state == TimerState.PAUSED) ? pausedMillisLeft : WORK_MILLIS;
         timerState.setValue(TimerState.RUNNING);
         countDownTimer = new CountDownTimer(duration, 1000) {
             @Override public void onTick(long millisUntilFinished) {
@@ -74,12 +90,15 @@ public class FocusViewModel extends ViewModel {
     public void pauseTimer() {
         if (timerState.getValue() != TimerState.RUNNING) return;
         if (countDownTimer != null) countDownTimer.cancel();
+        pauseStartTime = System.currentTimeMillis(); // record when pause began
         timerState.setValue(TimerState.PAUSED);
     }
 
     public void stopTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
-        pausedMillisLeft = WORK_MILLIS;
+        pausedMillisLeft  = WORK_MILLIS;
+        totalPausedMillis = 0;
+        pauseStartTime    = 0;
         timeLeftMillis.setValue(WORK_MILLIS);
         timerState.setValue(TimerState.IDLE);
         // Note: sessionsCompleted is intentionally left untouched here — it
@@ -94,7 +113,9 @@ public class FocusViewModel extends ViewModel {
 
     private void onWorkSessionComplete() {
         long endTime = System.currentTimeMillis();
-        long durationMs = endTime - sessionStartTime;
+        // Subtract any paused time so the logged duration reflects actual
+        // focused work, not wall-clock time including pauses.
+        long durationMs = (endTime - sessionStartTime) - totalPausedMillis;
         String subject = currentSubject.getValue() != null ? currentSubject.getValue() : "Study";
         String today   = TimeUtils.getTodayDate();
 
@@ -126,6 +147,7 @@ public class FocusViewModel extends ViewModel {
         int done = sessionsCompleted.getValue() != null ? sessionsCompleted.getValue() : 0;
         done++;
         sessionsCompleted.setValue(done);
+        totalPausedMillis = 0; // reset for next session
 
         // 🔔 Fire notification → opens Focus tab
         NotificationHelper.notifyPomodoroSessionDone(appContext, done);
@@ -149,7 +171,7 @@ public class FocusViewModel extends ViewModel {
         }.start();
     }
 
-    public LiveData<List<StudySessionEntity>> getRecentSessions() {
+    public androidx.lifecycle.LiveData<java.util.List<StudySessionEntity>> getRecentSessions() {
         return db.studySessionDao().getRecentSessions();
     }
 

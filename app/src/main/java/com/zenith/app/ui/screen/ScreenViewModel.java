@@ -94,6 +94,14 @@ public class ScreenViewModel extends ViewModel {
         repo.setAppLimit(pkg, limitMillis);
     }
 
+    /** Run a DB operation on the ViewModel's shared executor.
+     *  Callers (e.g. ScreenFragment click listeners) should use this instead
+     *  of creating a new Executors.newSingleThreadExecutor() per click, which
+     *  would leak thread pools since those executors are never shut down. */
+    public void runOnExecutor(Runnable task) {
+        executor.execute(task);
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();

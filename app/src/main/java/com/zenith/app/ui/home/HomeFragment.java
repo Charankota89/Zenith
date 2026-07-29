@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment {
         vm = new ViewModelProvider(this,
             new HomeViewModelFactory(requireContext())).get(HomeViewModel.class);
 
-        binding.tvGreeting.setText("Good day — " + TimeUtils.getDayOfWeek());
+        binding.tvGreeting.setText(TimeUtils.getGreeting() + " — " + TimeUtils.getDayOfWeek());
         binding.tvTagline.setText("Rise above. Stay focused.");
 
         // Staggered entering animations for cards

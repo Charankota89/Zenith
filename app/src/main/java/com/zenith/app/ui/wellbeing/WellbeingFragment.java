@@ -30,7 +30,7 @@ public class WellbeingFragment extends Fragment {
         vm = new ViewModelProvider(requireActivity(),
             new WellbeingViewModelFactory(requireContext())).get(WellbeingViewModel.class);
 
-        // Mood selector (1–5 emoji) — save to DB on tap
+        // Mood selector (1–5 emoji) — save to DB on tap, including any note
         int[] moodBtns = {
             com.zenith.app.R.id.btnMood1, com.zenith.app.R.id.btnMood2,
             com.zenith.app.R.id.btnMood3, com.zenith.app.R.id.btnMood4,
@@ -41,7 +41,11 @@ public class WellbeingFragment extends Fragment {
             binding.getRoot().findViewById(moodBtns[i]).setOnClickListener(v -> {
                 animateBounce(v);
                 binding.tvMoodFeedback.setText(getMoodFeedback(score));
-                vm.saveMood(score, null);  // Save to Room DB
+                // Capture the optional note the user may have typed, then
+                // clear it so the field is ready for the next check-in.
+                String note = binding.etMoodNote.getText() != null
+                    ? binding.etMoodNote.getText().toString().trim() : null;
+                vm.saveMood(score, note != null && !note.isEmpty() ? note : null);
             });
         }
 

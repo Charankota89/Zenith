@@ -20,6 +20,7 @@ import android.widget.TextView;
 import androidx.core.app.NotificationCompat;
 import com.zenith.app.R;
 import com.zenith.app.db.AppDatabase;
+import com.zenith.app.receiver.MidnightResetReceiver;
 import com.zenith.app.repository.UsageRepository;
 import com.zenith.app.ui.MainActivity;
 import com.zenith.app.util.AppConstants;
@@ -49,6 +50,7 @@ public class UsageMonitorService extends Service {
     private WindowManager     windowManager;
     private View              screenOnOverlay;
     private BroadcastReceiver screenStateReceiver;
+    private MidnightResetReceiver midnightReceiver;
     private final Handler         uiHandler = new Handler(Looper.getMainLooper());
     private final ExecutorService executor  = Executors.newSingleThreadExecutor();
     private int messageIndex = 0;
@@ -95,6 +97,16 @@ public class UsageMonitorService extends Service {
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_USER_PRESENT);
         registerReceiver(screenStateReceiver, filter);
+
+        // Register the midnight reset fallback receiver. ACTION_DATE_CHANGED
+        // cannot be declared in the Manifest and MUST be registered at runtime.
+        // This fires exactly when Android advances the calendar date, giving us
+        // an immediate fallback if WorkManager's scheduled job runs late.
+        midnightReceiver = new MidnightResetReceiver();
+        IntentFilter midnightFilter = new IntentFilter();
+        midnightFilter.addAction(Intent.ACTION_DATE_CHANGED);
+        midnightFilter.addAction(Intent.ACTION_TIME_CHANGED);
+        registerReceiver(midnightReceiver, midnightFilter);
     }
 
     // ──────────────────────────────────────────────────
@@ -211,6 +223,9 @@ public class UsageMonitorService extends Service {
         super.onDestroy();
         if (screenStateReceiver != null) {
             try { unregisterReceiver(screenStateReceiver); } catch (Exception ignored) {}
+        }
+        if (midnightReceiver != null) {
+            try { unregisterReceiver(midnightReceiver); } catch (Exception ignored) {}
         }
         executor.shutdown();
         uiHandler.removeCallbacksAndMessages(null);

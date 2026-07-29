@@ -11,6 +11,15 @@ public class TimeUtils {
         return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
     }
 
+    /** Returns a time-of-day-appropriate greeting for the current local hour. */
+    public static String getGreeting() {
+        int hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY);
+        if (hour >= 5  && hour < 12) return "Good morning";
+        if (hour >= 12 && hour < 17) return "Good afternoon";
+        if (hour >= 17 && hour < 21) return "Good evening";
+        return "Good night";
+    }
+
     public static String formatDuration(long millis) {
         long hours   = TimeUnit.MILLISECONDS.toHours(millis);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60;

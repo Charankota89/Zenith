@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +35,18 @@ public class CareerFragment extends Fragment {
         adapter = new HabitAdapter(habit -> vm.completeHabit(habit.id));
         binding.rvHabits.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvHabits.setAdapter(adapter);
+
+        // Long-press → confirm delete — a confirmation dialog prevents
+        // accidental deletion of a habit with an active streak.
+        adapter.setOnDeleteListener(habit -> {
+            new AlertDialog.Builder(requireContext())
+                .setTitle("Delete habit?")
+                .setMessage("\"" + habit.habitName + "\" and its " + habit.currentStreak
+                    + "-day streak will be permanently deleted.")
+                .setPositiveButton("Delete", (d, w) -> vm.deleteHabit(habit))
+                .setNegativeButton("Cancel", null)
+                .show();
+        });
 
         vm.habits.observe(getViewLifecycleOwner(), habits -> {
             adapter.submitList(habits);

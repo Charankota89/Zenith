@@ -11,13 +11,19 @@ import com.zenith.app.db.entity.HabitEntity;
 
 public class HabitAdapter extends ListAdapter<HabitEntity, HabitAdapter.VH> {
 
-    public interface OnHabitClick { void onComplete(HabitEntity habit); }
+    public interface OnHabitClick  { void onComplete(HabitEntity habit); }
+    public interface OnHabitDelete { void onDelete(HabitEntity habit); }
 
-    private final OnHabitClick listener;
+    private final OnHabitClick  listener;
+    private       OnHabitDelete deleteListener;
 
     public HabitAdapter(OnHabitClick listener) {
         super(DIFF);
         this.listener = listener;
+    }
+
+    public void setOnDeleteListener(OnHabitDelete deleteListener) {
+        this.deleteListener = deleteListener;
     }
 
     @NonNull @Override
@@ -34,6 +40,13 @@ public class HabitAdapter extends ListAdapter<HabitEntity, HabitAdapter.VH> {
         h.b.btnComplete.setEnabled(!e.completedToday);
         h.b.btnComplete.setText(e.completedToday ? "✓ Done" : "Complete");
         h.b.btnComplete.setOnClickListener(v -> listener.onComplete(e));
+
+        // Long-press to delete — shows a confirmation dialog so accidental
+        // swipes never silently wipe a habit with an active streak.
+        h.b.getRoot().setOnLongClickListener(v -> {
+            if (deleteListener != null) deleteListener.onDelete(e);
+            return true;
+        });
     }
 
     static class VH extends RecyclerView.ViewHolder {

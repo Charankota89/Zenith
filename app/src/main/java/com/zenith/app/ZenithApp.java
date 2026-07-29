@@ -7,7 +7,6 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import com.zenith.app.service.EyeBreakWorker;
-import com.zenith.app.service.MidnightResetWorker;
 import com.zenith.app.service.PostureWorker;
 import com.zenith.app.service.TimerCheckWorker;
 import com.zenith.app.util.AppConstants;
