@@ -102,7 +102,11 @@
         <service
             android:name=".service.UsageMonitorService"
             android:foregroundServiceType="specialUse"
-            android:exported="false"/>
+            android:exported="false">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Screen time monitoring and app usage tracking"/>
+        </service>
 
         <!-- Boot receiver -->
         <receiver
