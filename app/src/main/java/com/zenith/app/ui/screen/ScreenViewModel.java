@@ -32,6 +32,7 @@ public class ScreenViewModel extends ViewModel {
         }
     }
 
+    public final MutableLiveData<String>            currentDate = new MutableLiveData<>(TimeUtils.getTodayDate());
     public final LiveData<List<AppUsageEntity>>     usageList;
     public final LiveData<List<BrowserVisitEntity>> browserList;
     public final MediatorLiveData<List<DayUsagePoint>> weeklyTrend = new MediatorLiveData<>();
@@ -51,8 +52,11 @@ public class ScreenViewModel extends ViewModel {
     public ScreenViewModel(Context context) {
         repo        = new UsageRepository(context);
         db          = AppDatabase.getInstance(context);
-        usageList   = db.appUsageDao().getUsageForDate(TimeUtils.getTodayDate());
-        browserList = db.browserVisitDao().getVisitsForDate(TimeUtils.getTodayDate());
+
+        usageList   = androidx.lifecycle.Transformations.switchMap(currentDate, date ->
+            db.appUsageDao().getUsageForDate(date));
+        browserList = androidx.lifecycle.Transformations.switchMap(currentDate, date ->
+            db.browserVisitDao().getVisitsForDate(date));
 
         AppUsageDao dao = db.appUsageDao();
         String startDate = TimeUtils.getDateDaysAgo(TREND_DAYS - 1);
@@ -74,6 +78,14 @@ public class ScreenViewModel extends ViewModel {
             weeklyTrend.setValue(points);
         });
     }
+
+    public void refreshTodayDate() {
+        String today = TimeUtils.getTodayDate();
+        if (!today.equals(currentDate.getValue())) {
+            currentDate.setValue(today);
+        }
+    }
+
 
     /** Loads the per-app breakdown for a specific past day (used when a
      *  chart bar is tapped). Past days are finalized/frozen, so a one-shot

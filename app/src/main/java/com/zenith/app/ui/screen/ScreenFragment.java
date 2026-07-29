@@ -168,6 +168,14 @@ public class ScreenFragment extends Fragment {
             Toast.makeText(requireContext(), "Tracking is automatic — you're always up to date ✓", Toast.LENGTH_SHORT).show());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (vm != null) {
+            vm.refreshTodayDate();
+        }
+    }
+
     private void setupWeeklyTrendChart() {
         BarChart chart = b.weeklyTrendChart;
         chart.getDescription().setEnabled(false);

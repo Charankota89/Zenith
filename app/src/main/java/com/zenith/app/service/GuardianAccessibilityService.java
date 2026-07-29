@@ -490,12 +490,30 @@ public class GuardianAccessibilityService extends AccessibilityService {
         });
     }
 
+    private boolean isIgnoredPackage(String pkg) {
+        if (pkg == null || pkg.isEmpty()) return true;
+        if (pkg.equals(getPackageName())) return true;
+        if ("com.android.systemui".equals(pkg)) return true;
+        if ("android".equals(pkg)) return true;
+
+        try {
+            android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_MAIN);
+            intent.addCategory(android.content.Intent.CATEGORY_HOME);
+            android.content.pm.ResolveInfo resolveInfo = getPackageManager().resolveActivity(intent, android.content.pm.PackageManager.MATCH_DEFAULT_ONLY);
+            if (resolveInfo != null && resolveInfo.activityInfo != null) {
+                if (pkg.equals(resolveInfo.activityInfo.packageName)) return true;
+            }
+        } catch (Exception ignored) {}
+
+        return false;
+    }
+
     // ─────────────────────────────────────────────
     //  Real-time screen usage checking & warning
     // ─────────────────────────────────────────────
     private void checkAndIncrementUsage() {
         String pkg = currentPkg;
-        if (pkg == null || pkg.isEmpty() || pkg.equals(getPackageName())) {
+        if (pkg == null || pkg.isEmpty() || isIgnoredPackage(pkg)) {
             lastToastAppPkg = "";
             uiHandler.post(this::removeFloatingCapsule);
             return;
@@ -528,18 +546,16 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 try {
                     android.content.pm.PackageManager pm = getPackageManager();
                     android.content.pm.ApplicationInfo info = pm.getApplicationInfo(pkg, 0);
-                    if ((info.flags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) {
-                        String appName = pm.getApplicationLabel(info).toString();
-                        e = new AppUsageEntity();
-                        e.packageName = pkg;
-                        e.appName = appName;
-                        e.usageTimeMillis = 0;
-                        e.limitMillis = 0;
-                        e.isLocked = false;
-                        e.isFocusWhitelisted = true;
-                        e.date = today;
-                        db.appUsageDao().insert(e);
-                    }
+                    String appName = pm.getApplicationLabel(info).toString();
+                    e = new AppUsageEntity();
+                    e.packageName = pkg;
+                    e.appName = appName;
+                    e.usageTimeMillis = 0;
+                    e.limitMillis = 0;
+                    e.isLocked = false;
+                    e.isFocusWhitelisted = true;
+                    e.date = today;
+                    db.appUsageDao().insert(e);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
