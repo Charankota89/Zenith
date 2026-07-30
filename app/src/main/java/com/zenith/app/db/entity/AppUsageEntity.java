@@ -1,9 +1,13 @@
 package com.zenith.app.db.entity;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "app_usage")
+@Entity(
+    tableName = "app_usage",
+    indices = {@Index(value = {"packageName", "date"}, unique = true)}
+)
 public class AppUsageEntity {
     @PrimaryKey(autoGenerate = true)
     public int id;

@@ -28,12 +28,10 @@ public class MidnightResetWorker extends Worker {
         String      today     = TimeUtils.getTodayDate();
         String      yesterday = TimeUtils.getDateDaysAgo(1);
 
-        // ── Step 1: Zero out today's usage counters ─────────────────────────
-        // Without this, GuardianAccessibilityService queries the app_usage row
-        // for today and keeps appending to whatever milliseconds were already
-        // stored — the user's screen time would never actually reset to 0 at
-        // midnight, just keep climbing. This is the primary bug being fixed.
-        usageDao.resetUsageForNewDay(today);
+        // ── Step 1: Unlock today's apps for the fresh day ─────────────────────
+        // Unlocks all apps for today so limits reset without wiping out any
+        // legitimate time accrued after midnight if the worker runs late.
+        usageDao.unlockAllForNewDay(today);
 
         // ── Step 2: Carry limits forward from yesterday ──────────────────────
         // Per-app limits (limitMillis) are written into the app_usage row for
