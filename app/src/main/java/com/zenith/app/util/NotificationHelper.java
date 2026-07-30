@@ -21,7 +21,6 @@ public class NotificationHelper {
     public static final String TAB_HOME         = "nav_home";
     public static final String TAB_SCREEN       = "nav_screen";
     public static final String TAB_FOCUS        = "nav_focus";
-    public static final String TAB_WELLBEING    = "nav_wellbeing";
     public static final String TAB_CAREER       = "nav_career";
 
     // ── Pomodoro timer notifications ─────────────────────────────────────────
@@ -46,42 +45,6 @@ public class NotificationHelper {
             TAB_FOCUS,
             android.R.drawable.ic_menu_today,
             NotificationCompat.PRIORITY_HIGH);
-    }
-
-    // ── Eye break (20-20-20 rule) ─────────────────────────────────────────────
-    public static void notifyEyeBreak(Context ctx) {
-        send(ctx,
-            AppConstants.CHANNEL_ID_WELLBEING,
-            AppConstants.NOTIF_ID_EYE_BREAK,
-            "👁️ 20-20-20 Eye Break",
-            "Look 20 feet away for 20 seconds. Your eyes deserve it.",
-            TAB_WELLBEING,
-            android.R.drawable.ic_menu_view,
-            NotificationCompat.PRIORITY_DEFAULT);
-    }
-
-    // ── Posture check ─────────────────────────────────────────────────────────
-    public static void notifyPostureCheck(Context ctx) {
-        send(ctx,
-            AppConstants.CHANNEL_ID_WELLBEING,
-            AppConstants.NOTIF_ID_POSTURE,
-            "🧍 Posture Check",
-            "Sit straight, roll your shoulders. 30 seconds is all it takes.",
-            TAB_WELLBEING,
-            android.R.drawable.ic_menu_compass,
-            NotificationCompat.PRIORITY_DEFAULT);
-    }
-
-    // ── Mood check-in reminder ────────────────────────────────────────────────
-    public static void notifyMoodCheckIn(Context ctx) {
-        send(ctx,
-            AppConstants.CHANNEL_ID_WELLBEING,
-            AppConstants.NOTIF_ID_MOOD,
-            "😊 How are you feeling?",
-            "Take 5 seconds to log your mood. Small reflections, big clarity.",
-            TAB_WELLBEING,
-            android.R.drawable.ic_dialog_info,
-            NotificationCompat.PRIORITY_LOW);
     }
 
     // ── App time limit warnings ───────────────────────────────────────────────

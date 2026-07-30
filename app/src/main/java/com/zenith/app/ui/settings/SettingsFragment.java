@@ -52,18 +52,21 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Staggered entering animations for settings cards
+        android.view.animation.Animation a0 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), com.zenith.app.R.anim.slide_up_fade_in);
         android.view.animation.Animation a1 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), com.zenith.app.R.anim.slide_up_fade_in);
         android.view.animation.Animation a2 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), com.zenith.app.R.anim.slide_up_fade_in);
         android.view.animation.Animation a3 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), com.zenith.app.R.anim.slide_up_fade_in);
         android.view.animation.Animation a4 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), com.zenith.app.R.anim.slide_up_fade_in);
         android.view.animation.Animation a5 = android.view.animation.AnimationUtils.loadAnimation(requireContext(), com.zenith.app.R.anim.slide_up_fade_in);
 
-        a1.setStartOffset(50);
-        a2.setStartOffset(100);
-        a3.setStartOffset(150);
-        a4.setStartOffset(200);
-        a5.setStartOffset(250);
+        a0.setStartOffset(25);
+        a1.setStartOffset(75);
+        a2.setStartOffset(125);
+        a3.setStartOffset(175);
+        a4.setStartOffset(225);
+        a5.setStartOffset(275);
 
+        binding.cardGoogleAccount.startAnimation(a0);
         binding.cardGrowthMode.startAnimation(a1);
         binding.cardDailyGoal.startAnimation(a2);
         binding.cardSecurity.startAnimation(a3);
@@ -72,6 +75,30 @@ public class SettingsFragment extends Fragment {
 
         SharedPreferences prefs = requireContext()
             .getSharedPreferences(AppConstants.PREF_NAME, Context.MODE_PRIVATE);
+
+        // Google Account Sync toggle
+        String userEmail = prefs.getString("user_email", null);
+        boolean googleSynced = prefs.getBoolean("google_sync_enabled", userEmail != null);
+
+        if (userEmail != null && !userEmail.isEmpty()) {
+            binding.tvGoogleAccountStatus.setText("Connected (" + userEmail + ")");
+            binding.switchGoogleSync.setChecked(googleSynced);
+        } else {
+            binding.tvGoogleAccountStatus.setText("Not connected — Tap to sync");
+            binding.switchGoogleSync.setChecked(false);
+        }
+
+        binding.switchGoogleSync.setOnCheckedChangeListener((btn, isChecked) -> {
+            prefs.edit().putBoolean("google_sync_enabled", isChecked).apply();
+            if (isChecked && (userEmail == null || userEmail.isEmpty())) {
+                Intent intent = new Intent(requireContext(), com.zenith.app.ui.onboarding.OnboardingActivity.class);
+                startActivity(intent);
+            } else if (isChecked) {
+                Toast.makeText(requireContext(), "Google Sync Enabled for " + userEmail, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireContext(), "Google Sync Paused", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Career mode toggle
         boolean careerActive = prefs.getBoolean(AppConstants.PREF_CAREER_ACTIVE, false);
@@ -287,25 +314,6 @@ public class SettingsFragment extends Fragment {
                 }
             } else {
                 sb.append("🌐 Web Activity: No websites visited.\n");
-            }
-            sb.append("\n");
-
-            // 7. Mood Logs
-            com.zenith.app.db.entity.MoodEntity mood = db.moodDao().getMoodForDate(dateStr);
-            if (mood != null) {
-                String moodEmoji = "😐";
-                if (mood.moodScore == 1) moodEmoji = "😞";
-                else if (mood.moodScore == 2) moodEmoji = "😕";
-                else if (mood.moodScore == 3) moodEmoji = "😐";
-                else if (mood.moodScore == 4) moodEmoji = "🙂";
-                else if (mood.moodScore == 5) moodEmoji = "😄";
-                sb.append("🎭 Mood Check-in: ").append(moodEmoji);
-                if (mood.note != null && !mood.note.isEmpty()) {
-                    sb.append(" - \"").append(mood.note).append("\"");
-                }
-                sb.append("\n");
-            } else {
-                sb.append("🎭 Mood Check-in: No check-in\n");
             }
             sb.append("\n==================================================\n\n");
 

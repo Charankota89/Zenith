@@ -9,9 +9,6 @@
     <item android:id="@+id/nav_focus"
         android:icon="@drawable/ic_nav_focus"
         android:title="@string/nav_focus"/>
-    <item android:id="@+id/nav_wellbeing"
-        android:icon="@drawable/ic_nav_wellbeing"
-        android:title="@string/nav_wellbeing"/>
     <item android:id="@+id/nav_career"
         android:icon="@drawable/ic_nav_career"
         android:title="@string/nav_career"/>

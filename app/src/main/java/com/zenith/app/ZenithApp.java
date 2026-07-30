@@ -6,8 +6,6 @@ import android.app.NotificationManager;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-import com.zenith.app.service.EyeBreakWorker;
-import com.zenith.app.service.PostureWorker;
 import com.zenith.app.service.TimerCheckWorker;
 import com.zenith.app.util.AppConstants;
 import com.zenith.app.util.MidnightScheduler;
@@ -35,11 +33,6 @@ public class ZenithApp extends Application {
             NotificationManager.IMPORTANCE_LOW);
         focusChannel.setDescription("Focus mode active notification");
 
-        NotificationChannel wellbeingChannel = new NotificationChannel(
-            AppConstants.CHANNEL_ID_WELLBEING, "Wellbeing Reminders",
-            NotificationManager.IMPORTANCE_DEFAULT);
-        wellbeingChannel.setDescription("Eye breaks, posture, mood check-ins");
-
         NotificationChannel careerChannel = new NotificationChannel(
             AppConstants.CHANNEL_ID_CAREER, "Career Updates",
             NotificationManager.IMPORTANCE_DEFAULT);
@@ -47,7 +40,6 @@ public class ZenithApp extends Application {
 
         manager.createNotificationChannel(usageChannel);
         manager.createNotificationChannel(focusChannel);
-        manager.createNotificationChannel(wellbeingChannel);
         manager.createNotificationChannel(careerChannel);
     }
 
@@ -60,15 +52,5 @@ public class ZenithApp extends Application {
             ExistingPeriodicWorkPolicy.KEEP, timerCheck);
 
         MidnightScheduler.scheduleNext(this);
-
-        PeriodicWorkRequest eyeBreak = new PeriodicWorkRequest.Builder(
-            EyeBreakWorker.class, 20, TimeUnit.MINUTES).build();
-        wm.enqueueUniquePeriodicWork("eye_break",
-            ExistingPeriodicWorkPolicy.KEEP, eyeBreak);
-
-        PeriodicWorkRequest postureAlert = new PeriodicWorkRequest.Builder(
-            PostureWorker.class, 45, TimeUnit.MINUTES).build();
-        wm.enqueueUniquePeriodicWork("posture_alert",
-            ExistingPeriodicWorkPolicy.KEEP, postureAlert);
     }
 }

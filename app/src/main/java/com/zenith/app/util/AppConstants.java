@@ -5,7 +5,6 @@ import java.util.Arrays;
 public class AppConstants {
     public static final String CHANNEL_ID_USAGE     = "usage_alerts";
     public static final String CHANNEL_ID_FOCUS     = "focus_mode";
-    public static final String CHANNEL_ID_WELLBEING = "wellbeing";
     public static final String CHANNEL_ID_CAREER    = "career";
 
     public static final String PREF_NAME            = "zenith_prefs";
@@ -20,10 +19,7 @@ public class AppConstants {
 
     public static final int NOTIF_ID_USAGE_MONITOR = 1001;
     public static final int NOTIF_ID_FOCUS         = 1002;
-    public static final int NOTIF_ID_EYE_BREAK     = 1003;
     public static final int NOTIF_ID_DAILY_SUMMARY = 1004;
-    public static final int NOTIF_ID_POSTURE       = 1005;
-    public static final int NOTIF_ID_MOOD          = 1006;
     public static final int NOTIF_ID_CAREER        = 1007;
     public static final int NOTIF_ID_POMODORO      = 1008;
 

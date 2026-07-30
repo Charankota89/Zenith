@@ -13,7 +13,6 @@ import com.zenith.app.ui.focus.FocusFragment;
 import com.zenith.app.ui.home.HomeFragment;
 import com.zenith.app.ui.screen.ScreenFragment;
 import com.zenith.app.ui.settings.SettingsFragment;
-import com.zenith.app.ui.wellbeing.WellbeingFragment;
 import com.zenith.app.util.NotificationHelper;
 
 public class MainActivity extends AppCompatActivity {
@@ -105,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
         switch (tab) {
             case NotificationHelper.TAB_SCREEN:    menuId = R.id.nav_screen;    break;
             case NotificationHelper.TAB_FOCUS:     menuId = R.id.nav_focus;     break;
-            case NotificationHelper.TAB_WELLBEING: menuId = R.id.nav_wellbeing; break;
             case NotificationHelper.TAB_CAREER:    menuId = R.id.nav_career;    break;
             default:                               menuId = R.id.nav_home;      break;
         }
@@ -115,21 +113,19 @@ public class MainActivity extends AppCompatActivity {
     private int currentTabIndex = 0;
 
     private int getTabIndex(int id) {
-        if      (id == R.id.nav_home)      return 0;
-        else if (id == R.id.nav_screen)    return 1;
-        else if (id == R.id.nav_focus)     return 2;
-        else if (id == R.id.nav_wellbeing) return 3;
-        else if (id == R.id.nav_career)    return 4;
+        if      (id == R.id.nav_home)   return 0;
+        else if (id == R.id.nav_screen) return 1;
+        else if (id == R.id.nav_focus)  return 2;
+        else if (id == R.id.nav_career) return 3;
         return 0;
     }
 
     private Fragment fragmentForId(int id) {
-        if      (id == R.id.nav_home)     return new HomeFragment();
-        else if (id == R.id.nav_screen)   return new ScreenFragment();
-        else if (id == R.id.nav_focus)    return new FocusFragment();
-        else if (id == R.id.nav_wellbeing) return new WellbeingFragment();
-        else if (id == R.id.nav_career)   return new CareerFragment();
-        else                              return new HomeFragment();
+        if      (id == R.id.nav_home)   return new HomeFragment();
+        else if (id == R.id.nav_screen) return new ScreenFragment();
+        else if (id == R.id.nav_focus)  return new FocusFragment();
+        else if (id == R.id.nav_career) return new CareerFragment();
+        else                            return new HomeFragment();
     }
 
     private void loadFragment(Fragment f) {

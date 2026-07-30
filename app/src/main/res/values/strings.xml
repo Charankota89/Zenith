@@ -9,7 +9,6 @@
     <string name="nav_home">Home</string>
     <string name="nav_screen">Screen</string>
     <string name="nav_focus">Focus</string>
-    <string name="nav_wellbeing">Wellbeing</string>
     <string name="nav_career">Growth</string>
 
     <!-- Onboarding -->
@@ -18,7 +17,7 @@
     <string name="onboarding_title_2">Set Limits. Lock Apps.</string>
     <string name="onboarding_desc_2">Set daily time limits. When you hit them, the app locks itself — automatically.</string>
     <string name="onboarding_title_3">Focus. Grow. Rise.</string>
-    <string name="onboarding_desc_3">Pomodoro sessions, habit tracking, skill timer, mood check-ins — everything you need to be your best.</string>
+    <string name="onboarding_desc_3">Pomodoro sessions, habit tracking, skill timer — everything you need to be your best.</string>
     <string name="btn_next">Next</string>
     <string name="btn_get_started">Get Started</string>
 

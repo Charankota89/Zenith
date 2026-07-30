@@ -29,4 +29,14 @@
     <color name="usage_medium">#B45309</color> <!-- Amber/bronze, matches zenith_amber -->
     <color name="usage_low">#059669</color>    <!-- Emerald, matches zenith_teal -->
     <color name="nav_unselected">#6B7280</color> <!-- Cool gray, legible on dark background -->
+
+    <!-- ── Google Brand & Switch Tints ────────────────────────────── -->
+    <color name="google_blue">#4285F4</color>
+    <color name="google_red">#EA4335</color>
+    <color name="google_yellow">#FBBC05</color>
+    <color name="google_green">#34A853</color>
+    <color name="switch_thumb_on">#4285F4</color>
+    <color name="switch_thumb_off">#94A3B8</color>
+    <color name="switch_track_on">#664285F4</color>
+    <color name="switch_track_off">#3394A3B8</color>
 </resources>
