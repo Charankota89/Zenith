@@ -17,10 +17,10 @@ public interface AppUsageDao {
     @Update
     void update(AppUsageEntity entity);
 
-    @Query("SELECT * FROM app_usage WHERE date = :date ORDER BY usageTimeMillis DESC")
+    @Query("SELECT id, packageName, appName, MAX(usageTimeMillis) as usageTimeMillis, limitMillis, isLocked, isFocusWhitelisted, isCareerApp, date, unlockExpiresAt, unlockReason FROM app_usage WHERE date = :date GROUP BY packageName ORDER BY usageTimeMillis DESC")
     LiveData<List<AppUsageEntity>> getUsageForDate(String date);
 
-    @Query("SELECT * FROM app_usage WHERE packageName = :pkg AND date = :date LIMIT 1")
+    @Query("SELECT * FROM app_usage WHERE packageName = :pkg AND date = :date ORDER BY id DESC LIMIT 1")
     AppUsageEntity getUsageForApp(String pkg, String date);
 
     @Query("SELECT * FROM app_usage WHERE date = :date AND isLocked = 1")
@@ -28,6 +28,12 @@ public interface AppUsageDao {
 
     @Query("UPDATE app_usage SET isLocked = 0 WHERE date != :today")
     void unlockAllExceptToday(String today);
+
+    /**
+     * Clears lock status and temporary unlock window for today's apps.
+     */
+    @Query("UPDATE app_usage SET isLocked = 0, unlockExpiresAt = 0 WHERE date = :today")
+    void unlockAllForNewDay(String today);
 
     /**
      * Called by MidnightResetWorker at the start of every new day.
@@ -59,7 +65,7 @@ public interface AppUsageDao {
     @Query("SELECT * FROM app_usage WHERE date = :date AND isCareerApp = 1")
     List<AppUsageEntity> getCareerAppsForDate(String date);
 
-    @Query("SELECT * FROM app_usage WHERE date = :date ORDER BY usageTimeMillis DESC")
+    @Query("SELECT id, packageName, appName, MAX(usageTimeMillis) as usageTimeMillis, limitMillis, isLocked, isFocusWhitelisted, isCareerApp, date, unlockExpiresAt, unlockReason FROM app_usage WHERE date = :date GROUP BY packageName ORDER BY usageTimeMillis DESC")
     List<AppUsageEntity> getUsageForDateSync(String date);
 
     // Weekly trend: total screen time per day, for the last N days starting

@@ -533,8 +533,15 @@ public class GuardianAccessibilityService extends AccessibilityService {
         }
 
         long now = System.currentTimeMillis();
-        if (appOpenedTime == 0) appOpenedTime = now;
-        long elapsed = now - appOpenedTime;
+        if (appOpenedTime == 0) {
+            appOpenedTime = now;
+            return;
+        }
+
+        long rawElapsed = now - appOpenedTime;
+        // Cap single-check interval to max 15000 ms (15 seconds, since check runs every 5s)
+        // to prevent sleep / Doze / background pause gaps from adding fake hours of screen time.
+        final long elapsed = (rawElapsed > 15000L) ? 5000L : Math.max(0L, rawElapsed);
         appOpenedTime = now;
 
         executor.execute(() -> {
@@ -547,13 +554,19 @@ public class GuardianAccessibilityService extends AccessibilityService {
                     android.content.pm.PackageManager pm = getPackageManager();
                     android.content.pm.ApplicationInfo info = pm.getApplicationInfo(pkg, 0);
                     String appName = pm.getApplicationLabel(info).toString();
+
+                    // Carry limits and whitelist settings forward if yesterday's entry existed
+                    String yesterday = TimeUtils.getDateDaysAgo(1);
+                    AppUsageEntity yesterdayEntry = db.appUsageDao().getUsageForApp(pkg, yesterday);
+
                     e = new AppUsageEntity();
                     e.packageName = pkg;
                     e.appName = appName;
                     e.usageTimeMillis = 0;
-                    e.limitMillis = 0;
+                    e.limitMillis = yesterdayEntry != null ? yesterdayEntry.limitMillis : 0;
                     e.isLocked = false;
-                    e.isFocusWhitelisted = true;
+                    e.isFocusWhitelisted = yesterdayEntry != null ? yesterdayEntry.isFocusWhitelisted : true;
+                    e.isCareerApp = yesterdayEntry != null ? yesterdayEntry.isCareerApp : false;
                     e.date = today;
                     db.appUsageDao().insert(e);
                 } catch (Exception ex) {
