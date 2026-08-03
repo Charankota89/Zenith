@@ -42,7 +42,8 @@ public class SplashActivity extends AppCompatActivity {
             SharedPreferences prefs =
                 getSharedPreferences(AppConstants.PREF_NAME, MODE_PRIVATE);
             boolean onboarded = prefs.getBoolean(AppConstants.PREF_ONBOARDED, false);
-            boolean hasPinSet = prefs.getString(AppConstants.PREF_PIN, null) != null;
+            String pin = prefs.getString(AppConstants.PREF_PIN, null);
+            boolean hasPinSet = pin != null && !pin.trim().isEmpty();
 
             Intent target;
             if (!onboarded) {

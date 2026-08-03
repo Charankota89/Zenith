@@ -28,13 +28,11 @@ public class AppLockActivity extends AppCompatActivity {
         binding = ActivityAppLockBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Deliberately block back navigation — you can't exit the lock
-        // screen without the correct PIN or biometric. Using the modern
-        // OnBackPressedCallback instead of the deprecated onBackPressed().
+        // Modern back pressed handler: send to home screen if user backs out of lock screen
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // Do nothing — intentional block.
+                moveTaskToBack(true);
             }
         });
 
@@ -43,7 +41,7 @@ public class AppLockActivity extends AppCompatActivity {
 
         // If somehow no PIN is actually set, don't strand the user on a
         // lock screen they can never pass — just let them through.
-        if (storedPinHash == null || storedPinHash.isEmpty()) {
+        if (storedPinHash == null || storedPinHash.trim().isEmpty()) {
             proceedToMain();
             return;
         }
@@ -69,39 +67,50 @@ public class AppLockActivity extends AppCompatActivity {
     }
 
     private void setupBiometricIfAvailable() {
-        BiometricManager biometricManager = BiometricManager.from(this);
-        int canAuth = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK);
-        if (canAuth != BiometricManager.BIOMETRIC_SUCCESS) {
-            return; // No enrolled fingerprint/face on this device — PIN-only.
-        }
+        try {
+            BiometricManager biometricManager = BiometricManager.from(this);
+            int canAuth = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK);
+            if (canAuth != BiometricManager.BIOMETRIC_SUCCESS) {
+                return; // No enrolled fingerprint/face on this device — PIN-only.
+            }
 
-        binding.tvUseBiometric.setVisibility(android.view.View.VISIBLE);
+            binding.tvUseBiometric.setVisibility(android.view.View.VISIBLE);
 
-        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Unlock Zenith")
-            .setSubtitle("Use your fingerprint or face to continue")
-            .setNegativeButtonText("Use PIN instead")
-            .build();
+            BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Unlock Zenith")
+                .setSubtitle("Use your fingerprint or face to continue")
+                .setNegativeButtonText("Use PIN instead")
+                .build();
 
-        BiometricPrompt biometricPrompt = new BiometricPrompt(this,
-            ContextCompat.getMainExecutor(this),
-            new BiometricPrompt.AuthenticationCallback() {
-                @Override
-                public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
-                    super.onAuthenticationSucceeded(result);
-                    proceedToMain();
-                }
-                // On error or failure, we simply do nothing — the user
-                // stays on the PIN screen and can try again or type their
-                // PIN instead. No need to show a scary error message for
-                // a cancelled/failed biometric attempt.
+            BiometricPrompt biometricPrompt = new BiometricPrompt(this,
+                ContextCompat.getMainExecutor(this),
+                new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                        super.onAuthenticationSucceeded(result);
+                        proceedToMain();
+                    }
+                    @Override
+                    public void onAuthenticationError(int errorCode, CharSequence errString) {
+                        super.onAuthenticationError(errorCode, errString);
+                        // Do not finish the activity; user can still enter PIN.
+                    }
+                    @Override
+                    public void onAuthenticationFailed() {
+                        super.onAuthenticationFailed();
+                        // Do not finish the activity; user can try again or enter PIN.
+                    }
+                });
+
+            binding.tvUseBiometric.setOnClickListener(v -> {
+                try { biometricPrompt.authenticate(promptInfo); } catch (Exception ignored) {}
             });
 
-        binding.tvUseBiometric.setOnClickListener(v ->
-            biometricPrompt.authenticate(promptInfo));
-
-        // Offer biometric immediately on open, since it's faster than typing
-        biometricPrompt.authenticate(promptInfo);
+            // Offer biometric immediately on open, since it's faster than typing
+            biometricPrompt.authenticate(promptInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void proceedToMain() {

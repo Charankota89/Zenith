@@ -216,6 +216,17 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 currentPkg = pkg;
                 appOpenedTime = System.currentTimeMillis();
 
+                if (isIgnoredPackage(pkg)) {
+                    // Opening Zenith app itself, home launcher, or SystemUI:
+                    // Instantly tear down any active overlays so Zenith opens cleanly without being blocked!
+                    uiHandler.post(() -> {
+                        removeLocker();
+                        removeBrowserBanner();
+                        removeFloatingCapsule();
+                    });
+                    return;
+                }
+
                 if (AppConstants.FINANCIAL_APP_PACKAGES.contains(pkg)) {
                     // Entering a banking/payment app directly (not a browser
                     // checkout page) — tear down overlays immediately and
@@ -373,7 +384,7 @@ public class GuardianAccessibilityService extends AccessibilityService {
     //  App lock overlay
     // ─────────────────────────────────────────────
     private void checkIfLocked(String pkg) {
-        if (pkg.isEmpty()) return;
+        if (pkg == null || pkg.isEmpty() || isIgnoredPackage(pkg)) return;
         executor.execute(() -> {
             AppDatabase db = AppDatabase.getInstance(getApplicationContext());
             AppUsageEntity e = db.appUsageDao()
@@ -383,12 +394,11 @@ public class GuardianAccessibilityService extends AccessibilityService {
     }
 
     private void checkFocusMode(String pkg) {
+        if (pkg == null || pkg.isEmpty() || isIgnoredPackage(pkg)) return;
         SharedPreferences prefs = getSharedPreferences(
             AppConstants.PREF_NAME, Context.MODE_PRIVATE);
         boolean focusActive = prefs.getBoolean(AppConstants.PREF_FOCUS_ACTIVE, false);
         if (!focusActive) return;
-        // Don't block Zenith itself
-        if (pkg.equals(getPackageName())) return;
 
         executor.execute(() -> {
             AppDatabase db = AppDatabase.getInstance(getApplicationContext());

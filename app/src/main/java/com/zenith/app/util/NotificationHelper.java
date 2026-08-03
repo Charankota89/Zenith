@@ -114,8 +114,14 @@ public class NotificationHelper {
             .setContentIntent(pi)
             .setVibrate(new long[]{0, 150, 80, 150});
 
-        NotificationManager nm = (NotificationManager)
-            ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(notifId, builder.build());
+        try {
+            NotificationManager nm = (NotificationManager)
+                ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (nm != null) {
+                nm.notify(notifId, builder.build());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
