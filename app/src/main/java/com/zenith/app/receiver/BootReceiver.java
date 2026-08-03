@@ -16,8 +16,12 @@ public class BootReceiver extends BroadcastReceiver {
 
             // Re-start the foreground usage monitor service so screen-time
             // tracking resumes immediately after a device reboot.
-            Intent service = new Intent(context, UsageMonitorService.class);
-            context.startForegroundService(service);
+            try {
+                Intent service = new Intent(context, UsageMonitorService.class);
+                context.startForegroundService(service);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             // Re-schedule the midnight reset worker. The WorkManager queue is
             // cleared when the device powers off, so without this call the

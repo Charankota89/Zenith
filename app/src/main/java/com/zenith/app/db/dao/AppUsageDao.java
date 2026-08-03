@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface AppUsageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(AppUsageEntity entity);
+    long insert(AppUsageEntity entity);
 
     @Update
     void update(AppUsageEntity entity);

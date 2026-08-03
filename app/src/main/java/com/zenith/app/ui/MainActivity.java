@@ -26,7 +26,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         // Start background usage monitor (idempotent — service handles duplicate starts)
-        startForegroundService(new Intent(this, UsageMonitorService.class));
+        try {
+            startForegroundService(new Intent(this, UsageMonitorService.class));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Default tab
         currentTabIndex = 0;

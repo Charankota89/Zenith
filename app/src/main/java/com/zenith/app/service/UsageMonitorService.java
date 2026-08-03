@@ -56,11 +56,33 @@ public class UsageMonitorService extends Service {
     private int messageIndex = 0;
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void onCreate() {
+        super.onCreate();
         repo          = new UsageRepository(this);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+    }
 
-        startForeground(AppConstants.NOTIF_ID_USAGE_MONITOR, buildNotification());
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= 34) {
+                startForeground(
+                    AppConstants.NOTIF_ID_USAGE_MONITOR,
+                    buildNotification(),
+                    android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                );
+            } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                startForeground(
+                    AppConstants.NOTIF_ID_USAGE_MONITOR,
+                    buildNotification(),
+                    android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                );
+            } else {
+                startForeground(AppConstants.NOTIF_ID_USAGE_MONITOR, buildNotification());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         registerScreenReceiver();
         return START_STICKY;
     }
@@ -70,6 +92,7 @@ public class UsageMonitorService extends Service {
     //  NOTE: These cannot be declared in Manifest — must be registered dynamically
     // ──────────────────────────────────────────────────
     private void registerScreenReceiver() {
+        if (screenStateReceiver != null) return;
         screenStateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context ctx, Intent intent) {
@@ -96,7 +119,17 @@ public class UsageMonitorService extends Service {
         filter.addAction(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_USER_PRESENT);
-        registerReceiver(screenStateReceiver, filter);
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= 33) {
+                androidx.core.content.ContextCompat.registerReceiver(
+                    this, screenStateReceiver, filter,
+                    androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
+            } else {
+                registerReceiver(screenStateReceiver, filter);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Register the midnight reset fallback receiver. ACTION_DATE_CHANGED
         // cannot be declared in the Manifest and MUST be registered at runtime.
@@ -106,7 +139,17 @@ public class UsageMonitorService extends Service {
         IntentFilter midnightFilter = new IntentFilter();
         midnightFilter.addAction(Intent.ACTION_DATE_CHANGED);
         midnightFilter.addAction(Intent.ACTION_TIME_CHANGED);
-        registerReceiver(midnightReceiver, midnightFilter);
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= 33) {
+                androidx.core.content.ContextCompat.registerReceiver(
+                    this, midnightReceiver, midnightFilter,
+                    androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
+            } else {
+                registerReceiver(midnightReceiver, midnightFilter);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // ──────────────────────────────────────────────────
@@ -145,51 +188,59 @@ public class UsageMonitorService extends Service {
 
             uiHandler.post(() -> {
                 removeScreenOnOverlay();
-                LayoutInflater inf = LayoutInflater.from(UsageMonitorService.this);
-                screenOnOverlay = inf.inflate(R.layout.overlay_screen_on, null);
 
-                ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnTime))
-                    .setText(clockStr);
-                ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnGoalLine))
-                    .setText(goalLine);
-                ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnGoalPct))
-                    .setText(pct + "%");
-                ((android.widget.ProgressBar) screenOnOverlay.findViewById(R.id.progressScreenOnGoal))
-                    .setProgress(pct);
-                ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnSecondary))
-                    .setText(secondary);
-                ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnMessage))
-                    .setText(message);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    if (!android.provider.Settings.canDrawOverlays(UsageMonitorService.this)) {
+                        return; // Overlay permission not granted yet — skip to avoid BadTokenException
+                    }
+                }
 
-                screenOnOverlay.findViewById(R.id.btnScreenOnClose)
-                    .setOnClickListener(v -> removeScreenOnOverlay());
-                screenOnOverlay.findViewById(R.id.screen_on_container)
-                    .setOnClickListener(v -> {}); // absorb taps, don't dismiss on accidental tap
+                try {
+                    LayoutInflater inf = LayoutInflater.from(UsageMonitorService.this);
+                    screenOnOverlay = inf.inflate(R.layout.overlay_screen_on, null);
 
-                // Small compact pill, top-center — matches every other
-                // Zenith overlay instead of the old full-width dashboard
-                // banner that used to cover a big chunk of the screen on
-                // every single unlock, regardless of which app you opened.
-                WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-                    PixelFormat.TRANSLUCENT);
-                params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-                params.y = 40;
+                    ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnTime))
+                        .setText(clockStr);
+                    ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnGoalLine))
+                        .setText(goalLine);
+                    ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnGoalPct))
+                        .setText(pct + "%");
+                    ((android.widget.ProgressBar) screenOnOverlay.findViewById(R.id.progressScreenOnGoal))
+                        .setProgress(pct);
+                    ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnSecondary))
+                        .setText(secondary);
+                    ((TextView) screenOnOverlay.findViewById(R.id.tvScreenOnMessage))
+                        .setText(message);
 
-                screenOnOverlay.setScaleX(0f);
-                screenOnOverlay.setScaleY(0f);
-                screenOnOverlay.animate().scaleX(1f).scaleY(1f).setDuration(300)
-                    .setInterpolator(new android.view.animation.OvershootInterpolator()).start();
+                    screenOnOverlay.findViewById(R.id.btnScreenOnClose)
+                        .setOnClickListener(v -> removeScreenOnOverlay());
+                    screenOnOverlay.findViewById(R.id.screen_on_container)
+                        .setOnClickListener(v -> {}); // absorb taps, don't dismiss on accidental tap
 
-                windowManager.addView(screenOnOverlay, params);
+                    WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                        WindowManager.LayoutParams.WRAP_CONTENT,
+                        WindowManager.LayoutParams.WRAP_CONTENT,
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                            | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                        PixelFormat.TRANSLUCENT);
+                    params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+                    params.y = 40;
 
-                // Auto-dismiss after 5 seconds — it's a small glanceable
-                // pill now, doesn't need 8 seconds to read.
-                uiHandler.postDelayed(this::removeScreenOnOverlay, 5000);
+                    screenOnOverlay.setScaleX(0f);
+                    screenOnOverlay.setScaleY(0f);
+                    screenOnOverlay.animate().scaleX(1f).scaleY(1f).setDuration(300)
+                        .setInterpolator(new android.view.animation.OvershootInterpolator()).start();
+
+                    if (windowManager != null) {
+                        windowManager.addView(screenOnOverlay, params);
+                    }
+
+                    // Auto-dismiss after 5 seconds
+                    uiHandler.postDelayed(this::removeScreenOnOverlay, 5000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             });
         });
     }

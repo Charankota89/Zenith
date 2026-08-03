@@ -328,30 +328,36 @@ public class GuardianAccessibilityService extends AccessibilityService {
     // ─────────────────────────────────────────────
     private void showBrowserBanner(String pkg, String url) {
         uiHandler.post(() -> {
-            ensureWindowManager();
-            removeBrowserBanner();
-            LayoutInflater inf = LayoutInflater.from(this);
-            browserBanner = inf.inflate(R.layout.overlay_browser_banner, null);
+            try {
+                ensureWindowManager();
+                removeBrowserBanner();
+                LayoutInflater inf = LayoutInflater.from(this);
+                browserBanner = inf.inflate(R.layout.overlay_browser_banner, null);
 
-            String domain = extractDomain(url);
-            ((TextView) browserBanner.findViewById(R.id.tvBrowserDomain)).setText(domain);
-            ((TextView) browserBanner.findViewById(R.id.tvBrowserUrl)).setText(url);
-            browserBanner.findViewById(R.id.btnBrowserClose)
-                .setOnClickListener(v -> removeBrowserBanner());
+                String domain = extractDomain(url);
+                ((TextView) browserBanner.findViewById(R.id.tvBrowserDomain)).setText(domain);
+                ((TextView) browserBanner.findViewById(R.id.tvBrowserUrl)).setText(url);
+                browserBanner.findViewById(R.id.btnBrowserClose)
+                    .setOnClickListener(v -> removeBrowserBanner());
 
-            WindowManager.LayoutParams p = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-                PixelFormat.TRANSLUCENT);
-            p.gravity = Gravity.TOP;
-            p.y = 80;
-            windowManager.addView(browserBanner, p);
+                WindowManager.LayoutParams p = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+                    PixelFormat.TRANSLUCENT);
+                p.gravity = Gravity.TOP;
+                p.y = 80;
+                if (windowManager != null) {
+                    windowManager.addView(browserBanner, p);
+                }
 
-            // Auto-dismiss after 6 seconds
-            uiHandler.postDelayed(this::removeBrowserBanner, 6000);
+                // Auto-dismiss after 6 seconds
+                uiHandler.postDelayed(this::removeBrowserBanner, 6000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -480,13 +486,15 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
                 PixelFormat.TRANSLUCENT);
-            // Unlike the other overlays (capsule, banner), this one contains
-            // a real text field for the unlock reason — it must be able to
-            // receive focus or the keyboard can never appear. FLAG_NOT_FOCUSABLE
-            // (used everywhere else in this file) was the entire bug here.
             p.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
                 | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE;
-            windowManager.addView(lockerOverlay, p);
+            try {
+                if (windowManager != null) {
+                    windowManager.addView(lockerOverlay, p);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -569,6 +577,7 @@ public class GuardianAccessibilityService extends AccessibilityService {
                     e.isCareerApp = yesterdayEntry != null ? yesterdayEntry.isCareerApp : false;
                     e.date = today;
                     db.appUsageDao().insert(e);
+                    e = db.appUsageDao().getUsageForApp(pkg, today);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -700,7 +709,13 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 PixelFormat.TRANSLUCENT);
             p.gravity = Gravity.TOP;
             p.y = 80;
-            windowManager.addView(limitWarningOverlay, p);
+            try {
+                if (windowManager != null) {
+                    windowManager.addView(limitWarningOverlay, p);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             uiHandler.postDelayed(() -> {
                 if (limitWarningOverlay != null && windowManager != null) {
@@ -715,40 +730,44 @@ public class GuardianAccessibilityService extends AccessibilityService {
     //  Helpers
     // ─────────────────────────────────────────────
     private void postVerificationNotification(String appName, String targetPkg, long durationMin, String reason) {
-        String deepLink = "zenith://unlock?pkg=" + targetPkg + "&duration=" + durationMin + "&reason=" + android.net.Uri.encode(reason);
-        android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(deepLink));
-        intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        
-        android.app.PendingIntent pi = android.app.PendingIntent.getActivity(
-            this,
-            999,
-            intent,
-            android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE
-        );
-
-        android.app.NotificationManager nm = (android.app.NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (nm == null) return;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            android.app.NotificationChannel channel = new android.app.NotificationChannel(
-                "unlock_channel",
-                "Zenith Unlocking",
-                android.app.NotificationManager.IMPORTANCE_HIGH
+        try {
+            String deepLink = "zenith://unlock?pkg=" + targetPkg + "&duration=" + durationMin + "&reason=" + android.net.Uri.encode(reason);
+            android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(deepLink));
+            intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            
+            android.app.PendingIntent pi = android.app.PendingIntent.getActivity(
+                this,
+                999,
+                intent,
+                android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE
             );
-            channel.setDescription("Email Verification Unlocks");
-            nm.createNotificationChannel(channel);
+
+            android.app.NotificationManager nm = (android.app.NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (nm == null) return;
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                android.app.NotificationChannel channel = new android.app.NotificationChannel(
+                    "unlock_channel",
+                    "Zenith Unlocking",
+                    android.app.NotificationManager.IMPORTANCE_HIGH
+                );
+                channel.setDescription("Email Verification Unlocks");
+                nm.createNotificationChannel(channel);
+            }
+
+            android.app.Notification notification = new androidx.core.app.NotificationCompat.Builder(this, "unlock_channel")
+                .setSmallIcon(android.R.drawable.ic_dialog_email)
+                .setContentTitle("✉️ Verify Zenith Unlock request")
+                .setContentText("Click here to approve unlock request for " + appName + " (" + durationMin + "m)")
+                .setContentIntent(pi)
+                .setAutoCancel(true)
+                .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
+                .build();
+
+            nm.notify(999, notification);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        android.app.Notification notification = new androidx.core.app.NotificationCompat.Builder(this, "unlock_channel")
-            .setSmallIcon(android.R.drawable.ic_dialog_email)
-            .setContentTitle("✉️ Verify Zenith Unlock request")
-            .setContentText("Click here to approve unlock request for " + appName + " (" + durationMin + "m)")
-            .setContentIntent(pi)
-            .setAutoCancel(true)
-            .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
-            .build();
-
-        nm.notify(999, notification);
     }
 
     private void ensureWindowManager() {
@@ -801,7 +820,13 @@ public class GuardianAccessibilityService extends AccessibilityService {
                 lockerCapsule.animate().scaleX(1f).scaleY(1f).setDuration(300)
                     .setInterpolator(new android.view.animation.OvershootInterpolator()).start();
 
-                windowManager.addView(lockerCapsule, p);
+                try {
+                    if (windowManager != null) {
+                        windowManager.addView(lockerCapsule, p);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 View container = lockerCapsule.findViewById(R.id.capsule_container);
                 View expandedLayout = lockerCapsule.findViewById(R.id.layoutExpandedDetails);

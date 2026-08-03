@@ -168,10 +168,14 @@ public class SettingsFragment extends Fragment {
 
         // Restart service
         binding.btnRestartService.setOnClickListener(v -> {
-            requireContext().startForegroundService(
-                new Intent(requireContext(), UsageMonitorService.class));
-            Toast.makeText(requireContext(),
-                "Usage Monitor restarted", Toast.LENGTH_SHORT).show();
+            try {
+                requireContext().startForegroundService(
+                    new Intent(requireContext(), UsageMonitorService.class));
+                Toast.makeText(requireContext(),
+                    "Usage Monitor restarted", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
         // App version
