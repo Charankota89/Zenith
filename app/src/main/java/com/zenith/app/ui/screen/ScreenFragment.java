@@ -90,7 +90,7 @@ public class ScreenFragment extends Fragment {
                     long totalMins = (hour * 60L) + minute;
                     long newLimitMillis = totalMins * 60000;
 
-                    vm.runOnExecutor(() -> {
+                    java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
                         com.zenith.app.db.AppDatabase db = com.zenith.app.db.AppDatabase.getInstance(requireContext().getApplicationContext());
                         entity.limitMillis = newLimitMillis;
                         if (entity.usageTimeMillis < newLimitMillis || newLimitMillis == 0) {
@@ -98,7 +98,7 @@ public class ScreenFragment extends Fragment {
                             entity.unlockExpiresAt = 0;
                         }
                         db.appUsageDao().update(entity);
-
+                        
                         if (isAdded()) {
                             requireActivity().runOnUiThread(() -> {
                                 vm.syncUsage();
@@ -113,11 +113,11 @@ public class ScreenFragment extends Fragment {
 
             @Override
             public void onFocusBlockToggle(AppUsageEntity entity, boolean isBlocked) {
-                vm.runOnExecutor(() -> {
+                java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
                     com.zenith.app.db.AppDatabase db = com.zenith.app.db.AppDatabase.getInstance(requireContext().getApplicationContext());
                     entity.isFocusWhitelisted = !isBlocked;
                     db.appUsageDao().update(entity);
-
+                    
                     if (isAdded()) {
                         requireActivity().runOnUiThread(() -> {
                             String status = isBlocked ? "restricted" : "allowed";
@@ -166,14 +166,6 @@ public class ScreenFragment extends Fragment {
         // when tapped, it now says so directly.
         b.btnSync.setOnClickListener(v ->
             Toast.makeText(requireContext(), "Tracking is automatic — you're always up to date ✓", Toast.LENGTH_SHORT).show());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (vm != null) {
-            vm.refreshTodayDate();
-        }
     }
 
     private void setupWeeklyTrendChart() {
@@ -341,6 +333,16 @@ public class ScreenFragment extends Fragment {
             return "Averaging " + TimeUtils.formatDuration(avgMillis) + "/day this week • Highest: " + points.get(maxIndex).label;
         }
         return "";
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Catches the case where midnight passed while this tab wasn't the
+        // one visible (or the app was just backgrounded overnight) — without
+        // this, coming back to the Screen Time tab could keep showing
+        // yesterday's numbers indefinitely.
+        if (vm != null) vm.refreshIfNewDay();
     }
 
     @Override

@@ -1,14 +1,18 @@
 package com.zenith.app.ui.focus;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.CountDownTimer;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.zenith.app.db.AppDatabase;
 import com.zenith.app.db.entity.PomodoroEntity;
 import com.zenith.app.db.entity.StudySessionEntity;
+import com.zenith.app.util.AppConstants;
 import com.zenith.app.util.NotificationHelper;
 import com.zenith.app.util.TimeUtils;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,64 +20,76 @@ public class FocusViewModel extends ViewModel {
 
     public enum TimerState { IDLE, RUNNING, PAUSED, BREAK }
 
-    private static final long WORK_MILLIS  = 25 * 60 * 1000L;  // 25 min
-    private static final long BREAK_MILLIS =  5 * 60 * 1000L;  //  5 min
+    private static final long DEFAULT_WORK_MIN = 25;
+    private static final long BREAK_MILLIS = 5 * 60 * 1000L;  //  5 min
 
-    public final MutableLiveData<Long>        timeLeftMillis    = new MutableLiveData<>(WORK_MILLIS);
+    /** User's chosen study duration, in minutes. Defaults to 25, but is
+     *  now fully adjustable and persisted, instead of being permanently
+     *  fixed at 25 like before. */
+    public final MutableLiveData<Integer> selectedDurationMin = new MutableLiveData<>((int) DEFAULT_WORK_MIN);
+
+    public final MutableLiveData<Long>        timeLeftMillis    = new MutableLiveData<>(DEFAULT_WORK_MIN * 60000L);
     public final MutableLiveData<Integer>     sessionsCompleted = new MutableLiveData<>(0);
     public final MutableLiveData<TimerState>  timerState        = new MutableLiveData<>(TimerState.IDLE);
     public final MutableLiveData<String>      currentSubject    = new MutableLiveData<>("Study");
 
     private CountDownTimer     countDownTimer;
-    private long               pausedMillisLeft  = WORK_MILLIS;
-    private long               sessionStartTime  = 0;
-    // Track total time spent paused during a session so it can be
-    // subtracted from the final durationMs. Without this, a 25-minute
-    // work session where you pause for 5 minutes gets logged as 25 minutes
-    // of focus — inflating real study time.
-    private long               pauseStartTime    = 0;
-    private long               totalPausedMillis = 0;
-
+    private long               pausedMillisLeft;
+    private long               sessionStartTime = 0;
     private final AppDatabase  db;
     private final Context      appContext;
+    private final SharedPreferences prefs;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public FocusViewModel(Context context) {
         db         = AppDatabase.getInstance(context);
         appContext  = context.getApplicationContext();
+        prefs       = context.getSharedPreferences(AppConstants.PREF_NAME, Context.MODE_PRIVATE);
+
+        int savedMin = prefs.getInt(AppConstants.PREF_STUDY_DURATION_MIN, (int) DEFAULT_WORK_MIN);
+        selectedDurationMin.setValue(savedMin);
+        pausedMillisLeft = savedMin * 60000L;
+        timeLeftMillis.setValue(pausedMillisLeft);
 
         // Without this, "X sessions completed today" always showed 0 on a
         // fresh app open/ViewModel recreation, even if you'd already done
         // several Pomodoros earlier today — the DB record was correct, the
         // UI just never read it back.
         executor.execute(() -> {
-            PomodoroEntity pomo =
-                db.pomodoroDao().getPomodoroForDate(TimeUtils.getTodayDate());
+            PomodoroEntity pomo = db.pomodoroDao().getPomodoroForDate(TimeUtils.getTodayDate());
             if (pomo != null) {
                 sessionsCompleted.postValue(pomo.sessionsCompleted);
             }
         });
     }
 
+    /** Change how long a study session should be. Only takes effect on the
+     *  next fresh timer start — if a session is already running or paused,
+     *  changing this doesn't yank time out from under it mid-session. */
+    public void setDurationMinutes(int minutes) {
+        if (minutes < 1) minutes = 1;
+        if (minutes > 180) minutes = 180; // sane upper bound
+        selectedDurationMin.setValue(minutes);
+        prefs.edit().putInt(AppConstants.PREF_STUDY_DURATION_MIN, minutes).apply();
+
+        if (timerState.getValue() == TimerState.IDLE) {
+            pausedMillisLeft = minutes * 60000L;
+            timeLeftMillis.setValue(pausedMillisLeft);
+        }
+    }
+
+    private long currentWorkMillis() {
+        Integer min = selectedDurationMin.getValue();
+        return (min != null ? min : DEFAULT_WORK_MIN) * 60000L;
+    }
+
     public void startTimer() {
         TimerState state = timerState.getValue();
         if (state == TimerState.RUNNING) return;
 
-        if (state == TimerState.PAUSED) {
-            // Resuming from pause — accumulate the paused duration so it can
-            // be subtracted from the total when the session completes.
-            if (pauseStartTime > 0) {
-                totalPausedMillis += System.currentTimeMillis() - pauseStartTime;
-                pauseStartTime = 0;
-            }
-        } else {
-            // Fresh start — reset all tracking state.
-            sessionStartTime  = System.currentTimeMillis();
-            totalPausedMillis = 0;
-            pauseStartTime    = 0;
-        }
+        long duration = (state == TimerState.PAUSED) ? pausedMillisLeft : currentWorkMillis();
+        if (state != TimerState.PAUSED) sessionStartTime = System.currentTimeMillis();
 
-        long duration = (state == TimerState.PAUSED) ? pausedMillisLeft : WORK_MILLIS;
         timerState.setValue(TimerState.RUNNING);
         countDownTimer = new CountDownTimer(duration, 1000) {
             @Override public void onTick(long millisUntilFinished) {
@@ -90,16 +106,13 @@ public class FocusViewModel extends ViewModel {
     public void pauseTimer() {
         if (timerState.getValue() != TimerState.RUNNING) return;
         if (countDownTimer != null) countDownTimer.cancel();
-        pauseStartTime = System.currentTimeMillis(); // record when pause began
         timerState.setValue(TimerState.PAUSED);
     }
 
     public void stopTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
-        pausedMillisLeft  = WORK_MILLIS;
-        totalPausedMillis = 0;
-        pauseStartTime    = 0;
-        timeLeftMillis.setValue(WORK_MILLIS);
+        pausedMillisLeft = currentWorkMillis();
+        timeLeftMillis.setValue(pausedMillisLeft);
         timerState.setValue(TimerState.IDLE);
         // Note: sessionsCompleted is intentionally left untouched here — it
         // reflects sessions actually finished today (persisted in the DB),
@@ -113,9 +126,7 @@ public class FocusViewModel extends ViewModel {
 
     private void onWorkSessionComplete() {
         long endTime = System.currentTimeMillis();
-        // Subtract any paused time so the logged duration reflects actual
-        // focused work, not wall-clock time including pauses.
-        long durationMs = (endTime - sessionStartTime) - totalPausedMillis;
+        long durationMs = endTime - sessionStartTime;
         String subject = currentSubject.getValue() != null ? currentSubject.getValue() : "Study";
         String today   = TimeUtils.getTodayDate();
 
@@ -147,7 +158,6 @@ public class FocusViewModel extends ViewModel {
         int done = sessionsCompleted.getValue() != null ? sessionsCompleted.getValue() : 0;
         done++;
         sessionsCompleted.setValue(done);
-        totalPausedMillis = 0; // reset for next session
 
         // 🔔 Fire notification → opens Focus tab
         NotificationHelper.notifyPomodoroSessionDone(appContext, done);
@@ -164,14 +174,14 @@ public class FocusViewModel extends ViewModel {
             @Override public void onFinish() {
                 // Break done — 🔔 notify and reset to ready state
                 NotificationHelper.notifyPomodoroBreakDone(appContext);
-                pausedMillisLeft = WORK_MILLIS;
-                timeLeftMillis.setValue(WORK_MILLIS);
+                pausedMillisLeft = currentWorkMillis();
+                timeLeftMillis.setValue(pausedMillisLeft);
                 timerState.setValue(TimerState.IDLE);
             }
         }.start();
     }
 
-    public androidx.lifecycle.LiveData<java.util.List<StudySessionEntity>> getRecentSessions() {
+    public LiveData<List<StudySessionEntity>> getRecentSessions() {
         return db.studySessionDao().getRecentSessions();
     }
 

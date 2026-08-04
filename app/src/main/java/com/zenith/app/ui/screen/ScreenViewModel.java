@@ -32,9 +32,8 @@ public class ScreenViewModel extends ViewModel {
         }
     }
 
-    public final MutableLiveData<String>            currentDate = new MutableLiveData<>(TimeUtils.getTodayDate());
-    public final LiveData<List<AppUsageEntity>>     usageList;
-    public final LiveData<List<BrowserVisitEntity>> browserList;
+    public final MediatorLiveData<List<AppUsageEntity>>     usageList   = new MediatorLiveData<>();
+    public final MediatorLiveData<List<BrowserVisitEntity>> browserList = new MediatorLiveData<>();
     public final MediatorLiveData<List<DayUsagePoint>> weeklyTrend = new MediatorLiveData<>();
 
     /** Populated when a chart bar is tapped — the selected day's per-app
@@ -49,20 +48,43 @@ public class ScreenViewModel extends ViewModel {
 
     private static final int TREND_DAYS = 7;
 
+    // The date every LiveData source above is currently pointed at. This
+    // ViewModel is Fragment-scoped, and MainActivity keeps fragments alive
+    // across tab switches — so it's entirely possible for midnight to pass
+    // while this ViewModel is still sitting in memory. Room's LiveData is
+    // bound to whatever date string was used when the query was created;
+    // it does not somehow know to start looking at a new date on its own.
+    // That was the actual cause of "showing previous day timing" — the
+    // underlying database was correct, this ViewModel just never asked it
+    // about today again.
+    private String trackedDate;
+
+    private LiveData<List<AppUsageEntity>>     usageSource;
+    private LiveData<List<BrowserVisitEntity>> browserSource;
+    private LiveData<List<AppUsageDao.DailyUsageTotal>> trendSource;
+
     public ScreenViewModel(Context context) {
-        repo        = new UsageRepository(context);
-        db          = AppDatabase.getInstance(context);
+        repo = new UsageRepository(context);
+        db   = AppDatabase.getInstance(context);
+        pointAllSourcesAtToday();
+    }
 
-        usageList   = androidx.lifecycle.Transformations.switchMap(currentDate, date ->
-            db.appUsageDao().getUsageForDate(date));
-        browserList = androidx.lifecycle.Transformations.switchMap(currentDate, date ->
-            db.browserVisitDao().getVisitsForDate(date));
+    private void pointAllSourcesAtToday() {
+        String today = TimeUtils.getTodayDate();
+        trackedDate = today;
 
-        AppUsageDao dao = db.appUsageDao();
+        if (usageSource != null) usageList.removeSource(usageSource);
+        usageSource = db.appUsageDao().getUsageForDate(today);
+        usageList.addSource(usageSource, usageList::setValue);
+
+        if (browserSource != null) browserList.removeSource(browserSource);
+        browserSource = db.browserVisitDao().getVisitsForDate(today);
+        browserList.addSource(browserSource, browserList::setValue);
+
+        if (trendSource != null) weeklyTrend.removeSource(trendSource);
         String startDate = TimeUtils.getDateDaysAgo(TREND_DAYS - 1);
-        LiveData<List<AppUsageDao.DailyUsageTotal>> rawTrend = dao.observeWeeklyTrend(startDate);
-
-        weeklyTrend.addSource(rawTrend, totals -> {
+        trendSource = db.appUsageDao().observeWeeklyTrend(startDate);
+        weeklyTrend.addSource(trendSource, totals -> {
             Map<String, Long> byDate = new HashMap<>();
             if (totals != null) {
                 for (AppUsageDao.DailyUsageTotal t : totals) {
@@ -79,13 +101,16 @@ public class ScreenViewModel extends ViewModel {
         });
     }
 
-    public void refreshTodayDate() {
+    /** Call from the Fragment's onResume() — cheap no-op most of the time,
+     *  but the moment midnight has actually passed since this ViewModel
+     *  was created, this re-points every date-dependent query at the new
+     *  "today" so the screen shows fresh data instead of yesterday's. */
+    public void refreshIfNewDay() {
         String today = TimeUtils.getTodayDate();
-        if (!today.equals(currentDate.getValue())) {
-            currentDate.setValue(today);
+        if (!today.equals(trackedDate)) {
+            pointAllSourcesAtToday();
         }
     }
-
 
     /** Loads the per-app breakdown for a specific past day (used when a
      *  chart bar is tapped). Past days are finalized/frozen, so a one-shot
@@ -104,14 +129,6 @@ public class ScreenViewModel extends ViewModel {
 
     public void setLimit(String pkg, long limitMillis) {
         repo.setAppLimit(pkg, limitMillis);
-    }
-
-    /** Run a DB operation on the ViewModel's shared executor.
-     *  Callers (e.g. ScreenFragment click listeners) should use this instead
-     *  of creating a new Executors.newSingleThreadExecutor() per click, which
-     *  would leak thread pools since those executors are never shut down. */
-    public void runOnExecutor(Runnable task) {
-        executor.execute(task);
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.util.Arrays;
 public class AppConstants {
     public static final String CHANNEL_ID_USAGE     = "usage_alerts";
     public static final String CHANNEL_ID_FOCUS     = "focus_mode";
+    public static final String CHANNEL_ID_WELLBEING = "wellbeing";
     public static final String CHANNEL_ID_CAREER    = "career";
 
     public static final String PREF_NAME            = "zenith_prefs";
@@ -16,10 +17,14 @@ public class AppConstants {
     public static final String PREF_ONBOARDED       = "onboarded";
     public static final String PREF_DAILY_GOAL_MIN  = "daily_goal_minutes";
     public static final String PREF_POMODORO_ACTIVE = "pomodoro_active";
+    public static final String PREF_STUDY_DURATION_MIN = "study_duration_minutes";
 
     public static final int NOTIF_ID_USAGE_MONITOR = 1001;
     public static final int NOTIF_ID_FOCUS         = 1002;
+    public static final int NOTIF_ID_EYE_BREAK     = 1003;
     public static final int NOTIF_ID_DAILY_SUMMARY = 1004;
+    public static final int NOTIF_ID_POSTURE       = 1005;
+    public static final int NOTIF_ID_MOOD          = 1006;
     public static final int NOTIF_ID_CAREER        = 1007;
     public static final int NOTIF_ID_POMODORO      = 1008;
 
@@ -62,4 +67,8 @@ public class AppConstants {
         "netbanking", "cardpayment", "pay.google.com", "paytm.com/pay",
         "phonepe.com/pay"
     ));
+
+    public static final String GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+    public static final String GEMINI_URL     =
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
 }

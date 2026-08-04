@@ -51,13 +51,21 @@ public class FocusFragment extends Fragment {
             binding.tvTimerDisplay.setText(String.format("%02d:%02d", mins, secs));
 
             FocusViewModel.TimerState state = vm.timerState.getValue();
-            long totalMs = 25 * 60 * 1000L;
+            long totalMs;
             if (state == FocusViewModel.TimerState.BREAK) {
                 totalMs = 5 * 60 * 1000L;
+            } else {
+                // Was hardcoded to 25 minutes here regardless of the actual
+                // selected duration — the progress ring would fill up at
+                // the wrong rate for any non-default duration.
+                Integer durationMin = vm.selectedDurationMin.getValue();
+                totalMs = (durationMin != null ? durationMin : 25) * 60000L;
             }
-            int progress = (int) ((ms * 100L) / totalMs);
+            int progress = totalMs > 0 ? (int) ((ms * 100L) / totalMs) : 0;
             binding.focusProgressIndicator.setProgress(progress);
         });
+
+        vm.selectedDurationMin.observe(getViewLifecycleOwner(), this::highlightSelectedChip);
 
         vm.sessionsCompleted.observe(getViewLifecycleOwner(), count ->
             binding.tvSessionCount.setText(count + " session" + (count == 1 ? "" : "s") + " completed today"));
@@ -108,6 +116,62 @@ public class FocusFragment extends Fragment {
         binding.btnStop.setOnClickListener(v -> vm.stopTimer());
 
         binding.tvSubjectName.setOnClickListener(v -> showSubjectDialog());
+
+        binding.chip15min.setOnClickListener(v -> vm.setDurationMinutes(15));
+        binding.chip25min.setOnClickListener(v -> vm.setDurationMinutes(25));
+        binding.chip45min.setOnClickListener(v -> vm.setDurationMinutes(45));
+        binding.chip60min.setOnClickListener(v -> vm.setDurationMinutes(60));
+        binding.chipCustomMin.setOnClickListener(v -> showCustomDurationDialog());
+    }
+
+    private void highlightSelectedChip(int selectedMin) {
+        if (binding == null) return;
+        int[] presetValues = {15, 25, 45, 60};
+        android.widget.TextView[] chips = {
+            binding.chip15min, binding.chip25min, binding.chip45min, binding.chip60min
+        };
+        boolean matchedPreset = false;
+        for (int i = 0; i < presetValues.length; i++) {
+            boolean isSelected = presetValues[i] == selectedMin;
+            if (isSelected) matchedPreset = true;
+            chips[i].setTextColor(isSelected
+                ? getResources().getColor(com.zenith.app.R.color.zenith_purple)
+                : getResources().getColor(com.zenith.app.R.color.text_secondary));
+            chips[i].setTypeface(null, isSelected ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+        }
+        // Custom chip shows the actual chosen value once it doesn't match a preset
+        if (!matchedPreset) {
+            binding.chipCustomMin.setText(selectedMin + "m");
+            binding.chipCustomMin.setTextColor(getResources().getColor(com.zenith.app.R.color.zenith_purple));
+            binding.chipCustomMin.setTypeface(null, android.graphics.Typeface.BOLD);
+        } else {
+            binding.chipCustomMin.setText("Custom");
+            binding.chipCustomMin.setTextColor(getResources().getColor(com.zenith.app.R.color.text_secondary));
+            binding.chipCustomMin.setTypeface(null, android.graphics.Typeface.NORMAL);
+        }
+    }
+
+    private void showCustomDurationDialog() {
+        final EditText input = new EditText(requireContext());
+        input.setHint("Minutes (1–180)");
+        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+        Integer current = vm.selectedDurationMin.getValue();
+        if (current != null) input.setText(String.valueOf(current));
+
+        new AlertDialog.Builder(requireContext())
+            .setTitle("Custom study duration")
+            .setView(input)
+            .setPositiveButton("Set", (d, w) -> {
+                String text = input.getText().toString().trim();
+                if (!text.isEmpty()) {
+                    try {
+                        int minutes = Integer.parseInt(text);
+                        vm.setDurationMinutes(minutes);
+                    } catch (NumberFormatException ignored) { }
+                }
+            })
+            .setNegativeButton("Cancel", null)
+            .show();
     }
 
     private void showSubjectDialog() {

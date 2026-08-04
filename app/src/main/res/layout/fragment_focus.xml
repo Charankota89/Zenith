@@ -92,8 +92,73 @@
                     android:paddingEnd="12dp"
                     android:paddingTop="4dp"
                     android:paddingBottom="4dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="12dp"
                     android:hint="Tap to set subject"/>
+
+                <!-- Duration presets — was permanently fixed at 25 minutes
+                     before, now adjustable and remembered between sessions -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/chip15min"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="15m"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:background="?attr/selectableItemBackground"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"/>
+
+                    <TextView
+                        android:id="@+id/chip25min"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="25m"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:background="?attr/selectableItemBackground"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"/>
+
+                    <TextView
+                        android:id="@+id/chip45min"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="45m"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:background="?attr/selectableItemBackground"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"/>
+
+                    <TextView
+                        android:id="@+id/chip60min"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="60m"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:background="?attr/selectableItemBackground"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"/>
+
+                    <TextView
+                        android:id="@+id/chipCustomMin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Custom"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:background="?attr/selectableItemBackground"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"/>
+                </LinearLayout>
 
                 <!-- Timer display with circular ring -->
                 <FrameLayout
@@ -225,9 +290,7 @@
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switchFocusMode"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:thumbTint="@color/switch_thumb_tint"
-                    app:trackTint="@color/switch_track_tint"/>
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
