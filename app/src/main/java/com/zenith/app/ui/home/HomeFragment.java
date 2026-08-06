@@ -199,6 +199,33 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /** Launches a system settings screen, but never crashes the app if it
+     *  doesn't exist on this device — some OEMs (ColorOS/Realme, MIUI, and
+     *  others) remove, rename, or relocate specific settings intents like
+     *  Usage Access and Accessibility. Previously only the battery-
+     *  optimization step had this protection; the other three steps would
+     *  throw an uncaught ActivityNotFoundException and take the whole app
+     *  down with them the moment a user tapped through to a step their
+     *  phone doesn't support the standard way. */
+    private void safeStartSettingsActivity(Intent primaryIntent, String fallbackExplanation) {
+        try {
+            startActivity(primaryIntent);
+        } catch (Exception e) {
+            try {
+                Intent appInfo = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:" + requireContext().getPackageName()));
+                startActivity(appInfo);
+                android.widget.Toast.makeText(getContext(), fallbackExplanation, android.widget.Toast.LENGTH_LONG).show();
+            } catch (Exception ignored) {
+                // App Info settings should exist on every real Android
+                // device, but if even that's somehow unavailable, just
+                // don't crash — the permission card stays visible so the
+                // user can try again or find the setting manually.
+                android.widget.Toast.makeText(getContext(), "Couldn't open settings — please enable this permission manually from your phone's Settings app.", android.widget.Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     /** Requests whichever permission is next in priority order, one step
      *  of the guided flow. Called once from the button tap, then again
      *  automatically from onResume/the notification callback each time a
@@ -218,20 +245,26 @@ public class HomeFragment extends Fragment {
         }
         if (!isUsageAccessEnabled()) {
             lastRequestedStep = "usage";
-            startActivity(new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS));
+            safeStartSettingsActivity(
+                new Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS),
+                "Find 'Usage Access' or 'Special app access' from here and enable it for Zenith.");
             android.widget.Toast.makeText(getContext(), "Step: enable Usage Access for Zenith, then come back.", android.widget.Toast.LENGTH_LONG).show();
             return;
         }
         if (!isOverlayPermissionEnabled()) {
             lastRequestedStep = "overlay";
-            startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + requireContext().getPackageName())));
+            safeStartSettingsActivity(
+                new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + requireContext().getPackageName())),
+                "Find 'Display over other apps' from here and enable it for Zenith.");
             android.widget.Toast.makeText(getContext(), "Step: enable Draw Overlays for Zenith, then come back.", android.widget.Toast.LENGTH_LONG).show();
             return;
         }
         if (!isAccessibilityServiceEnabled()) {
             lastRequestedStep = "accessibility";
-            startActivity(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS));
+            safeStartSettingsActivity(
+                new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS),
+                "Find 'Accessibility' from here, then turn on Zenith Protector.");
             android.widget.Toast.makeText(getContext(), "Next step: turn on Zenith Protector under Accessibility, then come back.", android.widget.Toast.LENGTH_LONG).show();
             return;
         }
@@ -245,7 +278,9 @@ public class HomeFragment extends Fragment {
                 // Some OEMs (especially heavily customized ones) don't support
                 // this intent directly — fall back to the general battery
                 // optimization list where the user can find Zenith manually.
-                startActivity(new Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
+                safeStartSettingsActivity(
+                    new Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS),
+                    "Find Zenith in this list and choose 'Allow' or 'Don't optimize'.");
             }
             android.widget.Toast.makeText(getContext(), "Last step: choose 'Allow' or 'Don't optimize' for Zenith, then come back.", android.widget.Toast.LENGTH_LONG).show();
             return;
